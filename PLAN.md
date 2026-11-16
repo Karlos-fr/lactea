@@ -259,6 +259,7 @@ Tous les réglages sont **sauvegardés** (DataStore) et appliqués aussi en mode
 | 5 | ✅ **Panneau d'options & gestion des presets** | Panneau d'options complet dont la configuration des touches, favoris, liste noire, exclusion auto, navigateur, téléchargement de packs depuis GitHub | Préférences et touches personnalisées conservées entre lancements ; un pack s'installe depuis le panneau |
 | 6 | **Bonus** | Pochette en texture, upload depuis le PC | |
 | 7 | **Finition** | Icône/bannière Lactea, collection de presets complète, tests sur une autre box | APK prête à installer |
+| 8 | **Optimisation des transitions** | 1) Vérifier sur la TV : banc d'essai fondu 2 s vs 3 s (étape 1), et observer dans le journal les coupes franches et changements de résolution en mode Auto une fois les presets mesurés. 2) Pré-remplir les mesures : publier dans le manifest les FPS par preset et par modèle de TV (issus du banc d'essai), pour que le mode Auto soit efficace dès le premier lancement. 3) Réduire le coût du fondu lui-même : piste « rendu en résolution réduite pendant le fondu », à évaluer (risque de saut visible). | Plus de ralentissement visible pendant les transitions sur la BRAVIA |
 
 ---
 
