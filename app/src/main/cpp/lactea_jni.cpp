@@ -9,6 +9,7 @@
 #include <atomic>
 #include <mutex>
 #include <string>
+#include <vector>
 
 #define LOG_TAG "LACTEA_NATIVE"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
@@ -72,6 +73,20 @@ JNIEXPORT jlong JNICALL JNI_FN(create)(JNIEnv* env, jobject, jstring texturePath
          reinterpret_cast<const char*>(glGetString(GL_VERSION)));
     projectm_free_string(version);
     return reinterpret_cast<jlong>(e);
+}
+
+JNIEXPORT void JNICALL JNI_FN(setTexturePaths)(JNIEnv* env, jobject, jlong h, jobjectArray paths) {
+    jsize n = env->GetArrayLength(paths);
+    std::vector<std::string> storage;
+    storage.reserve(static_cast<size_t>(n));
+    for (jsize i = 0; i < n; ++i) {
+        auto s = static_cast<jstring>(env->GetObjectArrayElement(paths, i));
+        storage.push_back(toString(env, s));
+        env->DeleteLocalRef(s);
+    }
+    std::vector<const char*> ptrs;
+    for (auto& s : storage) ptrs.push_back(s.c_str());
+    projectm_set_texture_search_paths(fromHandle(h)->pm, ptrs.data(), ptrs.size());
 }
 
 JNIEXPORT void JNICALL JNI_FN(destroy)(JNIEnv*, jobject, jlong h) {

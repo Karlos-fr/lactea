@@ -33,7 +33,18 @@ Prérequis : SDK Android (plateforme 37), NDK 30.0.16248370, CMake 4.1.2, JDK 17
 adb install -r -g app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Touches (étape 1) : ◀ ▶ preset · ▲ ▼ résolution de rendu · OK masquer l'overlay.
+Touches par défaut (reconfigurables dans Options › Télécommande) : ◀ ▶ preset · ▲ ▼ sensibilité audio ·
+🔴 verrou · 🟢 aléatoire · 🟡 favori (long : exclure) · 🔵 options (long : navigateur) · Info nom du preset
+(long : aide) · 0 compteur FPS · **appui long OK : options (toujours)**.
+
+## Packs de presets
+
+```bash
+python -I tools/make_packs.py          # → dist/packs/*.zip + manifest.json
+```
+
+Joindre le contenu de `dist/packs/` à une release GitHub : l'appli lit
+`releases/latest/download/manifest.json` (dépôt public requis).
 
 ## Licences
 

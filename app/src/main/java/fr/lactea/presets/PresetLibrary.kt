@@ -5,29 +5,41 @@ import android.util.Log
 import java.io.File
 
 /**
- * Copies the bundled presets and textures from assets to internal storage
- * (projectM needs real file paths) and exposes the preset list.
+ * Bundled presets/textures (copied from assets, projectM needs real files) plus
+ * any downloaded packs. Produces the [Playlist.Entry] list and texture search paths.
  */
 class PresetLibrary(private val context: Context) {
-    val presetDir = File(context.filesDir, "presets")
-    val textureDir = File(context.filesDir, "textures")
+    val bundledPresetDir = File(context.filesDir, "presets")
+    val bundledTextureDir = File(context.filesDir, "textures")
 
-    fun prepare(): List<File> {
+    /** Copies assets on first launch / after an update. */
+    fun prepareBundled() {
         val stamp = File(context.filesDir, ".assets-version")
         val version = context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime.toString()
-        if (!stamp.exists() || stamp.readText() != version) {
-            val start = System.currentTimeMillis()
-            presetDir.deleteRecursively()
-            textureDir.deleteRecursively()
-            copyAssetDir("presets", presetDir)
-            copyAssetDir("textures", textureDir)
-            stamp.writeText(version)
-            Log.i(TAG, "Assets copied in ${System.currentTimeMillis() - start} ms")
+        if (stamp.exists() && stamp.readText() == version) return
+        val start = System.currentTimeMillis()
+        bundledPresetDir.deleteRecursively()
+        bundledTextureDir.deleteRecursively()
+        copyAssetDir("presets", bundledPresetDir)
+        copyAssetDir("textures", bundledTextureDir)
+        stamp.writeText(version)
+        Log.i(TAG, "Assets copied in ${System.currentTimeMillis() - start} ms")
+    }
+
+    /** Scans the bundled presets and every pack root. Duplicate keys keep the first one. */
+    fun scan(packRoots: List<File>): List<Playlist.Entry> {
+        val seen = HashSet<String>()
+        val out = ArrayList<Playlist.Entry>()
+        for (root in listOf(bundledPresetDir) + packRoots) {
+            root.walkTopDown()
+                .filter { it.isFile && it.extension.equals("milk", ignoreCase = true) }
+                .forEach { f ->
+                    val key = f.relativeTo(root).invariantSeparatorsPath.removeSuffix(".milk")
+                    if (seen.add(key)) out.add(Playlist.Entry(key, f))
+                }
         }
-        return presetDir.walkTopDown()
-            .filter { it.isFile && it.extension.equals("milk", ignoreCase = true) }
-            .sortedBy { it.path }
-            .toList()
+        out.sortBy { it.key.lowercase() }
+        return out
     }
 
     private fun copyAssetDir(assetPath: String, target: File) {
@@ -43,9 +55,5 @@ class PresetLibrary(private val context: Context) {
 
     companion object {
         private const val TAG = "LACTEA"
-
-        /** "Fractal/Rovastar - VooV_s Light Pattern" style display name. */
-        fun displayName(root: File, preset: File): String =
-            preset.relativeTo(root).path.removeSuffix(".milk")
     }
 }

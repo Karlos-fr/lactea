@@ -8,6 +8,7 @@ object NativeEngine {
     }
 
     external fun create(texturePath: String): Long
+    external fun setTexturePaths(handle: Long, paths: Array<String>)
     external fun destroy(handle: Long)
     external fun resize(handle: Long, width: Int, height: Int)
     external fun render(handle: Long)

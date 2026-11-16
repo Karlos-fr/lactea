@@ -19,13 +19,14 @@ class AudioCapture {
     @Volatile var status: String = "stopped"
         private set
 
-    fun start() {
+    /** @param asPlayed false = normalised level, true = follows the playback volume. */
+    fun start(asPlayed: Boolean = false) {
         if (visualizer != null) return
         try {
             val v = Visualizer(0)
             v.enabled = false
             v.captureSize = Visualizer.getCaptureSizeRange()[1]
-            v.scalingMode = Visualizer.SCALING_MODE_NORMALIZED
+            v.scalingMode = if (asPlayed) Visualizer.SCALING_MODE_AS_PLAYED else Visualizer.SCALING_MODE_NORMALIZED
             v.setDataCaptureListener(object : Visualizer.OnDataCaptureListener {
                 override fun onWaveFormDataCapture(vis: Visualizer, waveform: ByteArray, samplingRate: Int) {
                     val copy = waveform.copyOf()
