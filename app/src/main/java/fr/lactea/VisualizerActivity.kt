@@ -205,9 +205,10 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
         if (captureAction != null) return handleCapture(e)
         if (e.keyCode in VOLUME_KEYS) return super.dispatchKeyEvent(e)
-        panel?.let { return it.handleKey(e) }
+        // Remember the event so a panel opened by it ignores the release of the same key.
         currentEvent = e
         try {
+            panel?.let { return it.handleKey(e) }
             if (input.handle(e)) return true
         } finally {
             currentEvent = null
