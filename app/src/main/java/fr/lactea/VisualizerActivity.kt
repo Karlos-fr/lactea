@@ -24,6 +24,7 @@ import fr.lactea.input.Action
 import fr.lactea.input.KeyBindings
 import fr.lactea.input.RemoteInput
 import fr.lactea.input.Trigger
+import fr.lactea.nowplaying.NowPlaying
 import fr.lactea.packs.PackManager
 import fr.lactea.presets.Playlist
 import fr.lactea.presets.PresetLibrary
@@ -37,6 +38,7 @@ import fr.lactea.ui.MenuItem
 import fr.lactea.ui.MenuPanel
 import fr.lactea.ui.MenuScreen
 import fr.lactea.ui.Osd
+import fr.lactea.ui.TitleOverlay
 import java.util.concurrent.Executors
 
 /**
@@ -46,7 +48,7 @@ import java.util.concurrent.Executors
  * Dev/benchmark extras:  am start -n fr.lactea/.VisualizerActivity --ei res 1080   (0 = Auto)
  *                                                                   --es manifest http://host/manifest.json
  */
-class VisualizerActivity : Activity(), LacteaRenderer.Listener {
+class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Listener {
 
     private lateinit var settings: Settings
     private lateinit var bindings: KeyBindings
@@ -56,6 +58,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
     private lateinit var packs: PackManager
     private lateinit var renderer: LacteaRenderer
     private lateinit var input: RemoteInput
+    private lateinit var nowPlaying: NowPlaying
+    private lateinit var titleOverlay: TitleOverlay
 
     private lateinit var glView: GLSurfaceView
     private lateinit var hud: TextView
@@ -97,6 +101,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
         library = PresetLibrary(this)
         packs = PackManager(this, settings)
         input = RemoteInput(bindings, ::onAction)
+        nowPlaying = NowPlaying(this, this)
         applyIntent(intent)
 
         library.prepareBundled()
@@ -142,12 +147,14 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
         } else {
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_AUDIO)
         }
+        nowPlaying.start()
         ui.post(tick)
     }
 
     override fun onPause() {
         super.onPause()
         ui.removeCallbacks(tick)
+        nowPlaying.stop()
         audio.stop()
         glView.onPause()
         stats.save()
@@ -202,8 +209,18 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
                 osd.show(if (added) "✕ Preset exclu\n${it.name}" else "Preset réintégré\n${it.name}")
                 if (added) glView.queueEvent { renderer.next() }
             }
-            // The song title arrives in step 3 (MediaSession); until then show the preset.
-            Action.SHOW_TITLE, Action.SHOW_PRESET_NAME -> playlist.current()?.let { showPresetLabel(it) }
+            Action.SHOW_TITLE -> {
+                val t = nowPlaying.track
+                when {
+                    t != null -> showTitle(t)
+                    !nowPlaying.permissionGranted -> osd.show("Titre indisponible : autorisation à accorder\n(Options › Titre du morceau)", 4000)
+                    else -> osd.show("Aucune musique détectée")
+                }
+            }
+            Action.SHOW_PRESET_NAME -> playlist.current()?.let { showPresetLabel(it) }
+            Action.PLAY_PAUSE -> { nowPlaying.playPause(); osd.show(if (nowPlaying.playing) "⏸ Pause" else "▶ Lecture", 1200) }
+            Action.NEXT_TRACK -> { nowPlaying.nextTrack(); osd.show("⏭ Morceau suivant", 1200) }
+            Action.PREVIOUS_TRACK -> { nowPlaying.previousTrack(); osd.show("⏮ Morceau précédent", 1200) }
             Action.SENSITIVITY_UP, Action.SENSITIVITY_DOWN -> {
                 val delta = if (a == Action.SENSITIVITY_UP) 0.1f else -0.1f
                 settings.beatSensitivity = (Math.round((settings.beatSensitivity + delta) * 10) / 10f).coerceIn(0.1f, 5f)
@@ -274,6 +291,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
         val thresholds = listOf(15, 20, 25, 30, 40)
         val sens = (1..30).map { it / 10f }
         val modes = listOf(Settings.TRANSITION_AUTO, Settings.TRANSITION_FADE, Settings.TRANSITION_CUT)
+        val titleDurations = listOf(3, 4, 6, 8, 12)
         listOf(
             MenuItem.Header("Visuel"),
             MenuItem.Choice("Résolution de rendu", resLabels,
@@ -310,6 +328,27 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
             MenuItem.Toggle("Favoris uniquement", { settings.favoritesOnly }, { settings.favoritesOnly = it }),
             MenuItem.Toggle("Nom du preset au changement", { settings.showPresetNameOnChange },
                 { settings.showPresetNameOnChange = it }),
+
+            MenuItem.Header("Titre du morceau"),
+            MenuItem.Toggle("Afficher à chaque morceau", { settings.showTitleOnTrackChange },
+                { settings.showTitleOnTrackChange = it }),
+            MenuItem.Choice("Durée d'affichage", titleDurations.map { "$it s" },
+                { titleDurations.indexOf(settings.titleSeconds).coerceAtLeast(0) },
+                { settings.titleSeconds = titleDurations[it]; previewTitle() }),
+            MenuItem.Choice("Position", listOf("Centre", "Bas"),
+                { settings.titlePosition }, { settings.titlePosition = it; previewTitle() }),
+            MenuItem.Choice("Taille", listOf("Petite", "Moyenne", "Grande"),
+                { settings.titleSize }, { settings.titleSize = it; previewTitle() }),
+            MenuItem.Toggle("Nouveau preset à chaque morceau", { settings.newPresetOnTrack },
+                { settings.newPresetOnTrack = it }),
+            MenuItem.Info("En cours") {
+                nowPlaying.track?.let { "${it.title} — ${it.source}" }
+                    ?: if (nowPlaying.permissionGranted) "aucune musique détectée" else "autorisation manquante"
+            },
+            MenuItem.Button("Comment autoriser l'accès au titre ?",
+                { if (nowPlaying.permissionGranted) "Autorisé ✓" else "" }) {
+                osd.show("Depuis un PC relié à la TV :\n${NowPlaying.ADB_GRANT}\npuis relancez Lactea", 12000)
+            },
 
             MenuItem.Header("Gestion des presets"),
             MenuItem.Button("Navigateur de presets", { "${playlist.all().size} presets" }) { openBrowser() },
@@ -518,7 +557,9 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
     // ------------------------------------------------------------------ Renderer callbacks (GL thread)
 
     override fun onPresetChanged(entry: Playlist.Entry, hardCut: Boolean) {
-        if (settings.showPresetNameOnChange) ui.post { if (panel == null) showPresetLabel(entry) }
+        if (settings.showPresetNameOnChange) ui.post {
+            if (panel == null && titleOverlay.visibility != View.VISIBLE) showPresetLabel(entry)
+        }
     }
 
     override fun onResolutionWanted(height: Int) {
@@ -531,6 +572,27 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
     override fun onPresetFailed(entry: Playlist.Entry?, message: String) {
         Log.w(TAG, "Preset failed: ${entry?.key}: $message")
         ui.post { osd.show("Preset ignoré (erreur)\n${entry?.name ?: ""}", 2500) }
+    }
+
+    // ------------------------------------------------------------------ Now playing (main thread)
+
+    override fun onTrackChanged(track: NowPlaying.Track) {
+        if (settings.newPresetOnTrack) glView.queueEvent { renderer.next() }
+        if (settings.showTitleOnTrackChange && panel == null) showTitle(track)
+    }
+
+    override fun onPlaybackChanged(playing: Boolean) {
+        Log.i(TAG, "Playback ${if (playing) "playing" else "paused"}")
+    }
+
+    private fun showTitle(t: NowPlaying.Track) {
+        presetLabel.visibility = View.GONE
+        titleOverlay.show(t, settings.titleSeconds * 1000L, settings.titlePosition, settings.titleSize)
+    }
+
+    /** Shows the title (or a sample) behind the options panel while its settings change. */
+    private fun previewTitle() {
+        showTitle(nowPlaying.track ?: NowPlaying.Track("Titre du morceau", "Artiste", "Album", "Lactea"))
     }
 
     // ------------------------------------------------------------------ Helpers
@@ -603,12 +665,16 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener {
             visibility = View.GONE
         }
         panelLayer = FrameLayout(this)
+        titleOverlay = TitleOverlay(this)
 
         setContentView(FrameLayout(this).apply {
             addView(glView, FrameLayout.LayoutParams(-1, -1))
             addView(hud, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.START))
             addView(presetLabel, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.START).apply {
                 setMargins(dp(48), 0, 0, dp(40))
+            })
+            addView(titleOverlay, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER).apply {
+                setMargins(dp(60), 0, dp(60), 0)
             })
             addView(panelLayer, FrameLayout.LayoutParams(-1, -1))
             addView(osdView, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {

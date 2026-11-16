@@ -30,6 +30,15 @@ class Settings(context: Context) {
     var slowThreshold by int("slow_threshold", 25)
     var showPresetNameOnChange by bool("show_preset_name", true)
 
+    // --- Titre du morceau ---
+    var showTitleOnTrackChange by bool("title_on_change", true)
+    var titleSeconds by int("title_seconds", 6)
+    /** 0 = centre, 1 = bottom */
+    var titlePosition by int("title_position", 0)
+    /** 0 = small, 1 = medium, 2 = large */
+    var titleSize by int("title_size", 1)
+    var newPresetOnTrack by bool("new_preset_on_track", false)
+
     // --- Audio ---
     var beatSensitivity by float("beat_sensitivity", 1f)
     /** 0 = normalised (constant level), 1 = as played (follows the volume). */

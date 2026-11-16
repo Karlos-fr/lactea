@@ -76,6 +76,19 @@ Testé sur la BRAVIA (captures dans `docs/step2-*.png`, `docs/step5-*.png`) :
   avec les zips + `manifest.json`.
 - Le « titre du morceau » affiche pour l'instant le nom du preset (le vrai titre arrive à l'étape 3).
 
+### Étape 3 — résultats (16/11/2026)
+
+- ✅ Lecture de la session média active (`NotificationListenerService` + `MediaSessionManager`) : titre,
+  artiste, album, appli source (« Spotify »). Fonctionne avec toute appli qui publie une MediaSession.
+- ✅ Animation du titre façon MilkDrop (zoom + halo coloré, puis montée et fondu) à chaque morceau,
+  et à la demande (OK). Réglages : affichage auto, durée, position centre/bas, taille, nouveau preset
+  à chaque morceau.
+- ✅ Pilotage de la musique : Chaîne + / Chaîne − = morceau suivant / précédent (reconfigurables), action
+  lecture/pause disponible. Les touches média de la télécommande restent gérées par Android.
+- Autorisation accordée une fois depuis le PC (testée sur la BRAVIA) :
+  `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener 0`
+- Note : « précédent » dans Spotify redémarre d'abord le morceau en cours (comportement de Spotify).
+
 ---
 
 ## 2. Architecture
@@ -254,7 +267,7 @@ Tous les réglages sont **sauvegardés** (DataStore) et appliqués aussi en mode
 | 0 | ✅ Test capture | `spike-visualizer/` | Signal Spotify capté, pause = 0 |
 | 1 | ✅ **projectM sur la TV** | Projet `fr.lactea`, build NDK de libprojectM, JNI, `GLSurfaceView`, capture audio branchée, ~50 presets, compteur FPS, résolution de rendu réglable | Presets qui réagissent à Spotify, FPS mesurés en 720p / 1080p / 4K, affichage 4K réel confirmé ou non |
 | 2 | ✅ **Télécommande & transitions** | Mapping des touches, transitions auto + fondus + coupes franches, écran d'aide | Tous les raccourcis fonctionnels |
-| 3 | **Titre du morceau** | `NotificationListenerService`, animation titre, pilotage lecture | Titre affiché au changement de morceau |
+| 3 | ✅ **Titre du morceau** | `NotificationListenerService`, animation titre, pilotage lecture | Titre affiché au changement de morceau |
 | 4 | **Économiseur / lancement auto** | `DreamService` ; test avec Spotify ; sinon plan B | Lactea démarre seul quand la musique joue |
 | 5 | ✅ **Panneau d'options & gestion des presets** | Panneau d'options complet dont la configuration des touches, favoris, liste noire, exclusion auto, navigateur, téléchargement de packs depuis GitHub | Préférences et touches personnalisées conservées entre lancements ; un pack s'installe depuis le panneau |
 | 6 | **Bonus** | Pochette en texture, upload depuis le PC | |

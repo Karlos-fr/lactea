@@ -21,6 +21,9 @@ enum class Action(val label: String) {
     OPEN_BROWSER("Navigateur de presets"),
     SHOW_HELP("Aide des touches"),
     TOGGLE_HUD("Compteur FPS"),
+    PLAY_PAUSE("Musique : lecture / pause"),
+    NEXT_TRACK("Musique : morceau suivant"),
+    PREVIOUS_TRACK("Musique : morceau précédent"),
 }
 
 /** A physical key, pressed briefly or held. */
@@ -81,6 +84,17 @@ class KeyBindings(private val settings: Settings) {
                 map[Trigger(o.getInt("key"), o.getBoolean("long"))] = action
             }
         }.onFailure { map.clear(); map.putAll(DEFAULTS) }
+        migrate()
+    }
+
+    /** Gives actions added in later versions their default key, if that key is still free. */
+    private fun migrate() {
+        val version = settings.prefs.getInt("key_bindings_version", 1)
+        if (version >= VERSION) return
+        ADDED_IN.filterKeys { it > version }.values.flatten().forEach { a ->
+            DEFAULTS.filterValues { it == a }.keys.forEach { t -> if (t !in map) map[t] = a }
+        }
+        save()
     }
 
     private fun save() {
@@ -88,10 +102,14 @@ class KeyBindings(private val settings: Settings) {
         map.forEach { (t, a) ->
             arr.put(JSONObject().put("key", t.keyCode).put("long", t.long).put("action", a.name))
         }
-        settings.prefs.edit().putString("key_bindings", arr.toString()).apply()
+        settings.prefs.edit().putString("key_bindings", arr.toString())
+            .putInt("key_bindings_version", VERSION).apply()
     }
 
     companion object {
+        private const val VERSION = 2
+        private val ADDED_IN = mapOf(2 to listOf(Action.NEXT_TRACK, Action.PREVIOUS_TRACK, Action.PLAY_PAUSE))
+
         /** Long-press OK → options panel, always. */
         val RESERVED = setOf(
             Trigger(KeyEvent.KEYCODE_DPAD_CENTER, true),
@@ -123,6 +141,9 @@ class KeyBindings(private val settings: Settings) {
             Trigger(KeyEvent.KEYCODE_INFO, true) to Action.SHOW_HELP,
             Trigger(KeyEvent.KEYCODE_MENU, false) to Action.OPEN_OPTIONS,
             Trigger(KeyEvent.KEYCODE_0, false) to Action.TOGGLE_HUD,
+            // Media keys (Play/Pause, ⏭, ⏮) are left to Android, which sends them to the playing app.
+            Trigger(KeyEvent.KEYCODE_CHANNEL_UP, false) to Action.NEXT_TRACK,
+            Trigger(KeyEvent.KEYCODE_CHANNEL_DOWN, false) to Action.PREVIOUS_TRACK,
         )
 
         private val NAMES = mapOf(
