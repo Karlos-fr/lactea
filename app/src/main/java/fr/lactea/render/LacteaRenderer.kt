@@ -110,21 +110,107 @@ class LacteaRenderer(
     override fun onDrawFrame(gl: GL10?) {
         if (handle == 0L) return
         while (true) (pending.poll() ?: break).invoke()
-        limitFps()
+        if (bench == null) limitFps()
         audio.drain { NativeEngine.addPcmU8(handle, it) }
 
-        when (NativeEngine.consumeSwitchRequest(handle)) {
+        val switch = NativeEngine.consumeSwitchRequest(handle)
+        if (bench == null) when (switch) {
             1 -> if (!locked) advance(smoothRequested = true)
             2 -> if (!locked) advance(smoothRequested = false)
         }
         NativeEngine.consumeError(handle)?.let { msg ->
             current?.let { playlist.markFailed(it.key) }
-            listener.onPresetFailed(current, msg)
-            advance(smoothRequested = false)
+            if (bench != null) {
+                benchRecord("FAILED", 0f, msg)
+            } else {
+                listener.onPresetFailed(current, msg)
+                advance(smoothRequested = false)
+            }
         }
 
         NativeEngine.render(handle)
         measure()
+        bench?.let { benchTick() }
+    }
+
+    // ---- Benchmark: every preset in turn, hard cut, settle, then measure ----
+
+    class Bench(
+        val entries: List<Playlist.Entry>,
+        val out: java.io.File,
+        val settleMs: Long,
+        val measureMs: Long,
+        val onDone: (Int) -> Unit,
+    )
+
+    @Volatile var bench: Bench? = null
+        private set
+    @Volatile var benchProgress = ""
+        private set
+    private var benchIndex = 0
+    private var benchStart = 0L
+    private var benchFrames = 0
+    private var benchLast = 0L
+    private var benchMax = 0f
+
+    fun startBench(b: Bench) {
+        if (handle == 0L || b.entries.isEmpty()) {
+            b.onDone(0)
+            return
+        }
+        bench = b
+        benchIndex = 0
+        NativeEngine.setPresetLocked(handle, true)
+        NativeEngine.setPresetDuration(handle, 100000.0)
+        NativeEngine.setHardCut(handle, false, 0f)
+        NativeEngine.setFps(handle, 60)
+        benchLoad()
+    }
+
+    fun stopBench() {
+        val b = bench ?: return
+        bench = null
+        stats.save()
+        NativeEngine.setPresetLocked(handle, locked)
+        applySettings()
+        b.onDone(benchIndex)
+    }
+
+    private fun benchLoad() {
+        val b = bench ?: return
+        load(b.entries[benchIndex], smooth = false)
+        benchStart = SystemClock.elapsedRealtime()
+        benchFrames = 0
+        benchLast = 0L
+        benchMax = 0f
+    }
+
+    private fun benchTick() {
+        val b = bench ?: return
+        val now = SystemClock.elapsedRealtime()
+        val elapsed = now - benchStart
+        if (elapsed < b.settleMs) return
+        if (benchLast != 0L) benchMax = maxOf(benchMax, (now - benchLast).toFloat())
+        benchLast = now
+        benchFrames++
+        if (elapsed >= b.settleMs + b.measureMs) {
+            val fps = benchFrames * 1000f / (elapsed - b.settleMs)
+            benchRecord("OK", fps, "")
+        }
+    }
+
+    private fun benchRecord(status: String, fps: Float, message: String) {
+        val b = bench ?: return
+        val e = b.entries[benchIndex]
+        if (status == "OK" && height > 0) stats.record(e.key, height, fps)
+        val line = listOf(e.key, status, "%.1f".format(java.util.Locale.ROOT, fps), "%.0f".format(java.util.Locale.ROOT, benchMax),
+            "$height", message.replace('\t', ' ').replace('\n', ' ')).joinToString("\t")
+        runCatching { b.out.appendText(line + "\n") }
+        benchProgress = "${benchIndex + 1}/${b.entries.size}"
+        Log.i(TAG, "BENCH $benchProgress $status ${"%.0f".format(fps)} ${e.key}")
+        if ((benchIndex + 1) % 50 == 0) stats.save()
+        benchIndex++
+        if (benchIndex >= b.entries.size) stopBench() else benchLoad()
     }
 
     // ---- Commands (GL thread) ----

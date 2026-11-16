@@ -144,6 +144,9 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             ?: intent.getStringExtra("preset_b64")?.let {
                 runCatching { String(android.util.Base64.decode(it, android.util.Base64.DEFAULT), Charsets.UTF_8) }.getOrNull()
             }
+        // Benchmark: --es bench all | <category prefix>   (results: files/bench/bench.tsv, resumable)
+        intent.getStringExtra("bench")?.let { startBench(it) }
+        if (intent.getBooleanExtra("bench_stop", false)) renderer.post { renderer.stopBench() }
         presetKey?.let { key ->
             playlist.all().firstOrNull { it.key == key }?.let { e -> renderer.post { renderer.jumpTo(e) } }
                 ?: Log.w(TAG, "Unknown preset $key")
@@ -577,6 +580,34 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
     }
 
+    private var benchRunning = false
+
+    /**
+     * Loads every preset (matching [filter]) in turn at 720p / 60 FPS max, without touching the
+     * user's settings, and appends one line per preset to files/bench/bench.tsv. Presets already
+     * in the file are skipped, so an interrupted run resumes where it stopped.
+     */
+    private fun startBench(filter: String) {
+        io.execute {
+            val out = java.io.File(filesDir, "bench/bench.tsv").apply { parentFile?.mkdirs() }
+            val done = if (out.exists()) out.readLines().mapTo(HashSet()) { it.substringBefore('\t') } else emptySet()
+            val entries = playlist.all().filter { (filter == "all" || it.key.startsWith(filter)) && it.key !in done }
+            Log.i(TAG, "BENCH start: ${entries.size} presets to measure (${done.size} already done)")
+            ui.post {
+                benchRunning = true
+                titleOverlay.hide()
+                glView.holder.setFixedSize(1280, 720)
+                osd.show("Banc d'essai : ${entries.size} presets", 5000)
+                renderer.post {
+                    renderer.startBench(LacteaRenderer.Bench(entries, out, settleMs = 1000, measureMs = 2000) { n ->
+                        Log.i(TAG, "BENCH done: $n presets")
+                        ui.post { benchRunning = false; applyResolution(); osd.show("Banc d'essai terminé ($n presets)", 8000) }
+                    })
+                }
+            }
+        }
+    }
+
     /** Cover settings changed: texture paths and the cover used inside presets. */
     private fun applyCoverSettings() {
         val paths = texturePaths()
@@ -661,7 +692,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     override fun onPresetChanged(entry: Playlist.Entry, hardCut: Boolean) {
         if (settings.showPresetNameOnChange) ui.post {
-            if (panel == null && titleOverlay.visibility != View.VISIBLE) showPresetLabel(entry)
+            if (panel == null && !benchRunning && titleOverlay.visibility != View.VISIBLE) showPresetLabel(entry)
         }
     }
 
@@ -682,7 +713,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     override fun onTrackChanged(track: NowPlaying.Track) {
         // With "cover preset on each track", the switch happens once the cover is ready.
         if (settings.newPresetOnTrack && !settings.coverPresetOnTrack) renderer.post { renderer.next() }
-        if (settings.showTitleOnTrackChange && panel == null) showTitle(track)
+        if (settings.showTitleOnTrackChange && panel == null && !benchRunning) showTitle(track)
     }
 
     override fun onArtwork(track: NowPlaying.Track, bitmap: Bitmap?, uri: String?) {
@@ -755,6 +786,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                     (if (settings.resolution == 0) " auto" else "") +
                     (if (s.blending) "  fondu" else "") +
                     (if (locked) "  🔒" else "") +
+                    (if (benchRunning) "  banc d'essai ${renderer.benchProgress}" else "") +
                     "\nmoy ${"%.1f".format(s.avgMs)} ms · max ${"%.0f".format(s.maxMs)} ms · audio ${"%.2f".format(audio.level)}"
             }
             if (packs.state !is PackManager.State.Idle) menu?.rebuild()
