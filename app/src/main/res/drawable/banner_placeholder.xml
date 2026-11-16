@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Temporary launcher banner until a logo is chosen. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient
+        android:angle="0"
+        android:startColor="#0B0F2E"
+        android:centerColor="#4B2A8C"
+        android:endColor="#1FB5C9" />
+    <size android:width="320dp" android:height="180dp" />
+</shape>

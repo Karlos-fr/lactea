@@ -1,0 +1,9 @@
+[submodule "third_party/projectm"]
+	path = third_party/projectm
+	url = https://github.com/projectM-visualizer/projectm.git
+[submodule "third_party/presets-cream-of-the-crop"]
+	path = third_party/presets-cream-of-the-crop
+	url = https://github.com/projectM-visualizer/presets-cream-of-the-crop.git
+[submodule "third_party/presets-milkdrop-texture-pack"]
+	path = third_party/presets-milkdrop-texture-pack
+	url = https://github.com/projectM-visualizer/presets-milkdrop-texture-pack.git

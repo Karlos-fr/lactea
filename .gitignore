@@ -1,0 +1,12 @@
+.gradle/
+.kotlin/
+build/
+local.properties
+.cxx/
+*.iml
+.idea/
+captures/
+spike-visualizer/build/
+spike-visualizer/.gradle/
+spike-visualizer/local.properties
+logos/codex-log.txt
