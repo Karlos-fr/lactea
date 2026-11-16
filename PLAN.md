@@ -269,10 +269,56 @@ Tous les réglages sont **sauvegardés** (DataStore) et appliqués aussi en mode
   d'essai), appliquée d'office.
 - Permission `INTERNET` à ajouter. Crédits et note de licence de *Cream of the Crop* repris.
 
-### 3.11 Bonus
-- **Pochette d'album comme texture** dans certains presets (récupérée via MediaSession).
-- **Ajout de presets depuis le PC** : mini serveur web sur la TV (adresse affichée à l'écran),
-  dépôt de fichiers `.milk` depuis le navigateur du PC.
+### 3.11 Pochette d'album (étape 6)
+
+**Constat (16/11/2026, BRAVIA + Spotify)** : la MediaSession de Spotify fournit déjà la pochette —
+image 300×300 (`METADATA_KEY_ALBUM_ART`) et URL du CDN Spotify (`…/image/ab67616d00001e02…`).
+Remplacer `00001e02` par `0000b273` donne a priori la version 640×640 (à vérifier).
+Aucun service en ligne n'est nécessaire pour Spotify.
+
+**Compatibilité des presets** : 226 presets sur 9 795 (≈ 2 %) utilisent une texture aléatoire
+(`sampler_rand00`, `rand01`, `rand02`, `rand00_smalltiled`…). Ce sont ceux où la pochette peut se fondre
+dans le visuel. Pour tous les autres : affichage par-dessus et presets « Lactea » dédiés.
+
+**6.1 — Récupération de la pochette**
+- Ordre : bitmap de la MediaSession → URL de la MediaSession (tentative en 640×640) → service en ligne
+  (option, désactivée par défaut) : **API Deezer** (sans clé, jusqu'à 1000×1000), sinon **iTunes Search
+  API** (sans clé). Envoie titre + artiste au service : option explicite dans les réglages.
+- Cache disque : `filesDir/cover/cover_<hash>.jpg` (nom unique par album, car projectM met les
+  textures en cache par nom) ; on garde les ~20 dernières.
+- Critère : la pochette du morceau en cours est disponible en fichier en < 1 s après le changement.
+
+**6.2 — Pochette affichée avec le titre (tous les presets)**
+- La pochette apparaît à gauche du titre (ou au-dessus en position « centre »), avec un halo de la
+  couleur dominante de l'image, puis s'efface avec le titre.
+- Option : **pulsation sur le rythme** (taille légèrement liée au niveau audio).
+- Critère : visible sur n'importe quel preset, sans baisse de FPS mesurable.
+
+**6.3 — Pochette dans le visuel (presets compatibles)**
+- projectM 4.1.8 n'a pas d'API pour injecter une image ; on ne modifie pas le moteur (LGPL). Méthode :
+  au chargement d'un preset qui utilise `sampler_randNN`, Lactea **réécrit le texte du preset à la volée**
+  (`sampler_randNN` → `sampler_cover_<hash>`, `texsize_randNN` → `texsize_cover_<hash>`) et le charge via
+  `projectm_load_preset_data`. projectM charge alors la pochette comme une texture nommée.
+- Le dossier `cover/` est ajouté aux chemins de textures. **À vérifier** : un fichier ajouté après le
+  scan initial est-il bien chargé ? Sinon `projectm_reset_textures` (petit à-coup, à faire pendant une
+  coupe franche).
+- Option « Presets pochette en priorité » : au changement de morceau, choisir de préférence un preset
+  compatible.
+- Critère : la pochette se voit déformée/fondue dans au moins 9 presets compatibles sur 10.
+
+**6.4 — Presets « Lactea » dédiés à la pochette**
+- 6 à 10 presets maison (`Lactea/…`) écrits pour `sampler_cover` : kaléidoscope, tunnel infini,
+  miroirs, vagues, pochette en feedback qui se dissout, mosaïque pulsée.
+- Embarqués dans l'APK ; signature visuelle de l'appli.
+- Critère : tous tiennent 60 FPS en 720p sur la BRAVIA.
+
+**6.5 — Options (section « Pochette »)**
+- Afficher la pochette avec le titre · pulsation · intégrer dans les presets compatibles · presets
+  pochette en priorité · recherche en ligne si absente (Deezer / iTunes / désactivé).
+
+### 3.12 Ajout de presets depuis le PC
+- Mini serveur web sur la TV (adresse affichée à l'écran), dépôt de fichiers `.milk` depuis le
+  navigateur du PC.
 
 ---
 
@@ -286,7 +332,8 @@ Tous les réglages sont **sauvegardés** (DataStore) et appliqués aussi en mode
 | 3 | ✅ **Titre du morceau** | `NotificationListenerService`, animation titre, pilotage lecture | Titre affiché au changement de morceau |
 | 4 | 🟡 **Économiseur / lancement auto** | `DreamService` ; test avec Spotify ; sinon plan B | Lactea démarre seul quand la musique joue |
 | 5 | ✅ **Panneau d'options & gestion des presets** | Panneau d'options complet dont la configuration des touches, favoris, liste noire, exclusion auto, navigateur, téléchargement de packs depuis GitHub | Préférences et touches personnalisées conservées entre lancements ; un pack s'installe depuis le panneau |
-| 6 | **Bonus** | Pochette en texture, upload depuis le PC | |
+| 6 | **Pochette d'album** (détail : §3.11) | 6.1 récupération (MediaSession, puis Deezer/iTunes en option) · 6.2 pochette avec le titre · 6.3 pochette dans les 226 presets compatibles (réécriture à la volée) · 6.4 presets « Lactea » dédiés · 6.5 options | Pochette visible à chaque morceau ; fondue dans le visuel des presets compatibles |
+| 6 bis | **Ajout de presets depuis le PC** (§3.12) | Mini serveur web sur la TV, dépôt de `.milk` | Un preset déposé depuis le PC apparaît dans le navigateur |
 | 7 | **Finition** | Icône/bannière Lactea, collection de presets complète, tests sur une autre box | APK prête à installer |
 | 8 | **Optimisation des transitions** | 1) Vérifier sur la TV : banc d'essai fondu 2 s vs 3 s (étape 1), et observer dans le journal les coupes franches et changements de résolution en mode Auto une fois les presets mesurés. 2) Pré-remplir les mesures : publier dans le manifest les FPS par preset et par modèle de TV (issus du banc d'essai), pour que le mode Auto soit efficace dès le premier lancement. 3) Réduire le coût du fondu lui-même : piste « rendu en résolution réduite pendant le fondu », à évaluer (risque de saut visible). | Plus de ralentissement visible pendant les transitions sur la BRAVIA |
 
