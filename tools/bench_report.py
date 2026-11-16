@@ -63,6 +63,7 @@ def main() -> int:
             details += [f"- {f[:160]}" for f in sorted(set(fails))]
     report = "\n".join(out + details) + "\n"
     (BENCH / "REPORT.md").write_text(report, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")
     print(report)
     return 0
 

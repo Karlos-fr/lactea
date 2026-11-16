@@ -17,10 +17,13 @@ for r in "${RES[@]}"; do
   "$ADB" -s "$SERIAL" shell am start -n fr.lactea/.VisualizerActivity --ei res "$r" >/dev/null
   sleep 4
   "$ADB" -s "$SERIAL" logcat -c
+  # Stream the log while running: the TV's ring buffer is too small to keep a whole pass.
+  "$ADB" -s "$SERIAL" logcat -s LACTEA:I LACTEA_NATIVE:W > "$OUT/bench-${r}p.log" &
+  LOGPID=$!
   for ((i = 0; i < COUNT; i++)); do
     "$ADB" -s "$SERIAL" shell input keyevent KEYCODE_DPAD_RIGHT
     sleep "$PER"
   done
-  "$ADB" -s "$SERIAL" logcat -d -s LACTEA:I LACTEA_NATIVE:W > "$OUT/bench-${r}p.log"
+  kill "$LOGPID" 2>/dev/null
 done
 echo "done"

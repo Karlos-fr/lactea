@@ -30,6 +30,35 @@ appli qui joue du son via Android.
 - Entrées HDMI et tuner TV → probablement non captés.
 - Signal 8 bits, et le mode `SCALING_MODE_NORMALIZED` sature souvent (peak = 127) → à ajuster.
 
+### Étape 1 — résultats (16/11/2026)
+
+projectM 4.1.8 tourne sur la BRAVIA : GPU **Mali-G57**, OpenGL ES 3.2, écran physique 3840×2160 @ 60 Hz.
+Banc d'essai : `tools/bench.sh` → [docs/bench/REPORT.md](docs/bench/REPORT.md).
+
+| Rendu | FPS médian | Presets ≥ 55 FPS | Presets < 30 FPS |
+|---|---|---|---|
+| 720p | **59** | 15 / 23 | 4 |
+| 1080p | 38 | 6 / 25 | 8 |
+| 1440p | 24 | 0 / 24 | 19 |
+| 2160p (4K) | 11 | 0 / 25 | 25 |
+
+- **4K** : la surface 3840×2160 est bien créée, mais la puce de cette TV ne suit pas (≈ 11 FPS).
+  Le réglage 4K reste proposé pour des box plus puissantes. Affichage 4K « natif » toujours non vérifié.
+- **Défaut conseillé sur la BRAVIA** : 720p (fluide), 1080p pour les presets légers.
+- **Transitions** : pendant les 3 s du fondu, les FPS sont **divisés par deux** à toutes les
+  résolutions (ex. 1080p : 17 FPS pendant le fondu → 37–44 après). Cause : projectM calcule les deux
+  presets en même temps. Le chargement du preset lui-même n'est pas en cause.
+- Quelques presets sont très lourds partout (≈ 4 FPS) → à exclure automatiquement.
+- Limites de la mesure : 5 s par preset (juste après le fondu), ≈ 25 presets sur 60 enregistrés par
+  résolution (journal de la TV trop petit — corrigé dans `bench.sh`).
+
+**Pistes pour les transitions (étape 2) :**
+- Durée du fondu réglable (plus court = moins de temps ralenti).
+- Mode **Auto** : fondu entre presets légers, **coupe franche** si l'un des deux est lourd
+  (FPS mesurés).
+- **Résolution par preset** : au moment d'une coupe franche, choisir la résolution selon le poids du
+  preset (1080p pour les légers, 720p pour les lourds) — le changement est invisible pendant la coupe.
+
 ---
 
 ## 2. Architecture
@@ -206,7 +235,7 @@ Tous les réglages sont **sauvegardés** (DataStore) et appliqués aussi en mode
 | # | Étape | Contenu | Critère de réussite |
 |---|---|---|---|
 | 0 | ✅ Test capture | `spike-visualizer/` | Signal Spotify capté, pause = 0 |
-| 1 | **projectM sur la TV** | Projet `fr.lactea`, build NDK de libprojectM, JNI, `GLSurfaceView`, capture audio branchée, ~50 presets, compteur FPS, résolution de rendu réglable | Presets qui réagissent à Spotify, FPS mesurés en 720p / 1080p / 4K, affichage 4K réel confirmé ou non |
+| 1 | ✅ **projectM sur la TV** | Projet `fr.lactea`, build NDK de libprojectM, JNI, `GLSurfaceView`, capture audio branchée, ~50 presets, compteur FPS, résolution de rendu réglable | Presets qui réagissent à Spotify, FPS mesurés en 720p / 1080p / 4K, affichage 4K réel confirmé ou non |
 | 2 | **Télécommande & transitions** | Mapping des touches, transitions auto + fondus + coupes franches, écran d'aide | Tous les raccourcis fonctionnels |
 | 3 | **Titre du morceau** | `NotificationListenerService`, animation titre, pilotage lecture | Titre affiché au changement de morceau |
 | 4 | **Économiseur / lancement auto** | `DreamService` ; test avec Spotify ; sinon plan B | Lactea démarre seul quand la musique joue |

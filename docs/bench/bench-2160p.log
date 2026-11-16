@@ -1,0 +1,129 @@
+--------- beginning of main
+11-16 17:31:21.653 21835 21857 I LACTEA  : FPS fps=10 avgMs=113,4 maxMs=220 res=3840x2160 audio=0,33 preset="Reaction/blood red raw holy - self-directed devolute"
+11-16 17:31:22.583 21835 21857 I LACTEA  : PRESET 39/60 Reaction/NeW Adam Master Mashup FX 2 Geiss - Reaction Diffusion 34 + Swelling Spiral  + Liquid Fire  + Geiss an70
+11-16 17:31:23.611 21835 21857 I LACTEA  : FPS fps=7 avgMs=158,7 maxMs=245 res=3840x2160 audio=0,47 preset="Reaction/NeW Adam Master Mashup FX 2 Geiss - Reaction Diffusion 34 + Swelling Spiral  + Liquid Fire  + Geiss an70"
+11-16 17:31:24.751 21835 21857 I LACTEA  : FPS fps=7 avgMs=163,1 maxMs=149 res=3840x2160 audio=0,52 preset="Reaction/NeW Adam Master Mashup FX 2 Geiss - Reaction Diffusion 34 + Swelling Spiral  + Liquid Fire  + Geiss an70"
+11-16 17:31:25.798 21835 21857 I LACTEA  : FPS fps=9 avgMs=130,9 maxMs=147 res=3840x2160 audio=0,47 preset="Reaction/NeW Adam Master Mashup FX 2 Geiss - Reaction Diffusion 34 + Swelling Spiral  + Liquid Fire  + Geiss an70"
+11-16 17:31:26.812 21835 21857 I LACTEA  : FPS fps=15 avgMs=72,4 maxMs=83 res=3840x2160 audio=0,38 preset="Reaction/NeW Adam Master Mashup FX 2 Geiss - Reaction Diffusion 34 + Swelling Spiral  + Liquid Fire  + Geiss an70"
+11-16 17:31:27.758 21835 21857 I LACTEA  : PRESET 40/60 Drawing/repressed americans - more martin movement4 - bizzare japanese electrogasm yummy bubble gum m
+11-16 17:31:28.814 21835 21857 I LACTEA  : FPS fps=3 avgMs=374,5 maxMs=375 res=3840x2160 audio=0,46 preset="Drawing/repressed americans - more martin movement4 - bizzare japanese electrogasm yummy bubble gum m"
+11-16 17:31:29.919 21835 21857 I LACTEA  : FPS fps=3 avgMs=552,5 maxMs=380 res=3840x2160 audio=0,49 preset="Drawing/repressed americans - more martin movement4 - bizzare japanese electrogasm yummy bubble gum m"
+11-16 17:31:31.050 21835 21857 I LACTEA  : FPS fps=3 avgMs=565,5 maxMs=386 res=3840x2160 audio=0,45 preset="Drawing/repressed americans - more martin movement4 - bizzare japanese electrogasm yummy bubble gum m"
+11-16 17:31:32.067 21835 21857 I LACTEA  : FPS fps=3 avgMs=508,5 maxMs=398 res=3840x2160 audio=0,39 preset="Drawing/repressed americans - more martin movement4 - bizzare japanese electrogasm yummy bubble gum m"
+11-16 17:31:32.952 21835 21857 I LACTEA  : PRESET 41/60 Hypnotic/TonyMilkdrop - Tricolors _Flexi - fwiw + alien complex_ --- Isosceles edit
+11-16 17:31:34.155 21835 21857 I LACTEA  : FPS fps=2 avgMs=478,5 maxMs=653 res=3840x2160 audio=0,48 preset="Hypnotic/TonyMilkdrop - Tricolors _Flexi - fwiw + alien complex_ --- Isosceles edit"
+11-16 17:31:35.401 21835 21857 I LACTEA  : FPS fps=3 avgMs=415,0 maxMs=328 res=3840x2160 audio=0,56 preset="Hypnotic/TonyMilkdrop - Tricolors _Flexi - fwiw + alien complex_ --- Isosceles edit"
+11-16 17:31:36.485 21835 21857 I LACTEA  : FPS fps=6 avgMs=217,0 maxMs=337 res=3840x2160 audio=0,36 preset="Hypnotic/TonyMilkdrop - Tricolors _Flexi - fwiw + alien complex_ --- Isosceles edit"
+11-16 17:31:37.562 21835 21857 I LACTEA  : FPS fps=10 avgMs=107,6 maxMs=123 res=3840x2160 audio=0,61 preset="Hypnotic/TonyMilkdrop - Tricolors _Flexi - fwiw + alien complex_ --- Isosceles edit"
+11-16 17:31:38.169 21835 21857 I LACTEA  : PRESET 42/60 Waveform/ Royal - Mashup (35)
+11-16 17:31:39.309 21835 21857 I LACTEA  : FPS fps=6 avgMs=178,3 maxMs=237 res=3840x2160 audio=0,47 preset="Waveform/ Royal - Mashup (35)"
+11-16 17:31:40.433 21835 21857 I LACTEA  : FPS fps=6 avgMs=187,3 maxMs=167 res=3840x2160 audio=0,38 preset="Waveform/ Royal - Mashup (35)"
+11-16 17:31:41.489 21835 21857 I LACTEA  : FPS fps=8 avgMs=150,6 maxMs=164 res=3840x2160 audio=0,44 preset="Waveform/ Royal - Mashup (35)"
+11-16 17:31:42.543 21835 21857 I LACTEA  : FPS fps=11 avgMs=96,0 maxMs=101 res=3840x2160 audio=0,33 preset="Waveform/ Royal - Mashup (35)"
+11-16 17:31:43.262 21835 21857 I LACTEA  : PRESET 43/60 Fractal/beta106S - Phat - randombox - mantra 4
+11-16 17:31:44.365 21835 21857 I LACTEA  : FPS fps=6 avgMs=165,3 maxMs=204 res=3840x2160 audio=0,42 preset="Fractal/beta106S - Phat - randombox - mantra 4"
+11-16 17:31:45.498 21835 21857 I LACTEA  : FPS fps=5 avgMs=226,6 maxMs=207 res=3840x2160 audio=0,43 preset="Fractal/beta106S - Phat - randombox - mantra 4"
+11-16 17:31:46.543 21835 21857 I LACTEA  : FPS fps=6 avgMs=209,0 maxMs=201 res=3840x2160 audio=0,52 preset="Fractal/beta106S - Phat - randombox - mantra 4"
+11-16 17:31:47.601 21835 21857 I LACTEA  : FPS fps=9 avgMs=132,3 maxMs=132 res=3840x2160 audio=0,49 preset="Fractal/beta106S - Phat - randombox - mantra 4"
+11-16 17:31:48.613 21835 21857 I LACTEA  : PRESET 44/60 Geometric/Serge circles006
+11-16 17:31:49.824 21835 21857 I LACTEA  : FPS fps=4 avgMs=283,5 maxMs=359 res=3840x2160 audio=0,33 preset="Geometric/Serge circles006"
+11-16 17:31:50.921 21835 21857 I LACTEA  : FPS fps=4 avgMs=365,7 maxMs=276 res=3840x2160 audio=0,45 preset="Geometric/Serge circles006"
+11-16 17:31:52.051 21835 21857 I LACTEA  : FPS fps=4 avgMs=282,5 maxMs=295 res=3840x2160 audio=0,45 preset="Geometric/Serge circles006"
+11-16 17:31:53.217 21835 21857 I LACTEA  : FPS fps=5 avgMs=233,2 maxMs=213 res=3840x2160 audio=0,46 preset="Geometric/Serge circles006"
+11-16 17:31:53.796 21835 21857 I LACTEA  : PRESET 45/60 Particles/suksma - flukerication machinist
+11-16 17:31:54.883 21835 21857 I LACTEA  : FPS fps=4 avgMs=308,0 maxMs=406 res=3840x2160 audio=0,34 preset="Particles/suksma - flukerication machinist"
+11-16 17:31:56.132 21835 21857 I LACTEA  : FPS fps=2 avgMs=624,5 maxMs=420 res=3840x2160 audio=0,43 preset="Particles/suksma - flukerication machinist"
+11-16 17:31:57.222 21835 21857 I LACTEA  : FPS fps=3 avgMs=545,0 maxMs=418 res=3840x2160 audio=0,51 preset="Particles/suksma - flukerication machinist"
+11-16 17:31:58.271 21835 21857 I LACTEA  : FPS fps=14 avgMs=74,9 maxMs=103 res=3840x2160 audio=0,44 preset="Particles/suksma - flukerication machinist"
+11-16 17:31:59.009 21835 21857 I LACTEA  : PRESET 46/60 Sparkle/ougiel - poison communitae
+11-16 17:32:00.010 21835 21857 I LACTEA  : FPS fps=8 avgMs=131,7 maxMs=155 res=3840x2160 audio=0,43 preset="Sparkle/ougiel - poison communitae"
+11-16 17:32:01.054 21835 21857 I LACTEA  : FPS fps=8 avgMs=149,0 maxMs=138 res=3840x2160 audio=0,41 preset="Sparkle/ougiel - poison communitae"
+11-16 17:32:02.086 21835 21857 I LACTEA  : FPS fps=8 avgMs=147,3 maxMs=149 res=3840x2160 audio=0,43 preset="Sparkle/ougiel - poison communitae"
+11-16 17:32:03.157 21835 21857 I LACTEA  : FPS fps=12 avgMs=89,4 maxMs=109 res=3840x2160 audio=0,39 preset="Sparkle/ougiel - poison communitae"
+11-16 17:32:04.185 21835 21857 I LACTEA  : FPS fps=12 avgMs=93,4 maxMs=107 res=3840x2160 audio=0,39 preset="Sparkle/ougiel - poison communitae"
+11-16 17:32:04.300 21835 21857 I LACTEA  : PRESET 47/60 Drawing/signed _nuph phoaqing death warrants mate wew an_ good devvo dub bun ewe
+11-16 17:32:05.360 21835 21857 I LACTEA  : FPS fps=6 avgMs=198,4 maxMs=249 res=3840x2160 audio=0,37 preset="Drawing/signed _nuph phoaqing death warrants mate wew an_ good devvo dub bun ewe"
+11-16 17:32:06.423 21835 21857 I LACTEA  : FPS fps=5 avgMs=265,8 maxMs=240 res=3840x2160 audio=0,35 preset="Drawing/signed _nuph phoaqing death warrants mate wew an_ good devvo dub bun ewe"
+11-16 17:32:07.560 21835 21857 I LACTEA  : FPS fps=5 avgMs=227,4 maxMs=230 res=3840x2160 audio=0,47 preset="Drawing/signed _nuph phoaqing death warrants mate wew an_ good devvo dub bun ewe"
+11-16 17:32:08.594 21835 21857 I LACTEA  : FPS fps=7 avgMs=172,3 maxMs=155 res=3840x2160 audio=0,50 preset="Drawing/signed _nuph phoaqing death warrants mate wew an_ good devvo dub bun ewe"
+11-16 17:32:09.476 21835 21857 I LACTEA  : PRESET 48/60 Supernova/Waltra - Heaven
+11-16 17:32:10.689 21835 21857 I LACTEA  : FPS fps=7 avgMs=160,6 maxMs=236 res=3840x2160 audio=0,51 preset="Supernova/Waltra - Heaven"
+11-16 17:32:11.823 21835 21857 I LACTEA  : FPS fps=5 avgMs=227,0 maxMs=248 res=3840x2160 audio=0,43 preset="Supernova/Waltra - Heaven"
+11-16 17:32:12.850 21835 21857 I LACTEA  : FPS fps=7 avgMs=171,2 maxMs=240 res=3840x2160 audio=0,42 preset="Supernova/Waltra - Heaven"
+11-16 17:32:13.903 21835 21857 I LACTEA  : FPS fps=9 avgMs=131,5 maxMs=144 res=3840x2160 audio=0,46 preset="Supernova/Waltra - Heaven"
+11-16 17:32:14.799 21835 21857 I LACTEA  : PRESET 49/60 Supernova/suksma - compelled me to mash, the bastard
+11-16 17:32:15.818 21835 21857 I LACTEA  : FPS fps=5 avgMs=234,0 maxMs=381 res=3840x2160 audio=0,42 preset="Supernova/suksma - compelled me to mash, the bastard"
+11-16 17:32:16.894 21835 21857 I LACTEA  : FPS fps=4 avgMs=358,7 maxMs=287 res=3840x2160 audio=0,48 preset="Supernova/suksma - compelled me to mash, the bastard"
+11-16 17:32:17.989 21835 21857 I LACTEA  : FPS fps=5 avgMs=273,8 maxMs=224 res=3840x2160 audio=0,47 preset="Supernova/suksma - compelled me to mash, the bastard"
+11-16 17:32:19.030 21835 21857 I LACTEA  : FPS fps=12 avgMs=94,6 maxMs=206 res=3840x2160 audio=0,38 preset="Supernova/suksma - compelled me to mash, the bastard"
+11-16 17:32:20.003 21835 21857 I LACTEA  : PRESET 50/60 Hypnotic/flexi - grind my glitch up _316_
+11-16 17:32:21.098 21835 21857 I LACTEA  : FPS fps=4 avgMs=341,0 maxMs=367 res=3840x2160 audio=0,51 preset="Hypnotic/flexi - grind my glitch up _316_"
+11-16 17:32:22.370 21835 21857 I LACTEA  : FPS fps=3 avgMs=424,0 maxMs=321 res=3840x2160 audio=0,45 preset="Hypnotic/flexi - grind my glitch up _316_"
+11-16 17:32:23.646 21835 21857 I LACTEA  : FPS fps=4 avgMs=319,0 maxMs=328 res=3840x2160 audio=0,39 preset="Hypnotic/flexi - grind my glitch up _316_"
+11-16 17:32:24.773 21835 21857 I LACTEA  : FPS fps=4 avgMs=375,7 maxMs=288 res=3840x2160 audio=0,52 preset="Hypnotic/flexi - grind my glitch up _316_"
+11-16 17:32:25.403 21835 21857 I LACTEA  : PRESET 51/60 Sparkle/Stahlregen + Amandio C - Rototranslate difference layers 2 + on dotes2 - flacc(2)
+11-16 17:32:26.729 21835 21857 I LACTEA  : FPS fps=3 avgMs=365,3 maxMs=383 res=3840x2160 audio=0,33 preset="Sparkle/Stahlregen + Amandio C - Rototranslate difference layers 2 + on dotes2 - flacc(2)"
+11-16 17:32:27.862 21835 21857 I LACTEA  : FPS fps=3 avgMs=566,5 maxMs=396 res=3840x2160 audio=0,58 preset="Sparkle/Stahlregen + Amandio C - Rototranslate difference layers 2 + on dotes2 - flacc(2)"
+11-16 17:32:28.948 21835 21857 I LACTEA  : FPS fps=4 avgMs=361,7 maxMs=361 res=3840x2160 audio=0,57 preset="Sparkle/Stahlregen + Amandio C - Rototranslate difference layers 2 + on dotes2 - flacc(2)"
+11-16 17:32:30.041 21835 21857 I LACTEA  : FPS fps=9 avgMs=121,4 maxMs=133 res=3840x2160 audio=0,50 preset="Sparkle/Stahlregen + Amandio C - Rototranslate difference layers 2 + on dotes2 - flacc(2)"
+11-16 17:32:30.471 21835 21857 I LACTEA  : PRESET 52/60 Waveform/shifter + Aderrasi - Airhandler (Sadako)
+11-16 17:32:31.513 21835 21857 I LACTEA  : FPS fps=5 avgMs=237,5 maxMs=334 res=3840x2160 audio=0,41 preset="Waveform/shifter + Aderrasi - Airhandler (Sadako)"
+11-16 17:32:32.730 21835 21857 I LACTEA  : FPS fps=3 avgMs=405,7 maxMs=337 res=3840x2160 audio=0,49 preset="Waveform/shifter + Aderrasi - Airhandler (Sadako)"
+11-16 17:32:33.951 21835 21857 I LACTEA  : FPS fps=4 avgMs=305,3 maxMs=323 res=3840x2160 audio=0,44 preset="Waveform/shifter + Aderrasi - Airhandler (Sadako)"
+11-16 17:32:34.970 21835 21857 I LACTEA  : FPS fps=9 avgMs=127,3 maxMs=126 res=3840x2160 audio=0,48 preset="Waveform/shifter + Aderrasi - Airhandler (Sadako)"
+11-16 17:32:35.620 21835 21857 I LACTEA  : PRESET 53/60 Waveform/LuxXx - ShakeGen I
+11-16 17:32:36.710 21835 21857 I LACTEA  : FPS fps=7 avgMs=144,0 maxMs=187 res=3840x2160 audio=0,41 preset="Waveform/LuxXx - ShakeGen I"
+11-16 17:32:37.785 21835 21857 I LACTEA  : FPS fps=7 avgMs=154,0 maxMs=146 res=3840x2160 audio=0,46 preset="Waveform/LuxXx - ShakeGen I"
+11-16 17:32:38.845 21835 21857 I LACTEA  : FPS fps=8 avgMs=151,4 maxMs=164 res=3840x2160 audio=0,41 preset="Waveform/LuxXx - ShakeGen I"
+11-16 17:32:39.880 21835 21857 I LACTEA  : FPS fps=14 avgMs=73,9 maxMs=95 res=3840x2160 audio=0,30 preset="Waveform/LuxXx - ShakeGen I"
+11-16 17:32:40.950 21835 21857 I LACTEA  : PRESET 54/60 Hypnotic/flexi - grind my glitch up _139_
+11-16 17:32:42.296 21835 21857 I LACTEA  : FPS fps=3 avgMs=420,7 maxMs=471 res=3840x2160 audio=0,37 preset="Hypnotic/flexi - grind my glitch up _139_"
+11-16 17:32:43.470 21835 21857 I LACTEA  : FPS fps=3 avgMs=586,5 maxMs=408 res=3840x2160 audio=0,44 preset="Hypnotic/flexi - grind my glitch up _139_"
+11-16 17:32:44.630 21835 21857 I LACTEA  : FPS fps=3 avgMs=387,0 maxMs=384 res=3840x2160 audio=0,37 preset="Hypnotic/flexi - grind my glitch up _139_"
+11-16 17:32:45.750 21835 21857 I LACTEA  : FPS fps=5 avgMs=224,0 maxMs=194 res=3840x2160 audio=0,48 preset="Hypnotic/flexi - grind my glitch up _139_"
+11-16 17:32:46.169 21835 21857 I LACTEA  : PRESET 55/60 Waveform/suksma - demonizer - a shot
+11-16 17:32:47.279 21835 21857 I LACTEA  : FPS fps=4 avgMs=323,0 maxMs=347 res=3840x2160 audio=0,45 preset="Waveform/suksma - demonizer - a shot"
+11-16 17:32:48.305 21835 21857 I LACTEA  : FPS fps=3 avgMs=512,0 maxMs=379 res=3840x2160 audio=0,49 preset="Waveform/suksma - demonizer - a shot"
+11-16 17:32:49.504 21835 21857 I LACTEA  : FPS fps=4 avgMs=300,3 maxMs=299 res=3840x2160 audio=0,37 preset="Waveform/suksma - demonizer - a shot"
+11-16 17:32:50.522 21835 21857 I LACTEA  : FPS fps=12 avgMs=92,5 maxMs=111 res=3840x2160 audio=0,51 preset="Waveform/suksma - demonizer - a shot"
+11-16 17:32:51.486 21835 21857 I LACTEA  : PRESET 56/60 Particles/martin - pixies party d-strux wille
+11-16 17:32:52.517 21835 21857 I LACTEA  : FPS fps=3 avgMs=404,5 maxMs=522 res=3840x2160 audio=0,45 preset="Particles/martin - pixies party d-strux wille"
+11-16 17:32:53.580 21835 21857 I LACTEA  : FPS fps=2 avgMs=1063,0 maxMs=546 res=3840x2160 audio=0,45 preset="Particles/martin - pixies party d-strux wille"
+11-16 17:32:54.710 21835 21857 I LACTEA  : FPS fps=3 avgMs=565,0 maxMs=486 res=3840x2160 audio=0,51 preset="Particles/martin - pixies party d-strux wille"
+11-16 17:32:55.881 21835 21857 I LACTEA  : FPS fps=3 avgMs=585,5 maxMs=440 res=3840x2160 audio=0,51 preset="Particles/martin - pixies party d-strux wille"
+11-16 17:32:56.530 21835 21857 I LACTEA  : PRESET 57/60 Dancer/carved in skin nz
+11-16 17:32:57.838 21835 21857 I LACTEA  : FPS fps=3 avgMs=361,0 maxMs=415 res=3840x2160 audio=0,41 preset="Dancer/carved in skin nz"
+11-16 17:32:59.110 21835 21857 I LACTEA  : FPS fps=2 avgMs=637,0 maxMs=436 res=3840x2160 audio=0,35 preset="Dancer/carved in skin nz"
+11-16 17:33:00.201 21835 21857 I LACTEA  : FPS fps=5 avgMs=218,2 maxMs=371 res=3840x2160 audio=0,38 preset="Dancer/carved in skin nz"
+11-16 17:33:01.265 21835 21857 I LACTEA  : FPS fps=11 avgMs=96,7 maxMs=118 res=3840x2160 audio=0,40 preset="Dancer/carved in skin nz"
+11-16 17:33:01.811 21835 21857 I LACTEA  : PRESET 58/60 Fractal/suksma - camden defib lancaster tucker_s neck
+11-16 17:33:02.813 21835 21857 I LACTEA  : FPS fps=5 avgMs=238,8 maxMs=416 res=3840x2160 audio=0,45 preset="Fractal/suksma - camden defib lancaster tucker_s neck"
+11-16 17:33:04.271 21835 21857 I LACTEA  : FPS fps=3 avgMs=485,7 maxMs=463 res=3840x2160 audio=0,56 preset="Fractal/suksma - camden defib lancaster tucker_s neck"
+11-16 17:33:05.295 21835 21857 I LACTEA  : FPS fps=5 avgMs=256,0 maxMs=393 res=3840x2160 audio=0,48 preset="Fractal/suksma - camden defib lancaster tucker_s neck"
+11-16 17:33:06.356 21835 21857 I LACTEA  : FPS fps=14 avgMs=75,9 maxMs=105 res=3840x2160 audio=0,45 preset="Fractal/suksma - camden defib lancaster tucker_s neck"
+11-16 17:33:06.938 21835 21857 I LACTEA  : PRESET 59/60 Sparkle/suksma - flexi - fractrip (bccn Jelly V4) - mer de noms thomas2 xfr+
+11-16 17:33:08.164 21835 21857 I LACTEA  : FPS fps=4 avgMs=302,0 maxMs=316 res=3840x2160 audio=0,33 preset="Sparkle/suksma - flexi - fractrip (bccn Jelly V4) - mer de noms thomas2 xfr+"
+11-16 17:33:09.300 21835 21857 I LACTEA  : FPS fps=4 avgMs=378,7 maxMs=307 res=3840x2160 audio=0,44 preset="Sparkle/suksma - flexi - fractrip (bccn Jelly V4) - mer de noms thomas2 xfr+"
+11-16 17:33:10.402 21835 21857 I LACTEA  : FPS fps=5 avgMs=275,5 maxMs=279 res=3840x2160 audio=0,46 preset="Sparkle/suksma - flexi - fractrip (bccn Jelly V4) - mer de noms thomas2 xfr+"
+11-16 17:33:11.454 21835 21857 I LACTEA  : FPS fps=14 avgMs=75,1 maxMs=97 res=3840x2160 audio=0,39 preset="Sparkle/suksma - flexi - fractrip (bccn Jelly V4) - mer de noms thomas2 xfr+"
+11-16 17:33:12.205 21835 21857 I LACTEA  : PRESET 60/60 Geometric/suksma - darker nets of validation - log smell
+11-16 17:33:13.262 21835 21857 I LACTEA  : FPS fps=8 avgMs=141,1 maxMs=193 res=3840x2160 audio=0,52 preset="Geometric/suksma - darker nets of validation - log smell"
+11-16 17:33:14.355 21835 21857 I LACTEA  : FPS fps=7 avgMs=156,3 maxMs=161 res=3840x2160 audio=0,53 preset="Geometric/suksma - darker nets of validation - log smell"
+11-16 17:33:15.406 21835 21857 I LACTEA  : FPS fps=9 avgMs=131,4 maxMs=132 res=3840x2160 audio=0,48 preset="Geometric/suksma - darker nets of validation - log smell"
+11-16 17:33:16.449 21835 21857 I LACTEA  : FPS fps=11 avgMs=104,3 maxMs=112 res=3840x2160 audio=0,44 preset="Geometric/suksma - darker nets of validation - log smell"
+11-16 17:33:17.562 21835 21857 I LACTEA  : PRESET 1/60 Hypnotic/suksma - water + god roam3
+11-16 17:33:18.703 21835 21857 I LACTEA  : FPS fps=6 avgMs=186,8 maxMs=213 res=3840x2160 audio=0,47 preset="Hypnotic/suksma - water + god roam3"
+11-16 17:33:19.744 21835 21857 I LACTEA  : FPS fps=5 avgMs=260,3 maxMs=231 res=3840x2160 audio=0,43 preset="Hypnotic/suksma - water + god roam3"
+11-16 17:33:20.783 21835 21857 I LACTEA  : FPS fps=7 avgMs=173,0 maxMs=178 res=3840x2160 audio=0,45 preset="Hypnotic/suksma - water + god roam3"
+11-16 17:33:21.822 21835 21857 I LACTEA  : FPS fps=18 avgMs=57,8 maxMs=100 res=3840x2160 audio=0,57 preset="Hypnotic/suksma - water + god roam3"
+11-16 17:33:22.705 21835 21857 I LACTEA  : PRESET 2/60 Particles/Waltra - Fractal Inferno
+11-16 17:33:23.808 21835 21857 I LACTEA  : FPS fps=9 avgMs=120,3 maxMs=160 res=3840x2160 audio=0,46 preset="Particles/Waltra - Fractal Inferno"
+11-16 17:33:24.825 21835 21857 I LACTEA  : FPS fps=9 avgMs=127,3 maxMs=140 res=3840x2160 audio=0,52 preset="Particles/Waltra - Fractal Inferno"
+11-16 17:33:25.916 21835 21857 I LACTEA  : FPS fps=10 avgMs=109,1 maxMs=112 res=3840x2160 audio=0,55 preset="Particles/Waltra - Fractal Inferno"
+11-16 17:33:26.942 21835 21857 I LACTEA  : FPS fps=12 avgMs=93,3 maxMs=111 res=3840x2160 audio=0,44 preset="Particles/Waltra - Fractal Inferno"
+11-16 17:33:27.926 21835 21857 I LACTEA  : PRESET 3/60 Fractal/va ultramix2 - 361_1
+11-16 17:33:29.047 21835 21857 I LACTEA  : FPS fps=7 avgMs=153,7 maxMs=175 res=3840x2160 audio=0,48 preset="Fractal/va ultramix2 - 361_1"
+11-16 17:33:30.153 21835 21857 I LACTEA  : FPS fps=5 avgMs=221,2 maxMs=218 res=3840x2160 audio=0,56 preset="Fractal/va ultramix2 - 361_1"
+11-16 17:33:31.181 21835 21857 I LACTEA  : FPS fps=8 avgMs=146,9 maxMs=146 res=3840x2160 audio=0,43 preset="Fractal/va ultramix2 - 361_1"
+11-16 17:33:32.214 21835 21857 I LACTEA  : FPS fps=16 avgMs=64,6 maxMs=75 res=3840x2160 audio=0,42 preset="Fractal/va ultramix2 - 361_1"
+11-16 17:33:33.221 21835 21857 I LACTEA  : FPS fps=16 avgMs=67,1 maxMs=74 res=3840x2160 audio=0,42 preset="Fractal/va ultramix2 - 361_1"
