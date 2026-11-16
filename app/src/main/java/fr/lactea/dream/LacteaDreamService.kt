@@ -119,7 +119,7 @@ class LacteaDreamService : DreamService(), LacteaRenderer.Listener, NowPlaying.L
 
     // Now playing (main thread)
     override fun onTrackChanged(track: NowPlaying.Track) {
-        if (settings.newPresetOnTrack) glView.queueEvent { renderer.next() }
+        if (settings.newPresetOnTrack) renderer.post { renderer.next() }
         if (settings.showTitleOnTrackChange) {
             val cover = covers.current?.takeIf { settings.coverWithTitle && it.trackKey == track.key }
             titleOverlay.pulse = settings.coverPulse

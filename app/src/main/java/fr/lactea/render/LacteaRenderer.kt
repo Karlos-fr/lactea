@@ -96,8 +96,20 @@ class LacteaRenderer(
         resetMeasure(SystemClock.elapsedRealtime())
     }
 
+    /**
+     * Runs [action] on the GL thread at the next frame. Unlike GLSurfaceView.queueEvent, the GL
+     * context is then guaranteed to be current: queued events can run while the view is paused,
+     * without a context, which made presets fail to compile ("Error compiling shader", id 0).
+     */
+    fun post(action: () -> Unit) {
+        pending.add(action)
+    }
+
+    private val pending = java.util.concurrent.ConcurrentLinkedQueue<() -> Unit>()
+
     override fun onDrawFrame(gl: GL10?) {
         if (handle == 0L) return
+        while (true) (pending.poll() ?: break).invoke()
         limitFps()
         audio.drain { NativeEngine.addPcmU8(handle, it) }
 

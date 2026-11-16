@@ -139,8 +139,13 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         applyIntent(intent)
         applyResolution()
         // Dev/test: am start -n fr.lactea/.VisualizerActivity --es preset "Category/name"
-        intent.getStringExtra("preset")?.let { key ->
-            playlist.all().firstOrNull { it.key == key }?.let { e -> glView.queueEvent { renderer.jumpTo(e) } }
+        //       or --es preset_b64 <base64 of the key> (names with quotes, parentheses…)
+        val presetKey = intent.getStringExtra("preset")
+            ?: intent.getStringExtra("preset_b64")?.let {
+                runCatching { String(android.util.Base64.decode(it, android.util.Base64.DEFAULT), Charsets.UTF_8) }.getOrNull()
+            }
+        presetKey?.let { key ->
+            playlist.all().firstOrNull { it.key == key }?.let { e -> renderer.post { renderer.jumpTo(e) } }
                 ?: Log.w(TAG, "Unknown preset $key")
         }
     }
@@ -231,12 +236,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private fun onAction(a: Action) {
         Log.i(TAG, "ACTION $a")
         when (a) {
-            Action.NEXT_PRESET -> glView.queueEvent { renderer.next() }
-            Action.PREVIOUS_PRESET -> glView.queueEvent { renderer.previous() }
+            Action.NEXT_PRESET -> renderer.post { renderer.next() }
+            Action.PREVIOUS_PRESET -> renderer.post { renderer.previous() }
             Action.TOGGLE_LOCK -> {
                 locked = !locked
                 val l = locked
-                glView.queueEvent { renderer.setLocked(l) }
+                renderer.post { renderer.setLocked(l) }
                 osd.show(if (l) "🔒 Preset verrouillé" else "🔓 Preset déverrouillé")
             }
             Action.TOGGLE_SHUFFLE -> {
@@ -250,7 +255,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             Action.TOGGLE_BLACKLIST -> playlist.current()?.let {
                 val added = settings.toggleBlacklist(it.key)
                 osd.show(if (added) "✕ Preset exclu\n${it.name}" else "Preset réintégré\n${it.name}")
-                if (added) glView.queueEvent { renderer.next() }
+                if (added) renderer.post { renderer.next() }
             }
             Action.SHOW_TITLE -> {
                 val t = nowPlaying.track
@@ -301,7 +306,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     private fun openBrowser() {
         openPanel(BrowserPanel(this, settings, stats, playlist,
-            onPlay = { e -> glView.queueEvent { renderer.jumpTo(e) }; closePanel() },
+            onPlay = { e -> renderer.post { renderer.jumpTo(e) }; closePanel() },
             onClose = ::closePanel), Gravity.START or Gravity.CENTER_VERTICAL, 0.62f)
     }
 
@@ -547,7 +552,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             val entries = library.scan(packs.presetRoots())
             playlist.setLibrary(entries)
             val paths = texturePaths()
-            glView.queueEvent { renderer.updateTexturePaths(paths) }
+            renderer.post { renderer.updateTexturePaths(paths) }
             Log.i(TAG, "Library reloaded: ${entries.size} presets")
             indexCoverPresets()
             ui.post {
@@ -576,7 +581,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private fun applyCoverSettings() {
         val paths = texturePaths()
         val texture = if (settings.coverInPresets) covers.current?.textureName else null
-        glView.queueEvent { renderer.updateTexturePaths(paths) }
+        renderer.post { renderer.updateTexturePaths(paths) }
         renderer.coverTexture = texture
     }
 
@@ -676,7 +681,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     override fun onTrackChanged(track: NowPlaying.Track) {
         // With "cover preset on each track", the switch happens once the cover is ready.
-        if (settings.newPresetOnTrack && !settings.coverPresetOnTrack) glView.queueEvent { renderer.next() }
+        if (settings.newPresetOnTrack && !settings.coverPresetOnTrack) renderer.post { renderer.next() }
         if (settings.showTitleOnTrackChange && panel == null) showTitle(track)
     }
 
@@ -689,7 +694,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         if (settings.coverWithTitle) titleOverlay.setCover(track.key, cover)
         if (cover != null && settings.coverInPresets && settings.coverPresetOnTrack && coverJumpTrack != track.key) {
             coverJumpTrack = track.key
-            glView.queueEvent { if (!renderer.jumpToCoverPreset()) renderer.next() }
+            renderer.post { if (!renderer.jumpToCoverPreset()) renderer.next() }
         }
     }
 
@@ -720,7 +725,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     // ------------------------------------------------------------------ Helpers
 
-    private fun applyRender() = glView.queueEvent { renderer.applySettings() }
+    private fun applyRender() = renderer.post { renderer.applySettings() }
 
     private fun restartAudio() {
         audio.stop()

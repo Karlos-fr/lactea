@@ -328,11 +328,15 @@ dans le visuel. Pour tous les autres : affichage par-dessus et presets « Lactea
 - ✅ 6.4 Six presets « Lactea » (kaléidoscope, tunnel, miroirs, dissolution, vagues, mosaïque —
   générés par `tools/lactea_presets.py`) : la pochette s'y affiche, **60 FPS en 720p** (mosaïque ≈ 55).
 - ✅ 6.5 Section « Pochette » dans les options.
-- 🟡 6.3 La réécriture à la volée fonctionne (presets Lactea). Mais les 8 presets compatibles de la collection
-  présents sur la TV (embarqués + pack Hypnotic) **échouent à la compilation de leurs shaders sur le Mali-G57,
-  avec ou sans pochette** (« Error compiling shader », sans détail) : limite projectM/GPU, pas liée à la
-  pochette. Ils sont désormais écartés pour la session au premier échec. Reste à mesurer la proportion
-  sur les 226 (installer tous les packs).
+- ✅ 6.3 Réécriture à la volée : les 8 presets compatibles de la collection présents sur la TV se chargent
+  avec la pochette (captures `docs/step6-collection-presets.png`). Elle est nettement fondue dans le visuel
+  pour 4 d'entre eux ; les 4 autres n'utilisent leur image qu'en touche discrète (choix de leurs auteurs).
+- 🐞 Bug corrigé en route : les commandes envoyées au moteur via `GLSurfaceView.queueEvent` pouvaient
+  s'exécuter pendant une pause de l'appli, **sans contexte graphique actif** → `glCreateShader` renvoyait 0
+  et le preset échouait (« Error compiling shader » sans message). Toutes les commandes passent désormais par
+  `renderer.post`, exécuté à l'image suivante (contexte garanti). Ce n'était donc pas une limite du GPU.
+- Outil de test : `tools/load_preset.sh <serial> "Catégorie/nom"` (nom encodé, gère apostrophes et
+  parenthèses).
 - Découverte : projectM 4.1.8 n'arrive pas à charger un preset quand il doit choisir lui-même une image au
   hasard sur Android (`std::exception`). Lactea choisit donc lui-même ces images (dossier de textures) en
   réécrivant le preset — sans modifier projectM.
