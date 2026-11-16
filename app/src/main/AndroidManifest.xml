@@ -4,6 +4,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Needed to open Lactea from the background when music starts (granted via adb). -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- Music apps expose a media browser: makes their name visible (e.g. "Spotify"). -->
     <queries>
@@ -35,6 +37,18 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Lactea as the TV screensaver. -->
+        <service
+            android:name=".dream.LacteaDreamService"
+            android:exported="true"
+            android:label="Lactea"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
 
         <!-- Lets Lactea read the active media sessions (track title/artist). -->
         <service

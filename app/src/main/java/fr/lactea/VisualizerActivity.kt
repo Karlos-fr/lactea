@@ -24,6 +24,8 @@ import fr.lactea.input.Action
 import fr.lactea.input.KeyBindings
 import fr.lactea.input.RemoteInput
 import fr.lactea.input.Trigger
+import fr.lactea.dream.LacteaDreamService
+import fr.lactea.nowplaying.AutoLaunch
 import fr.lactea.nowplaying.NowPlaying
 import fr.lactea.packs.PackManager
 import fr.lactea.presets.Playlist
@@ -78,6 +80,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private var currentEvent: KeyEvent? = null
     private var locked = false
     private var autoHeight = 720
+    private var autoLaunched = false
+    private var musicPlayingAtPause = false
 
     // Key capture (remapping)
     private var captureAction: Action? = null
@@ -131,6 +135,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     private fun applyIntent(intent: Intent?) {
         intent ?: return
+        autoLaunched = intent.getBooleanExtra(EXTRA_AUTO_LAUNCHED, false)
+        if (autoLaunched) Log.i(TAG, "Opened automatically (music playing)")
         if (intent.hasExtra("res")) {
             val res = intent.getIntExtra("res", 0)
             if (res == 0 || res in Settings.RESOLUTIONS) settings.resolution = res
@@ -148,16 +154,34 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_AUDIO)
         }
         nowPlaying.start()
+        AutoLaunch.visualizerVisible = true
         ui.post(tick)
     }
 
     override fun onPause() {
         super.onPause()
+        AutoLaunch.visualizerVisible = false
+        musicPlayingAtPause = nowPlaying.playing
         ui.removeCallbacks(tick)
+        ui.removeCallbacks(autoClose)
         nowPlaying.stop()
         audio.stop()
         glView.onPause()
         stats.save()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Left while music plays (Home, another app…): don't reopen automatically for this session.
+        if (musicPlayingAtPause && !isChangingConfigurations) AutoLaunch.dismissedWhilePlaying = true
+    }
+
+    /** Closes an automatically opened Lactea once the music has stayed stopped for a while. */
+    private val autoClose = Runnable {
+        if (autoLaunched && !nowPlaying.playing) {
+            Log.i(TAG, "Music stopped: closing automatically opened Lactea")
+            finish()
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, results: IntArray) {
@@ -169,6 +193,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     // ------------------------------------------------------------------ Keys
 
     override fun dispatchKeyEvent(e: KeyEvent): Boolean {
+        if (autoLaunched && e.action == KeyEvent.ACTION_DOWN && !KeyEvent.isMediaSessionKey(e.keyCode) &&
+            e.keyCode !in VOLUME_KEYS
+        ) {
+            autoLaunched = false // the user is now in charge: no automatic close
+            ui.removeCallbacks(autoClose)
+        }
         if (e.keyCode == swallowUpKey) {
             if (e.action == KeyEvent.ACTION_UP) swallowUpKey = -1
             return true
@@ -292,6 +322,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         val sens = (1..30).map { it / 10f }
         val modes = listOf(Settings.TRANSITION_AUTO, Settings.TRANSITION_FADE, Settings.TRANSITION_CUT)
         val titleDurations = listOf(3, 4, 6, 8, 12)
+        val autoDelays = listOf(0, 10, 30, 60, 120, 300)
         listOf(
             MenuItem.Header("Visuel"),
             MenuItem.Choice("Résolution de rendu", resLabels,
@@ -348,6 +379,25 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Button("Comment autoriser l'accès au titre ?",
                 { if (nowPlaying.permissionGranted) "Autorisé ✓" else "" }) {
                 osd.show("Depuis un PC relié à la TV :\n${NowPlaying.ADB_GRANT}\npuis relancez Lactea", 12000)
+            },
+
+            MenuItem.Header("Lancement automatique et économiseur"),
+            MenuItem.Choice("Ouvrir Lactea quand la musique joue", autoDelays.map {
+                if (it == 0) "Jamais" else if (it < 60) "après $it s" else "après ${it / 60} min"
+            }, { autoDelays.indexOf(settings.autoLaunchDelay).coerceAtLeast(0) },
+                { settings.autoLaunchDelay = autoDelays[it] }),
+            MenuItem.Toggle("Seulement les applis de musique", { settings.autoLaunchMusicAppsOnly },
+                { settings.autoLaunchMusicAppsOnly = it }),
+            MenuItem.Toggle("Fermer quand la musique s'arrête", { settings.autoCloseWhenMusicStops },
+                { settings.autoCloseWhenMusicStops = it }),
+            MenuItem.Info("Autorisation d'ouverture auto") {
+                if (android.provider.Settings.canDrawOverlays(this)) "Accordée ✓" else "Manquante"
+            },
+            MenuItem.Info("Économiseur d'écran actuel") { screensaverLabel() },
+            MenuItem.Button("Comment configurer ?") {
+                osd.show("Depuis un PC relié à la TV :\n" +
+                    "Ouverture auto : adb shell appops set $packageName SYSTEM_ALERT_WINDOW allow\n" +
+                    "Économiseur : ${LacteaDreamService.ADB_ENABLE}", 15000)
             },
 
             MenuItem.Header("Gestion des presets"),
@@ -583,6 +633,15 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     override fun onPlaybackChanged(playing: Boolean) {
         Log.i(TAG, "Playback ${if (playing) "playing" else "paused"}")
+        ui.removeCallbacks(autoClose)
+        if (!playing && autoLaunched && settings.autoCloseWhenMusicStops) ui.postDelayed(autoClose, AUTO_CLOSE_MS)
+    }
+
+    private fun screensaverLabel(): String {
+        val current = runCatching {
+            android.provider.Settings.Secure.getString(contentResolver, "screensaver_components")
+        }.getOrNull()?.substringBefore(',') ?: return "inconnu"
+        return if (current.startsWith("$packageName/")) "Lactea ✓" else current.substringBefore('/')
     }
 
     private fun showTitle(t: NowPlaying.Track) {
@@ -696,6 +755,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     companion object {
         private const val TAG = "LACTEA"
         private const val REQ_AUDIO = 1
+        private const val AUTO_CLOSE_MS = 30_000L
+        const val EXTRA_AUTO_LAUNCHED = "auto_launched"
         private val VOLUME_KEYS = setOf(KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
     }
 }

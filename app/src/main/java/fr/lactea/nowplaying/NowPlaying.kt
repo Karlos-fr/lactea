@@ -39,6 +39,9 @@ class NowPlaying(private val context: Context, private val listener: Listener) {
     var permissionGranted = false
         private set
 
+    /** Package of the app owning the followed session (e.g. com.spotify.tv.android). */
+    val sourcePackage: String? get() = controller?.packageName
+
     fun hasPermission(): Boolean {
         val enabled = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners") ?: return false
         return enabled.split(':').mapNotNull { ComponentName.unflattenFromString(it) }.any { it == component }

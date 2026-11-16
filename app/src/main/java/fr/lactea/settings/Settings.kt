@@ -39,6 +39,12 @@ class Settings(context: Context) {
     var titleSize by int("title_size", 1)
     var newPresetOnTrack by bool("new_preset_on_track", false)
 
+    // --- Lancement automatique ---
+    /** Seconds of continuous playback before Lactea opens by itself; 0 = never. */
+    var autoLaunchDelay by int("auto_launch_delay", 30)
+    var autoLaunchMusicAppsOnly by bool("auto_launch_music_only", true)
+    var autoCloseWhenMusicStops by bool("auto_close", true)
+
     // --- Audio ---
     var beatSensitivity by float("beat_sensitivity", 1f)
     /** 0 = normalised (constant level), 1 = as played (follows the volume). */

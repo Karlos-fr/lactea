@@ -89,6 +89,22 @@ Testé sur la BRAVIA (captures dans `docs/step2-*.png`, `docs/step5-*.png`) :
   `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener 0`
 - Note : « précédent » dans Spotify redémarre d'abord le morceau en cours (comportement de Spotify).
 
+### Étape 4 — résultats (16/11/2026)
+
+- ✅ **Lancement automatique (plan B)** testé sur la BRAVIA : 30 s après le début de la musique (Spotify),
+  Lactea s'ouvre tout seul (Android l'autorise grâce à `SYSTEM_ALERT_WINDOW`). Il ne se rouvre pas si on l'a
+  quitté pendant la même écoute, et il se **referme 30 s après l'arrêt de la musique** s'il s'était ouvert seul
+  (sauf si on a utilisé la télécommande entre-temps). Réglages : délai (jamais → 5 min), applis de musique
+  uniquement, fermeture auto. Hébergé par le service de lecture du titre (toujours actif en arrière-plan).
+- 🟡 **Économiseur d'écran** (`LacteaDreamService`) : écrit et compilé, **pas encore testé**.
+  - L'économiseur actuel de la TV est celui du launcher Proscenium (`fr.proscenium.launcher/.CinemaDream`) :
+    ne le remplacer qu'avec accord.
+  - Le démarrage manuel d'un économiseur demande les droits root sur cette TV ; test à faire avec le délai
+    réel (10 min) : Spotify au premier plan en lecture → l'économiseur démarre-t-il ?
+- Commandes (une fois, depuis le PC) :
+  - ouverture auto : `adb shell appops set fr.lactea SYSTEM_ALERT_WINDOW allow`
+  - économiseur : `adb shell settings put secure screensaver_components fr.lactea/fr.lactea.dream.LacteaDreamService`
+
 ---
 
 ## 2. Architecture
@@ -268,7 +284,7 @@ Tous les réglages sont **sauvegardés** (DataStore) et appliqués aussi en mode
 | 1 | ✅ **projectM sur la TV** | Projet `fr.lactea`, build NDK de libprojectM, JNI, `GLSurfaceView`, capture audio branchée, ~50 presets, compteur FPS, résolution de rendu réglable | Presets qui réagissent à Spotify, FPS mesurés en 720p / 1080p / 4K, affichage 4K réel confirmé ou non |
 | 2 | ✅ **Télécommande & transitions** | Mapping des touches, transitions auto + fondus + coupes franches, écran d'aide | Tous les raccourcis fonctionnels |
 | 3 | ✅ **Titre du morceau** | `NotificationListenerService`, animation titre, pilotage lecture | Titre affiché au changement de morceau |
-| 4 | **Économiseur / lancement auto** | `DreamService` ; test avec Spotify ; sinon plan B | Lactea démarre seul quand la musique joue |
+| 4 | 🟡 **Économiseur / lancement auto** | `DreamService` ; test avec Spotify ; sinon plan B | Lactea démarre seul quand la musique joue |
 | 5 | ✅ **Panneau d'options & gestion des presets** | Panneau d'options complet dont la configuration des touches, favoris, liste noire, exclusion auto, navigateur, téléchargement de packs depuis GitHub | Préférences et touches personnalisées conservées entre lancements ; un pack s'installe depuis le panneau |
 | 6 | **Bonus** | Pochette en texture, upload depuis le PC | |
 | 7 | **Finition** | Icône/bannière Lactea, collection de presets complète, tests sur une autre box | APK prête à installer |
