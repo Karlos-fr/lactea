@@ -281,9 +281,12 @@ Aucun service en ligne n'est nécessaire pour Spotify.
 dans le visuel. Pour tous les autres : affichage par-dessus et presets « Lactea » dédiés.
 
 **6.1 — Récupération de la pochette**
-- Ordre : bitmap de la MediaSession → URL de la MediaSession (tentative en 640×640) → service en ligne
-  (option, désactivée par défaut) : **API Deezer** (sans clé, jusqu'à 1000×1000), sinon **iTunes Search
-  API** (sans clé). Envoie titre + artiste au service : option explicite dans les réglages.
+- **Priorité à la pochette fournie par l'appli source**, les services en ligne ne servent qu'en secours :
+  1. image de la MediaSession (`METADATA_KEY_ALBUM_ART` / `ART` / `DISPLAY_ICON`) ;
+  2. URL de la MediaSession (`…_ART_URI`), en tentant la version 640×640 pour Spotify ;
+  3. **secours en ligne**, seulement si l'appli ne fournit rien : **API Deezer** (sans clé, jusqu'à
+     1000×1000), sinon **iTunes Search API** (sans clé). Activé par défaut, désactivable dans les options
+     (il envoie titre + artiste au service).
 - Cache disque : `filesDir/cover/cover_<hash>.jpg` (nom unique par album, car projectM met les
   textures en cache par nom) ; on garde les ~20 dernières.
 - Critère : la pochette du morceau en cours est disponible en fichier en < 1 s après le changement.
@@ -314,7 +317,8 @@ dans le visuel. Pour tous les autres : affichage par-dessus et presets « Lactea
 
 **6.5 — Options (section « Pochette »)**
 - Afficher la pochette avec le titre · pulsation · intégrer dans les presets compatibles · presets
-  pochette en priorité · recherche en ligne si absente (Deezer / iTunes / désactivé).
+  pochette en priorité · secours en ligne si l'appli ne fournit pas de pochette (activé par défaut,
+  désactivable).
 
 ### 3.12 Ajout de presets depuis le PC
 - Mini serveur web sur la TV (adresse affichée à l'écran), dépôt de fichiers `.milk` depuis le
@@ -332,7 +336,7 @@ dans le visuel. Pour tous les autres : affichage par-dessus et presets « Lactea
 | 3 | ✅ **Titre du morceau** | `NotificationListenerService`, animation titre, pilotage lecture | Titre affiché au changement de morceau |
 | 4 | 🟡 **Économiseur / lancement auto** | `DreamService` ; test avec Spotify ; sinon plan B | Lactea démarre seul quand la musique joue |
 | 5 | ✅ **Panneau d'options & gestion des presets** | Panneau d'options complet dont la configuration des touches, favoris, liste noire, exclusion auto, navigateur, téléchargement de packs depuis GitHub | Préférences et touches personnalisées conservées entre lancements ; un pack s'installe depuis le panneau |
-| 6 | **Pochette d'album** (détail : §3.11) | 6.1 récupération (MediaSession, puis Deezer/iTunes en option) · 6.2 pochette avec le titre · 6.3 pochette dans les 226 presets compatibles (réécriture à la volée) · 6.4 presets « Lactea » dédiés · 6.5 options | Pochette visible à chaque morceau ; fondue dans le visuel des presets compatibles |
+| 6 | **Pochette d'album** (détail : §3.11) | 6.1 récupération (pochette de l'appli source en priorité, Deezer/iTunes en secours) · 6.2 pochette avec le titre · 6.3 pochette dans les 226 presets compatibles (réécriture à la volée) · 6.4 presets « Lactea » dédiés · 6.5 options | Pochette visible à chaque morceau ; fondue dans le visuel des presets compatibles |
 | 6 bis | **Ajout de presets depuis le PC** (§3.12) | Mini serveur web sur la TV, dépôt de `.milk` | Un preset déposé depuis le PC apparaît dans le navigateur |
 | 7 | **Finition** | Icône/bannière Lactea, collection de presets complète, tests sur une autre box | APK prête à installer |
 | 8 | **Optimisation des transitions** | 1) Vérifier sur la TV : banc d'essai fondu 2 s vs 3 s (étape 1), et observer dans le journal les coupes franches et changements de résolution en mode Auto une fois les presets mesurés. 2) Pré-remplir les mesures : publier dans le manifest les FPS par preset et par modèle de TV (issus du banc d'essai), pour que le mode Auto soit efficace dès le premier lancement. 3) Réduire le coût du fondu lui-même : piste « rendu en résolution réduite pendant le fondu », à évaluer (risque de saut visible). | Plus de ralentissement visible pendant les transitions sur la BRAVIA |
