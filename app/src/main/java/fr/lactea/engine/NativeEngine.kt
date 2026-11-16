@@ -14,6 +14,7 @@ object NativeEngine {
     external fun render(handle: Long)
     external fun addPcmU8(handle: Long, data: ByteArray)
     external fun loadPreset(handle: Long, path: String, smooth: Boolean)
+    external fun loadPresetData(handle: Long, data: String, smooth: Boolean)
 
     /** 0 = none, 1 = soft cut requested, 2 = hard cut requested. */
     external fun consumeSwitchRequest(handle: Long): Int

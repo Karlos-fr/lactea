@@ -10,7 +10,10 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.FrameLayout
+import android.graphics.Bitmap
 import fr.lactea.audio.AudioCapture
+import fr.lactea.cover.CoverManager
+import fr.lactea.cover.CoverPresets
 import fr.lactea.nowplaying.AutoLaunch
 import fr.lactea.nowplaying.NowPlaying
 import fr.lactea.packs.PackManager
@@ -34,6 +37,7 @@ class LacteaDreamService : DreamService(), LacteaRenderer.Listener, NowPlaying.L
     private lateinit var glView: GLSurfaceView
     private lateinit var titleOverlay: TitleOverlay
     private lateinit var nowPlaying: NowPlaying
+    private lateinit var covers: CoverManager
     private val audio = AudioCapture()
     private val ui = Handler(Looper.getMainLooper())
     private var autoHeight = 720
@@ -52,8 +56,14 @@ class LacteaDreamService : DreamService(), LacteaRenderer.Listener, NowPlaying.L
         library.prepareBundled()
         playlist.setLibrary(library.scan(packs.presetRoots()))
 
+        covers = CoverManager(this, settings)
         renderer = LacteaRenderer(settings, playlist, stats, audio, this)
-        renderer.texturePaths = (listOf(library.bundledTextureDir) + packs.textureDirs()).map { it.absolutePath }
+        renderer.texturePaths = (listOf(library.bundledTextureDir) + packs.textureDirs() +
+            (if (settings.coverInPresets) listOf(covers.dir) else emptyList())).map { it.absolutePath }
+        renderer.randomTextures = CoverPresets.textureNames(listOf(library.bundledTextureDir) + packs.textureDirs())
+        Thread {
+            renderer.coverCompatible = playlist.all().filter { CoverPresets.isCompatible(it.file) }.mapTo(HashSet()) { it.key }
+        }.start()
         nowPlaying = NowPlaying(this, this)
 
         glView = GLSurfaceView(this).apply {
@@ -62,7 +72,7 @@ class LacteaDreamService : DreamService(), LacteaRenderer.Listener, NowPlaying.L
             setRenderer(renderer)
             renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
         }
-        titleOverlay = TitleOverlay(this)
+        titleOverlay = TitleOverlay(this).apply { levelProvider = { audio.level } }
         val side = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60f, resources.displayMetrics).toInt()
         setContentView(FrameLayout(this).apply {
             addView(glView, FrameLayout.LayoutParams(-1, -1))
@@ -111,7 +121,16 @@ class LacteaDreamService : DreamService(), LacteaRenderer.Listener, NowPlaying.L
     override fun onTrackChanged(track: NowPlaying.Track) {
         if (settings.newPresetOnTrack) glView.queueEvent { renderer.next() }
         if (settings.showTitleOnTrackChange) {
-            titleOverlay.show(track, settings.titleSeconds * 1000L, settings.titlePosition, settings.titleSize)
+            val cover = covers.current?.takeIf { settings.coverWithTitle && it.trackKey == track.key }
+            titleOverlay.pulse = settings.coverPulse
+            titleOverlay.show(track, cover, settings.titleSeconds * 1000L, settings.titlePosition, settings.titleSize)
+        }
+    }
+
+    override fun onArtwork(track: NowPlaying.Track, bitmap: Bitmap?, uri: String?) {
+        covers.request(track, bitmap, uri) { cover ->
+            renderer.coverTexture = if (settings.coverInPresets) cover?.textureName else null
+            if (settings.coverWithTitle) titleOverlay.setCover(track.key, cover)
         }
     }
 

@@ -320,6 +320,24 @@ dans le visuel. Pour tous les autres : affichage par-dessus et presets « Lactea
   pochette en priorité · secours en ligne si l'appli ne fournit pas de pochette (activé par défaut,
   désactivable).
 
+**Résultats (16/11/2026, BRAVIA + Spotify)** — captures `docs/step6-*.png` :
+- ✅ 6.1 Pochette Spotify en **640×640** (URL du CDN). Secours Deezer/iTunes codé, non testé (Spotify fournit
+  toujours la pochette). Cache `filesDir/cover/`, 20 dernières.
+- ✅ 6.2 Pochette au-dessus du titre, halo de sa couleur dominante, pulsation sur le rythme ; elle apparaît
+  aussi quand elle arrive après le titre.
+- ✅ 6.4 Six presets « Lactea » (kaléidoscope, tunnel, miroirs, dissolution, vagues, mosaïque —
+  générés par `tools/lactea_presets.py`) : la pochette s'y affiche, **60 FPS en 720p** (mosaïque ≈ 55).
+- ✅ 6.5 Section « Pochette » dans les options.
+- 🟡 6.3 La réécriture à la volée fonctionne (presets Lactea). Mais les 8 presets compatibles de la collection
+  présents sur la TV (embarqués + pack Hypnotic) **échouent à la compilation de leurs shaders sur le Mali-G57,
+  avec ou sans pochette** (« Error compiling shader », sans détail) : limite projectM/GPU, pas liée à la
+  pochette. Ils sont désormais écartés pour la session au premier échec. Reste à mesurer la proportion
+  sur les 226 (installer tous les packs).
+- Découverte : projectM 4.1.8 n'arrive pas à charger un preset quand il doit choisir lui-même une image au
+  hasard sur Android (`std::exception`). Lactea choisit donc lui-même ces images (dossier de textures) en
+  réécrivant le preset — sans modifier projectM.
+- Note : sur la TV, les réglages « 30 images/s max » et « 720p fixe » avaient été choisis dans les options.
+
 ### 3.12 Ajout de presets depuis le PC
 - Mini serveur web sur la TV (adresse affichée à l'écran), dépôt de fichiers `.milk` depuis le
   navigateur du PC.
@@ -336,7 +354,7 @@ dans le visuel. Pour tous les autres : affichage par-dessus et presets « Lactea
 | 3 | ✅ **Titre du morceau** | `NotificationListenerService`, animation titre, pilotage lecture | Titre affiché au changement de morceau |
 | 4 | 🟡 **Économiseur / lancement auto** | `DreamService` ; test avec Spotify ; sinon plan B | Lactea démarre seul quand la musique joue |
 | 5 | ✅ **Panneau d'options & gestion des presets** | Panneau d'options complet dont la configuration des touches, favoris, liste noire, exclusion auto, navigateur, téléchargement de packs depuis GitHub | Préférences et touches personnalisées conservées entre lancements ; un pack s'installe depuis le panneau |
-| 6 | **Pochette d'album** (détail : §3.11) | 6.1 récupération (pochette de l'appli source en priorité, Deezer/iTunes en secours) · 6.2 pochette avec le titre · 6.3 pochette dans les 226 presets compatibles (réécriture à la volée) · 6.4 presets « Lactea » dédiés · 6.5 options | Pochette visible à chaque morceau ; fondue dans le visuel des presets compatibles |
+| 6 | ✅ **Pochette d'album** (détail : §3.11) | 6.1 récupération (pochette de l'appli source en priorité, Deezer/iTunes en secours) · 6.2 pochette avec le titre · 6.3 pochette dans les 226 presets compatibles (réécriture à la volée) · 6.4 presets « Lactea » dédiés · 6.5 options | Pochette visible à chaque morceau ; fondue dans le visuel des presets compatibles |
 | 6 bis | **Ajout de presets depuis le PC** (§3.12) | Mini serveur web sur la TV, dépôt de `.milk` | Un preset déposé depuis le PC apparaît dans le navigateur |
 | 7 | **Finition** | Icône/bannière Lactea, collection de presets complète, tests sur une autre box | APK prête à installer |
 | 8 | **Optimisation des transitions** | 1) Vérifier sur la TV : banc d'essai fondu 2 s vs 3 s (étape 1), et observer dans le journal les coupes franches et changements de résolution en mode Auto une fois les presets mesurés. 2) Pré-remplir les mesures : publier dans le manifest les FPS par preset et par modèle de TV (issus du banc d'essai), pour que le mode Auto soit efficace dès le premier lancement. 3) Réduire le coût du fondu lui-même : piste « rendu en résolution réduite pendant le fondu », à évaluer (risque de saut visible). | Plus de ralentissement visible pendant les transitions sur la BRAVIA |

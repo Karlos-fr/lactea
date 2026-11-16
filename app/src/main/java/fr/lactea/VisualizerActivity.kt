@@ -24,6 +24,9 @@ import fr.lactea.input.Action
 import fr.lactea.input.KeyBindings
 import fr.lactea.input.RemoteInput
 import fr.lactea.input.Trigger
+import android.graphics.Bitmap
+import fr.lactea.cover.CoverManager
+import fr.lactea.cover.CoverPresets
 import fr.lactea.dream.LacteaDreamService
 import fr.lactea.nowplaying.AutoLaunch
 import fr.lactea.nowplaying.NowPlaying
@@ -62,6 +65,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private lateinit var input: RemoteInput
     private lateinit var nowPlaying: NowPlaying
     private lateinit var titleOverlay: TitleOverlay
+    private lateinit var covers: CoverManager
+    private var coverJumpTrack: String? = null
 
     private lateinit var glView: GLSurfaceView
     private lateinit var hud: TextView
@@ -106,6 +111,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         packs = PackManager(this, settings)
         input = RemoteInput(bindings, ::onAction)
         nowPlaying = NowPlaying(this, this)
+        covers = CoverManager(this, settings)
         applyIntent(intent)
 
         library.prepareBundled()
@@ -114,6 +120,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
         renderer = LacteaRenderer(settings, playlist, stats, audio, this)
         renderer.texturePaths = texturePaths()
+        indexCoverPresets()
 
         glView = GLSurfaceView(this).apply {
             setEGLContextClientVersion(3)
@@ -131,6 +138,11 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         super.onNewIntent(intent)
         applyIntent(intent)
         applyResolution()
+        // Dev/test: am start -n fr.lactea/.VisualizerActivity --es preset "Category/name"
+        intent.getStringExtra("preset")?.let { key ->
+            playlist.all().firstOrNull { it.key == key }?.let { e -> glView.queueEvent { renderer.jumpTo(e) } }
+                ?: Log.w(TAG, "Unknown preset $key")
+        }
     }
 
     private fun applyIntent(intent: Intent?) {
@@ -382,6 +394,20 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 osd.show("Depuis un PC relié à la TV :\n${NowPlaying.ADB_GRANT}\npuis relancez Lactea", 12000)
             },
 
+            MenuItem.Header("Pochette"),
+            MenuItem.Toggle("Afficher la pochette avec le titre", { settings.coverWithTitle },
+                { settings.coverWithTitle = it; previewTitle() }),
+            MenuItem.Toggle("Pulsation sur le rythme", { settings.coverPulse },
+                { settings.coverPulse = it; previewTitle() }),
+            MenuItem.Toggle("Pochette dans les presets compatibles", { settings.coverInPresets },
+                { settings.coverInPresets = it; applyCoverSettings() }),
+            MenuItem.Toggle("Preset pochette à chaque morceau", { settings.coverPresetOnTrack },
+                { settings.coverPresetOnTrack = it }),
+            MenuItem.Toggle("Secours en ligne (Deezer, iTunes)", { settings.coverOnline },
+                { settings.coverOnline = it }),
+            MenuItem.Info("Pochette actuelle") { covers.current?.source ?: "aucune" },
+            MenuItem.Info("Presets compatibles") { "${renderer.coverCompatible.size}" },
+
             MenuItem.Header("Lancement automatique et économiseur"),
             MenuItem.Choice("Ouvrir Lactea quand la musique joue", autoDelays.map {
                 if (it == 0) "Jamais" else if (it < 60) "après $it s" else "après ${it / 60} min"
@@ -523,6 +549,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             val paths = texturePaths()
             glView.queueEvent { renderer.updateTexturePaths(paths) }
             Log.i(TAG, "Library reloaded: ${entries.size} presets")
+            indexCoverPresets()
             ui.post {
                 osd.show("$message — ${entries.size} presets")
                 menu?.rebuild()
@@ -531,7 +558,27 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     private fun texturePaths(): List<String> =
-        (listOf(library.bundledTextureDir) + packs.textureDirs()).map { it.absolutePath }
+        (listOf(library.bundledTextureDir) + packs.textureDirs() +
+            (if (settings.coverInPresets) listOf(covers.dir) else emptyList())).map { it.absolutePath }
+
+    /** Finds, in the background, the presets able to show the cover. */
+    private fun indexCoverPresets() {
+        io.execute {
+            val start = SystemClock.elapsedRealtime()
+            renderer.randomTextures = CoverPresets.textureNames(listOf(library.bundledTextureDir) + packs.textureDirs())
+            val keys = playlist.all().filter { CoverPresets.isCompatible(it.file) }.mapTo(HashSet()) { it.key }
+            renderer.coverCompatible = keys
+            Log.i(TAG, "Cover-compatible presets: ${keys.size} (${SystemClock.elapsedRealtime() - start} ms)")
+        }
+    }
+
+    /** Cover settings changed: texture paths and the cover used inside presets. */
+    private fun applyCoverSettings() {
+        val paths = texturePaths()
+        val texture = if (settings.coverInPresets) covers.current?.textureName else null
+        glView.queueEvent { renderer.updateTexturePaths(paths) }
+        renderer.coverTexture = texture
+    }
 
     // ------------------------------------------------------------------ Key capture
 
@@ -628,8 +675,22 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     // ------------------------------------------------------------------ Now playing (main thread)
 
     override fun onTrackChanged(track: NowPlaying.Track) {
-        if (settings.newPresetOnTrack) glView.queueEvent { renderer.next() }
+        // With "cover preset on each track", the switch happens once the cover is ready.
+        if (settings.newPresetOnTrack && !settings.coverPresetOnTrack) glView.queueEvent { renderer.next() }
         if (settings.showTitleOnTrackChange && panel == null) showTitle(track)
+    }
+
+    override fun onArtwork(track: NowPlaying.Track, bitmap: Bitmap?, uri: String?) {
+        covers.request(track, bitmap, uri) { cover -> onCoverReady(track, cover) }
+    }
+
+    private fun onCoverReady(track: NowPlaying.Track, cover: CoverManager.Cover?) {
+        renderer.coverTexture = if (settings.coverInPresets) cover?.textureName else null
+        if (settings.coverWithTitle) titleOverlay.setCover(track.key, cover)
+        if (cover != null && settings.coverInPresets && settings.coverPresetOnTrack && coverJumpTrack != track.key) {
+            coverJumpTrack = track.key
+            glView.queueEvent { if (!renderer.jumpToCoverPreset()) renderer.next() }
+        }
     }
 
     override fun onPlaybackChanged(playing: Boolean) {
@@ -647,7 +708,9 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     private fun showTitle(t: NowPlaying.Track) {
         presetLabel.visibility = View.GONE
-        titleOverlay.show(t, settings.titleSeconds * 1000L, settings.titlePosition, settings.titleSize)
+        val cover = covers.current?.takeIf { settings.coverWithTitle && it.trackKey == t.key }
+        titleOverlay.pulse = settings.coverPulse
+        titleOverlay.show(t, cover, settings.titleSeconds * 1000L, settings.titlePosition, settings.titleSize)
     }
 
     /** Shows the title (or a sample) behind the options panel while its settings change. */
@@ -725,7 +788,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             visibility = View.GONE
         }
         panelLayer = FrameLayout(this)
-        titleOverlay = TitleOverlay(this)
+        titleOverlay = TitleOverlay(this).apply { levelProvider = { audio.level } }
 
         setContentView(FrameLayout(this).apply {
             addView(glView, FrameLayout.LayoutParams(-1, -1))

@@ -4,6 +4,7 @@ import android.opengl.GLSurfaceView
 import android.os.SystemClock
 import android.util.Log
 import fr.lactea.audio.AudioCapture
+import fr.lactea.cover.CoverPresets
 import fr.lactea.engine.NativeEngine
 import fr.lactea.presets.Playlist
 import fr.lactea.presets.PresetStats
@@ -44,6 +45,15 @@ class LacteaRenderer(
     @Volatile var hud = Hud()
         private set
     @Volatile var texturePaths: List<String> = emptyList()
+
+    /** Texture name of the current album cover, or null when covers inside presets are off. */
+    @Volatile var coverTexture: String? = null
+
+    /** Keys of the presets that can show the cover (they sample a random texture). */
+    @Volatile var coverCompatible: Set<String> = emptySet()
+
+    /** Texture names Lactea uses for random textures (see CoverPresets). */
+    @Volatile var randomTextures: List<String> = emptyList()
 
     private var handle = 0L
     private var width = 0
@@ -96,6 +106,7 @@ class LacteaRenderer(
             2 -> if (!locked) advance(smoothRequested = false)
         }
         NativeEngine.consumeError(handle)?.let { msg ->
+            current?.let { playlist.markFailed(it.key) }
             listener.onPresetFailed(current, msg)
             advance(smoothRequested = false)
         }
@@ -130,6 +141,14 @@ class LacteaRenderer(
     }
 
     fun jumpTo(entry: Playlist.Entry) = switchTo(playlist.jumpTo(entry), smoothRequested = true)
+
+    /** Switches to a random eligible preset able to show the cover, if any. */
+    fun jumpToCoverPreset(): Boolean {
+        val pool = playlist.eligible().filter { it.key in coverCompatible && it.key != current?.key }
+        if (pool.isEmpty()) return false
+        jumpTo(pool.random())
+        return true
+    }
 
     fun setLocked(value: Boolean) {
         locked = value
@@ -171,11 +190,20 @@ class LacteaRenderer(
     private fun load(entry: Playlist.Entry, smooth: Boolean) {
         if (handle == 0L) return
         current = entry
-        NativeEngine.loadPreset(handle, entry.file.absolutePath, smooth)
+        // Presets sampling random textures are rewritten on the fly: album cover + textures picked
+        // by Lactea (projectM's own random pick fails on Android).
+        val cover = coverTexture
+        val rewritten = if (entry.key in coverCompatible || CoverPresets.isCompatible(entry.file)) {
+            CoverPresets.read(entry.file)?.let { CoverPresets.rewrite(it, cover, randomTextures) }
+        } else null
+        val withCover = if (rewritten != null && cover != null) rewritten else null
+        if (rewritten != null) NativeEngine.loadPresetData(handle, rewritten, smooth)
+        else NativeEngine.loadPreset(handle, entry.file.absolutePath, smooth)
         val now = SystemClock.elapsedRealtime()
         blendUntil = now + (if (smooth) (settings.fadeSeconds * 1000).toLong() else 0L) + SETTLE_MS
         resetMeasure(now)
-        Log.i(TAG, "PRESET ${if (smooth) "fade" else "cut"} res=${width}x$height ${entry.key}")
+        Log.i(TAG, "PRESET ${if (smooth) "fade" else "cut"} res=${width}x$height" +
+            (if (withCover != null) " cover=$cover" else "") + " ${entry.key}")
         listener.onPresetChanged(entry, !smooth)
     }
 

@@ -50,8 +50,15 @@ class Playlist(private val settings: Settings, private val stats: PresetStats) {
         return entry
     }
 
+    /** Presets that failed to load on this device (e.g. shader not supported by the GPU). */
+    private val failed = HashSet<String>()
+
+    @Synchronized fun markFailed(key: String) {
+        failed.add(key)
+    }
+
     @Synchronized fun eligible(): List<Entry> {
-        val blacklist = settings.blacklist
+        val blacklist = settings.blacklist + failed
         val favorites = settings.favorites
         val cap = settings.fpsCap
         val base = all.filter { it.key !in blacklist }

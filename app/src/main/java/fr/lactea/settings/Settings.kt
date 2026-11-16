@@ -39,6 +39,13 @@ class Settings(context: Context) {
     var titleSize by int("title_size", 1)
     var newPresetOnTrack by bool("new_preset_on_track", false)
 
+    // --- Pochette ---
+    var coverWithTitle by bool("cover_with_title", true)
+    var coverPulse by bool("cover_pulse", true)
+    var coverInPresets by bool("cover_in_presets", true)
+    var coverPresetOnTrack by bool("cover_preset_on_track", false)
+    var coverOnline by bool("cover_online", true)
+
     // --- Lancement automatique ---
     /** Seconds of continuous playback before Lactea opens by itself; 0 = never. */
     var autoLaunchDelay by int("auto_launch_delay", 30)

@@ -119,6 +119,11 @@ JNIEXPORT void JNICALL JNI_FN(loadPreset)(JNIEnv* env, jobject, jlong h, jstring
     projectm_load_preset_file(fromHandle(h)->pm, p.c_str(), smooth == JNI_TRUE);
 }
 
+JNIEXPORT void JNICALL JNI_FN(loadPresetData)(JNIEnv* env, jobject, jlong h, jstring data, jboolean smooth) {
+    std::string d = toString(env, data);
+    projectm_load_preset_data(fromHandle(h)->pm, d.c_str(), smooth == JNI_TRUE);
+}
+
 JNIEXPORT jint JNICALL JNI_FN(consumeSwitchRequest)(JNIEnv*, jobject, jlong h) {
     return fromHandle(h)->switchRequest.exchange(0);
 }

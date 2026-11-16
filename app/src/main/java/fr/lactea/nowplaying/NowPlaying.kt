@@ -24,6 +24,8 @@ class NowPlaying(private val context: Context, private val listener: Listener) {
     interface Listener {
         fun onTrackChanged(track: Track)
         fun onPlaybackChanged(playing: Boolean)
+        /** Cover provided by the source app for [track] (bitmap and/or URI), possibly none. */
+        fun onArtwork(track: Track, bitmap: android.graphics.Bitmap?, uri: String?) = Unit
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -130,11 +132,22 @@ class NowPlaying(private val context: Context, private val listener: Listener) {
             ?: md.getString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE) ?: ""
         val album = md.getString(MediaMetadata.METADATA_KEY_ALBUM) ?: ""
         val t = Track(title.trim(), artist.trim(), album.trim(), sourceLabel(controller?.packageName))
-        if (t.key == track?.key) return
-        track = t
-        Log.i(TAG, "TRACK \"${t.title}\" — ${t.artist} (${t.source})")
-        listener.onTrackChanged(t)
+        if (t.key != track?.key) {
+            track = t
+            Log.i(TAG, "TRACK \"${t.title}\" — ${t.artist} (${t.source})")
+            listener.onTrackChanged(t)
+        }
+        // The cover provided by the app (often sent a moment after the title).
+        val art = ART_KEYS.firstNotNullOfOrNull { md.getBitmap(it) }
+        val artUri = ART_URI_KEYS.firstNotNullOfOrNull { md.getString(it) }?.takeIf { it.isNotBlank() }
+        val signature = "${t.key}|$artUri|${art != null}"
+        if (signature != artSignature) {
+            artSignature = signature
+            listener.onArtwork(t, art, artUri)
+        }
     }
+
+    private var artSignature: String? = null
 
     private fun sourceLabel(pkg: String?): String {
         pkg ?: return "?"
@@ -145,6 +158,12 @@ class NowPlaying(private val context: Context, private val listener: Listener) {
 
     companion object {
         private const val TAG = "LACTEA"
+        private val ART_KEYS = listOf(
+            MediaMetadata.METADATA_KEY_ALBUM_ART, MediaMetadata.METADATA_KEY_ART, MediaMetadata.METADATA_KEY_DISPLAY_ICON,
+        )
+        private val ART_URI_KEYS = listOf(
+            MediaMetadata.METADATA_KEY_ALBUM_ART_URI, MediaMetadata.METADATA_KEY_ART_URI, MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI,
+        )
         const val ADB_GRANT =
             "adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener 0"
     }
