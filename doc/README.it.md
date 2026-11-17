@@ -41,7 +41,6 @@ Versione attuale: **0.1.0, in sviluppo**. Nessuna versione è ancora stata pubbl
 - **Titolo del brano e copertina dell'album** sullo schermo a ogni cambio di brano; la copertina può
   anche apparire dentro alcune visualizzazioni.
 - **Si apre da solo** quando parte la musica, e si chiude quando si ferma (facoltativo).
-- **Salvaschermo**: Lactea può fare da salvaschermo della TV.
 - **Pensato per il telecomando**: ogni azione ha il suo tasto, e ogni tasto si può cambiare.
 - **Fino al 4K**, con una modalità Auto che sceglie la risoluzione migliore per ogni preset.
 - **Fluido anche su TV modeste**: Lactea sa quanto è pesante ogni preset, può saltare quelli lenti,
@@ -79,10 +78,6 @@ impostazioni della TV, se la tua TV le offre, oppure una volta sola da un comput
 |---|---|---|
 | Titolo e copertina del brano | Accesso alle notifiche | `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener` |
 | Apertura automatica quando suona la musica | Visualizzazione sopra altre app | `adb shell appops set fr.lactea SYSTEM_ALERT_WINDOW allow` |
-| Lactea come salvaschermo | — | `adb shell settings put secure screensaver_components fr.lactea/fr.lactea.dream.LacteaDreamService` |
-
-Per tornare al salvaschermo precedente, annota prima il suo nome con
-`adb shell settings get secure screensaver_components`, poi rimettilo allo stesso modo.
 
 ## Telecomando
 
@@ -118,7 +113,7 @@ Tieni premuto **OK** per aprire le opzioni. Sono raggruppate per tema:
   quanto grande; nuovo preset a ogni brano.
 - **Copertina**: con il titolo, che pulsa a tempo, dentro le visualizzazioni, ricerca
   online quando l'app musicale non fornisce la copertina.
-- **Avvio automatico e salvaschermo**: apertura quando suona
+- **Avvio automatico**: apertura quando suona
   la musica (dopo quanto tempo, solo app musicali), chiusura quando la musica si ferma.
 - **Gestione preset**: browser, escludi i preset lenti, pacchetti da
   scaricare, test dei preset su questa TV (vedi sotto), azzera le misure, svuota l'elenco delle
@@ -154,9 +149,7 @@ ferma il test, che può riprendere da dove si era fermato.
 
 ## Limiti noti
 
-- Il salvaschermo non è ancora stato provato su una TV vera.
 - Quando l'audio va a cuffie o casse **Bluetooth**, Lactea potrebbe non riceverlo.
-- Il download dei pacchetti richiede che il repository GitHub sia pubblico, cosa che non è ancora.
 - Alcuni preset perdono parte della loro animazione: 7 per errori che MilkDrop stesso rifiutava,
   7 per una [differenza ancora da correggere in projectM](https://github.com/projectM-visualizer/projectm-eval/issues/23).
 

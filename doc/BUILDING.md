@@ -31,12 +31,16 @@ adb install -r -g app/build/outputs/apk/debug/app-debug.apk
 
 ## Preset packs
 
+The packs live in the `packs/` folder of this repository; the app reads
+`https://raw.githubusercontent.com/Karlos-fr/lactea/main/packs/manifest.json` and downloads the
+zips next to it. To rebuild them after a change in the preset collection:
+
 ```bash
-python -I tools/make_packs.py        # -> dist/packs/*.zip + manifest.json
+python -I tools/make_packs.py --version 2     # -> packs/*.zip + packs/manifest.json
 ```
 
-Attach the content of `dist/packs/` to a GitHub release: the app reads
-`releases/latest/download/manifest.json` (the repository must be public).
+Then commit and push `packs/`. A pack whose version changes is offered as an update in the app;
+the list is refreshed by itself when Lactea starts and when the packs screen opens.
 
 ## Reference FPS table
 

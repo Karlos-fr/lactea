@@ -39,7 +39,6 @@ Current version: **0.1.0, in development**. No release has been published yet.
 - **Track title and album cover** on screen when the song changes; the cover can also appear
   inside some visualizations.
 - **Opens by itself** when music starts playing, and closes when it stops (optional).
-- **Screensaver**: Lactea can be the TV's screensaver.
 - **Made for the remote**: every action has a key, and every key can be changed.
 - **Up to 4K**, with an Auto mode that picks the best resolution for each preset.
 - **Smooth on modest TVs**: Lactea knows how heavy each preset is, can skip the slow ones, and
@@ -77,10 +76,6 @@ TV):
 |---|---|---|
 | Track title and album cover | Notification access | `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener` |
 | Opens by itself when music plays | Display over other apps | `adb shell appops set fr.lactea SYSTEM_ALERT_WINDOW allow` |
-| Lactea as screensaver | — | `adb shell settings put secure screensaver_components fr.lactea/fr.lactea.dream.LacteaDreamService` |
-
-To go back to your previous screensaver, note its name first with
-`adb shell settings get secure screensaver_components`, and put it back the same way.
 
 ## Remote control
 
@@ -113,7 +108,7 @@ Hold **OK** to open the options. They are grouped by theme:
 - **Track title**: shown on song change, how long, where, how big; new preset on each song.
 - **Album cover**: with the title, pulsing with the beat, inside the visualizations, online search
   when the music app gives no cover.
-- **Automatic launch and screensaver**: open when music plays (after how long, music apps only),
+- **Automatic launch**: open when music plays (after how long, music apps only),
   close when the music stops.
 - **Preset management**: browser, exclude slow presets, packs to download, test the presets on this
   TV (see below), reset the measures, empty the exclusion list.
@@ -147,9 +142,7 @@ collection). Leave the music playing; any key stops the test, and it can resume 
 
 ## Known limitations
 
-- The screensaver has not been tested on a real TV yet.
 - When the sound goes to **Bluetooth** headphones or speakers, Lactea may not receive it.
-- Downloading the packs needs the GitHub repository to be public, which is not the case yet.
 - A few presets lose part of their animation: 7 because of errors that MilkDrop itself rejected,
   7 because of a [difference still to be fixed in projectM](https://github.com/projectM-visualizer/projectm-eval/issues/23).
 

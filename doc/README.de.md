@@ -41,7 +41,6 @@ Aktuelle Version: **0.1.0, in Entwicklung**. Es wurde noch keine Version veröff
 - **Songtitel und Albumcover** auf dem Bildschirm, wenn der Song wechselt; das Cover kann auch in
   manchen Visualisierungen erscheinen.
 - **Öffnet sich von selbst**, wenn Musik startet, und schließt sich, wenn sie endet (optional).
-- **Bildschirmschoner**: Lactea kann der Bildschirmschoner des Fernsehers sein.
 - **Für die Fernbedienung gemacht**: Jede Aktion hat eine Taste, und jede Taste lässt sich ändern.
 - **Bis zu 4K**, mit einem Auto-Modus, der für jedes Preset die beste Auflösung wählt.
 - **Flüssig auch auf einfachen Fernsehern**: Lactea weiß, wie anspruchsvoll jedes Preset ist, kann
@@ -83,11 +82,6 @@ auf dem Fernseher aktiviert):
 |---|---|---|
 | Songtitel und Albumcover | Zugriff auf Benachrichtigungen | `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener` |
 | Öffnet sich von selbst, wenn Musik läuft | Über anderen Apps einblenden | `adb shell appops set fr.lactea SYSTEM_ALERT_WINDOW allow` |
-| Lactea als Bildschirmschoner | — | `adb shell settings put secure screensaver_components fr.lactea/fr.lactea.dream.LacteaDreamService` |
-
-Um zu Ihrem bisherigen Bildschirmschoner zurückzukehren, notieren Sie vorher seinen Namen mit
-`adb shell settings get secure screensaver_components` und stellen Sie ihn auf dieselbe Weise
-wieder ein.
 
 ## Fernbedienung
 
@@ -123,7 +117,7 @@ Halten Sie **OK** gedrückt, um die Optionen zu öffnen. Sie sind nach Themen gr
   bei jedem Song.
 - **Albumcover**: mit dem Titel, im Takt pulsierend, in den Visualisierungen,
   Online-Suche, wenn die Musik-App kein Cover liefert.
-- **Autostart und Bildschirmschoner**: öffnen, wenn
+- **Autostart**: öffnen, wenn
   Musik läuft (nach welcher Zeit, nur Musik-Apps), schließen, wenn die Musik endet.
 - **Preset-Verwaltung**: Browser, langsame Presets ausschließen, Pakete zum
   Herunterladen, die Presets auf diesem Fernseher testen (siehe unten), Messwerte zurücksetzen,
@@ -162,11 +156,8 @@ weiterlaufen; jede Taste beendet den Test, und er kann dort weitermachen, wo er 
 
 ## Bekannte Einschränkungen
 
-- Der Bildschirmschoner wurde noch nicht auf einem echten Fernseher getestet.
 - Wenn der Ton an **Bluetooth**-Kopfhörer oder -Lautsprecher geht, empfängt Lactea ihn
   möglicherweise nicht.
-- Das Herunterladen der Pakete setzt voraus, dass das GitHub-Repository öffentlich ist. Das ist noch
-  nicht der Fall.
 - Einige Presets verlieren einen Teil ihrer Animation: 7 wegen Fehlern, die schon MilkDrop selbst
   abgelehnt hat, 7 wegen eines [noch zu behebenden Unterschieds in projectM](https://github.com/projectM-visualizer/projectm-eval/issues/23).
 

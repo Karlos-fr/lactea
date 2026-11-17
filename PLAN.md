@@ -383,5 +383,5 @@ dans le visuel. Pour tous les autres : affichage par-dessus et presets « Lactea
 
 - SDK Android (plateforme 37, build-tools 36), NDK 30, CMake 4.1, Gradle 9.8.2, AGP 9.4.1.
 - JDK : `C:\Program Files\Android\Android Studio\jbr`.
-- TV accessible via adb Wi-Fi : `192.168.1.146:41879` (préciser `-s`, plusieurs entrées listées).
+- TV accessible via adb Wi-Fi (préciser `-s` : plusieurs entrées listées).
 - Pas d'émulateur TV : tests directement sur la BRAVIA.

@@ -28,7 +28,7 @@
     <string name="osd_pack_removed">Pack %1$s eliminado</string>
     <string name="osd_library">%1$s — %2$d presets</string>
     <string name="osd_title_howto">Desde un ordenador conectado a la TV:\n%1$s\ny reinicia Lactea</string>
-    <string name="osd_setup_howto">Desde un ordenador conectado a la TV:\nApertura automática: %1$s\nSalvapantallas: %2$s</string>
+    <string name="osd_setup_howto">Desde un ordenador conectado a la TV:\nApertura automática: %1$s</string>
 
     <!-- Opciones: común -->
     <string name="menu_options">Opciones</string>
@@ -99,7 +99,7 @@
     <string name="info_cover_presets">Presets compatibles</string>
 
     <!-- Opciones: Inicio automático y salvapantallas -->
-    <string name="h_auto">Inicio automático y salvapantallas</string>
+    <string name="h_auto">Inicio automático</string>
     <string name="opt_autolaunch">Abrir Lactea cuando suene música</string>
     <string name="never">Nunca</string>
     <string name="after_s">tras %1$d s</string>
@@ -107,7 +107,6 @@
     <string name="opt_music_only">Solo apps de música</string>
     <string name="opt_autoclose">Cerrar cuando pare la música</string>
     <string name="info_overlay">Permiso de apertura automática</string>
-    <string name="info_screensaver">Salvapantallas actual</string>
     <string name="btn_setup_howto">¿Cómo configurarlo?</string>
 
     <!-- Opciones: Gestión de presets -->
@@ -269,4 +268,5 @@
     <!-- Interface language -->
     <string name="opt_language">Idioma</string>
     <string name="lang_system">Sistema</string>
+    <string name="osd_pack_updates">Actualizaciones de packs disponibles: %1$d\n(Opciones › Gestión de presets › Packs de presets para descargar)</string>
 </resources>

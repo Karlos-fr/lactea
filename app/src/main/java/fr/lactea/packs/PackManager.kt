@@ -70,6 +70,9 @@ class PackManager(private val context: Context, private val settings: Settings) 
 
     fun diskUsageBytes(): Long = packsDir.walkTopDown().filter { it.isFile }.sumOf { it.length() }
 
+    /** Installed packs whose catalogue version differs from the installed one. */
+    fun updatesAvailable(): List<Pack> = catalog.filter { p -> installedVersion(p.id)?.let { it != p.version } ?: false }
+
     fun refreshCatalog(onDone: () -> Unit) {
         catalogStatus = context.getString(R.string.catalog_loading)
         executor.execute {

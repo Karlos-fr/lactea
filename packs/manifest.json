@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "source": "projectM-visualizer/presets-cream-of-the-crop",
+  "packs": [
+    {
+      "id": "dancer",
+      "name": "Dancer",
+      "version": "1",
+      "url": "lactea-pack-dancer.zip",
+      "size": 5021630,
+      "presets": 1351,
+      "sha256": "614f8335299744ac43deccaebb8d8073bb14e0b7af5db5934b13275cb7e9b61b",
+      "description": "Formes qui dansent sur le rythme"
+    },
+    {
+      "id": "drawing",
+      "name": "Drawing",
+      "version": "1",
+      "url": "lactea-pack-drawing.zip",
+      "size": 4025059,
+      "presets": 1143,
+      "sha256": "83e8fb9c72f5e7e8e26c142ca70f1be068da2aae2bd8e6991fe2ae0bb2c0c498",
+      "description": "Tracés et dessins animés"
+    },
+    {
+      "id": "fractal",
+      "name": "Fractal",
+      "version": "1",
+      "url": "lactea-pack-fractal.zip",
+      "size": 3728913,
+      "presets": 1354,
+      "sha256": "2050a8ab37882e4deeed33f6e4fb3b3d2d1cc6e76b62527013f854c4d9a9433d",
+      "description": "Fractales et zooms infinis"
+    },
+    {
+      "id": "geometric",
+      "name": "Geometric",
+      "version": "1",
+      "url": "lactea-pack-geometric.zip",
+      "size": 3497105,
+      "presets": 1027,
+      "sha256": "89d15b3b5c17fa899767e3f9e421b5cdbb1f99d5cab4d2f0dbc198e5fb8075ff",
+      "description": "Formes géométriques"
+    },
+    {
+      "id": "hypnotic",
+      "name": "Hypnotic",
+      "version": "1",
+      "url": "lactea-pack-hypnotic.zip",
+      "size": 1045074,
+      "presets": 280,
+      "sha256": "2db79495251ce9f9af7844f498f4477c7e62b032bb59dff3cabbdfb5c0e11411",
+      "description": "Motifs hypnotiques"
+    },
+    {
+      "id": "particles",
+      "name": "Particles",
+      "version": "1",
+      "url": "lactea-pack-particles.zip",
+      "size": 1441801,
+      "presets": 389,
+      "sha256": "cd22fa066b67ec5e900ad3a1e2b09161a0d7c796ce31bb034f3601a5866dc82e",
+      "description": "Particules et nuées"
+    },
+    {
+      "id": "reaction",
+      "name": "Reaction",
+      "version": "1",
+      "url": "lactea-pack-reaction.zip",
+      "size": 5426090,
+      "presets": 1791,
+      "sha256": "7a8de2baf062fa8704603d4d118be7a6b778fd48b5d78c881da0c8006d3863fa",
+      "description": "Réactions chimiques et automates"
+    },
+    {
+      "id": "sparkle",
+      "name": "Sparkle",
+      "version": "1",
+      "url": "lactea-pack-sparkle.zip",
+      "size": 2497733,
+      "presets": 797,
+      "sha256": "9ad946c5431c590bb1b515599050f7830c3eedb041e7aeaa2ef4da23d6061ac4",
+      "description": "Étincelles et explosions"
+    },
+    {
+      "id": "supernova",
+      "name": "Supernova",
+      "version": "1",
+      "url": "lactea-pack-supernova.zip",
+      "size": 994172,
+      "presets": 380,
+      "sha256": "ed59f7b52b357914ca64bab1c4db673d283798c849c8d25c65143ff2a2fc8680",
+      "description": "Explosions cosmiques"
+    },
+    {
+      "id": "waveform",
+      "name": "Waveform",
+      "version": "1",
+      "url": "lactea-pack-waveform.zip",
+      "size": 3565016,
+      "presets": 1279,
+      "sha256": "48c93ab01d5dc127d5f91553e7aa6998a03970b86d00ac7a37a66357998609ca",
+      "description": "Formes d'onde et spectres"
+    }
+  ]
+}

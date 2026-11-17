@@ -28,7 +28,7 @@
     <string name="osd_pack_removed">Pack %1$s supprimé</string>
     <string name="osd_library">%1$s — %2$d presets</string>
     <string name="osd_title_howto">Depuis un PC relié à la TV :\n%1$s\npuis relancez Lactea</string>
-    <string name="osd_setup_howto">Depuis un PC relié à la TV :\nOuverture auto : %1$s\nÉconomiseur : %2$s</string>
+    <string name="osd_setup_howto">Depuis un PC relié à la TV :\nOuverture auto : %1$s</string>
 
     <!-- Options : commun -->
     <string name="menu_options">Options</string>
@@ -99,7 +99,7 @@
     <string name="info_cover_presets">Presets compatibles</string>
 
     <!-- Options : Lancement automatique et économiseur -->
-    <string name="h_auto">Lancement automatique et économiseur</string>
+    <string name="h_auto">Lancement automatique</string>
     <string name="opt_autolaunch">Ouvrir Lactea quand la musique joue</string>
     <string name="never">Jamais</string>
     <string name="after_s">après %1$d s</string>
@@ -107,7 +107,6 @@
     <string name="opt_music_only">Seulement les applis de musique</string>
     <string name="opt_autoclose">Fermer quand la musique s\'arrête</string>
     <string name="info_overlay">Autorisation d\'ouverture auto</string>
-    <string name="info_screensaver">Économiseur d\'écran actuel</string>
     <string name="btn_setup_howto">Comment configurer ?</string>
 
     <!-- Options : Gestion des presets -->
@@ -269,4 +268,5 @@
     <!-- Interface language -->
     <string name="opt_language">Langue</string>
     <string name="lang_system">Système</string>
+    <string name="osd_pack_updates">Mises à jour de packs disponibles : %1$d\n(Options › Gestion des presets › Packs de presets à télécharger)</string>
 </resources>

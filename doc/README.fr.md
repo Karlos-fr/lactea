@@ -41,7 +41,6 @@ Version actuelle : **0.1.0, en développement**. Aucune version n'est encore pub
 - **Titre et pochette d'album** à l'écran à chaque changement de morceau ; la pochette peut aussi
   apparaître dans certaines visualisations.
 - **S'ouvre tout seul** quand la musique démarre, et se ferme quand elle s'arrête (au choix).
-- **Économiseur d'écran** : Lactea peut servir d'économiseur d'écran à la TV.
 - **Pensé pour la télécommande** : chaque action a sa touche, et chaque touche se change.
 - **Jusqu'en 4K**, avec un mode Auto qui choisit la meilleure résolution pour chaque preset.
 - **Fluide même sur une TV modeste** : Lactea sait quels presets sont gourmands, peut écarter les plus
@@ -79,10 +78,6 @@ sur la TV) :
 |---|---|---|
 | Titre et pochette du morceau | Accès aux notifications | `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener` |
 | Ouverture automatique quand la musique joue | Superposition aux autres applis | `adb shell appops set fr.lactea SYSTEM_ALERT_WINDOW allow` |
-| Lactea comme économiseur d'écran | — | `adb shell settings put secure screensaver_components fr.lactea/fr.lactea.dream.LacteaDreamService` |
-
-Pour revenir à votre économiseur d'écran précédent, notez d'abord son nom avec
-`adb shell settings get secure screensaver_components`, puis remettez-le de la même façon.
 
 ## Télécommande
 
@@ -116,7 +111,7 @@ Faites un appui long sur **OK** pour ouvrir les options. Elles sont regroupées 
   chaque morceau.
 - **Pochette** : avec le titre, pulsation au rythme, dans les visualisations, recherche en ligne
   quand l'appli de musique ne fournit pas de pochette.
-- **Lancement automatique et économiseur** : ouverture quand la musique joue (après combien de
+- **Lancement automatique** : ouverture quand la musique joue (après combien de
   temps, applis de musique seulement), fermeture quand la musique s'arrête.
 - **Gestion des presets** : navigateur, exclure les presets lents, packs à télécharger, test des
   presets sur cette TV (voir plus bas), remise à zéro des mesures, liste des exclus.
@@ -152,10 +147,7 @@ qui pourra reprendre là où il s'est arrêté.
 
 ## Limites connues
 
-- L'économiseur d'écran n'a pas encore été testé sur une vraie TV.
 - Quand le son part vers un casque ou une enceinte **Bluetooth**, Lactea peut ne pas le recevoir.
-- Le téléchargement des packs nécessite que le dépôt GitHub soit public, ce qui n'est pas encore le
-  cas.
 - Quelques presets perdent une partie de leur animation : 7 à cause d'erreurs que MilkDrop refusait
   lui-même, 7 à cause d'une [différence encore à corriger dans projectM](https://github.com/projectM-visualizer/projectm-eval/issues/23).
 

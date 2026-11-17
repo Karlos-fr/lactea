@@ -9,7 +9,7 @@ import java.util.Locale
 /**
  * Interface language chosen in the options. "" follows the system language (Android then picks
  * res/values-<lang>, or English). Applied by wrapping the base context of the application, the
- * activity and the screensaver, so it works on every Android version Lactea supports.
+ * activity, so it works on every Android version Lactea supports.
  */
 object Lang {
     /** Languages with a translation, as language tags, in menu order. */

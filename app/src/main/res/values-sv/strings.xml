@@ -30,7 +30,7 @@
     <string name="osd_pack_removed">Paketet %1$s borttaget</string>
     <string name="osd_library">%1$s — %2$d presets</string>
     <string name="osd_title_howto">Från en dator ansluten till tv:n:\n%1$s\nstarta sedan om Lactea</string>
-    <string name="osd_setup_howto">Från en dator ansluten till tv:n:\nAutomatisk öppning: %1$s\nSkärmsläckare: %2$s</string>
+    <string name="osd_setup_howto">Från en dator ansluten till tv:n:\nAutomatisk öppning: %1$s</string>
 
     <!-- Options: common -->
     <string name="menu_options">Alternativ</string>
@@ -100,8 +100,8 @@
     <string name="info_cover">Aktuellt omslag</string>
     <string name="info_cover_presets">Kompatibla presets</string>
 
-    <!-- Options: Automatic launch and screensaver -->
-    <string name="h_auto">Automatisk start och skärmsläckare</string>
+    <!-- Options: Automatic launch -->
+    <string name="h_auto">Automatisk start</string>
     <string name="opt_autolaunch">Öppna Lactea när musik spelas</string>
     <string name="never">Aldrig</string>
     <string name="after_s">efter %1$d s</string>
@@ -109,7 +109,6 @@
     <string name="opt_music_only">Bara musikappar</string>
     <string name="opt_autoclose">Stäng när musiken slutar</string>
     <string name="info_overlay">Behörighet för automatisk öppning</string>
-    <string name="info_screensaver">Aktuell skärmsläckare</string>
     <string name="btn_setup_howto">Hur ställer man in det?</string>
 
     <!-- Options: Preset management -->
@@ -271,4 +270,5 @@
     <!-- Interface language -->
     <string name="opt_language">Språk</string>
     <string name="lang_system">System</string>
+    <string name="osd_pack_updates">Uppdateringar av preset-paket finns: %1$d\n(Alternativ › Hantera presets › Preset-paket att ladda ner)</string>
 </resources>

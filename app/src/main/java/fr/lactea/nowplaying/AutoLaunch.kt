@@ -10,8 +10,8 @@ import fr.lactea.VisualizerActivity
 import fr.lactea.settings.Settings
 
 /**
- * Opens Lactea by itself once music has been playing for a while (plan B when the TV's
- * screensaver does not start during playback). Runs inside [NowPlayingListener], which the
+ * Opens Lactea by itself once music has been playing for a while. Runs inside
+ * [NowPlayingListener], which the
  * system keeps alive in the background.
  *
  * Starting an activity from the background needs the "display over other apps" permission:
@@ -69,7 +69,7 @@ class AutoLaunch(private val context: Context) : NowPlaying.Listener {
     companion object {
         private const val TAG = "LACTEA"
 
-        /** Set by the activity / dream while Lactea is on screen. */
+        /** Set by the activity while Lactea is on screen. */
         @Volatile var visualizerVisible = false
 
         /** The user left Lactea while music was playing: don't reopen it until the music stops. */

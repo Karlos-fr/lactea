@@ -61,7 +61,11 @@ class Settings(context: Context) {
     var captureMode by int("capture_mode", 0)
 
     // --- Packs ---
-    var manifestUrl by string("manifest_url", DEFAULT_MANIFEST_URL)
+    private var storedManifestUrl by string("manifest_url", DEFAULT_MANIFEST_URL)
+    /** Catalogue of preset packs; the address of the first versions is moved to the current one. */
+    var manifestUrl: String
+        get() = storedManifestUrl.takeUnless { it == OLD_MANIFEST_URL } ?: DEFAULT_MANIFEST_URL
+        set(value) { storedManifestUrl = value }
 
     // --- Preset lists ---
     var favorites: Set<String>
@@ -111,7 +115,9 @@ class Settings(context: Context) {
         const val TRANSITION_AUTO = "auto"
         const val TRANSITION_FADE = "fade"
         const val TRANSITION_CUT = "cut"
-        const val DEFAULT_MANIFEST_URL = "https://github.com/Karlos-fr/lactea/releases/latest/download/manifest.json"
+        /** The packs/ folder of the GitHub repository (main branch), read directly. */
+        const val DEFAULT_MANIFEST_URL = "https://raw.githubusercontent.com/Karlos-fr/lactea/main/packs/manifest.json"
+        private const val OLD_MANIFEST_URL = "https://github.com/Karlos-fr/lactea/releases/latest/download/manifest.json"
         val RESOLUTIONS = listOf(540, 720, 1080, 1440, 2160)
         val MESH_SIZES = listOf(32 to 24, 48 to 32, 64 to 48, 96 to 72, 128 to 96)
     }

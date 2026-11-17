@@ -35,7 +35,7 @@
     <string name="osd_pack_removed">Pack %1$s removed</string>
     <string name="osd_library">%1$s — %2$d presets</string>
     <string name="osd_title_howto">From a computer connected to the TV:\n%1$s\nthen restart Lactea</string>
-    <string name="osd_setup_howto">From a computer connected to the TV:\nAutomatic opening: %1$s\nScreensaver: %2$s</string>
+    <string name="osd_setup_howto">From a computer connected to the TV:\nAutomatic opening: %1$s</string>
 
     <!-- Options: common -->
     <string name="menu_options">Options</string>
@@ -105,8 +105,8 @@
     <string name="info_cover">Current cover</string>
     <string name="info_cover_presets">Compatible presets</string>
 
-    <!-- Options: Automatic launch and screensaver -->
-    <string name="h_auto">Automatic launch and screensaver</string>
+    <!-- Options: Automatic launch -->
+    <string name="h_auto">Automatic launch</string>
     <string name="opt_autolaunch">Open Lactea when music plays</string>
     <string name="never">Never</string>
     <string name="after_s">after %1$d s</string>
@@ -114,7 +114,6 @@
     <string name="opt_music_only">Music apps only</string>
     <string name="opt_autoclose">Close when the music stops</string>
     <string name="info_overlay">Automatic opening permission</string>
-    <string name="info_screensaver">Current screensaver</string>
     <string name="btn_setup_howto">How to set it up?</string>
 
     <!-- Options: Preset management -->
@@ -276,4 +275,5 @@
     <!-- Interface language -->
     <string name="opt_language">Language</string>
     <string name="lang_system">System</string>
+    <string name="osd_pack_updates">Preset pack updates available: %1$d\n(Options › Preset management › Preset packs to download)</string>
 </resources>

@@ -30,7 +30,7 @@
     <string name="osd_pack_removed">Paket %1$s entfernt</string>
     <string name="osd_library">%1$s — %2$d Presets</string>
     <string name="osd_title_howto">Von einem Computer, der mit dem TV verbunden ist:\n%1$s\ndann Lactea neu starten</string>
-    <string name="osd_setup_howto">Von einem Computer, der mit dem TV verbunden ist:\nAutomatisches Öffnen: %1$s\nBildschirmschoner: %2$s</string>
+    <string name="osd_setup_howto">Von einem Computer, der mit dem TV verbunden ist:\nAutomatisches Öffnen: %1$s</string>
 
     <!-- Options: common -->
     <string name="menu_options">Optionen</string>
@@ -100,8 +100,8 @@
     <string name="info_cover">Aktuelles Cover</string>
     <string name="info_cover_presets">Passende Presets</string>
 
-    <!-- Options: Automatic launch and screensaver -->
-    <string name="h_auto">Autostart und Bildschirmschoner</string>
+    <!-- Options: Automatic launch -->
+    <string name="h_auto">Autostart</string>
     <string name="opt_autolaunch">Lactea öffnen, wenn Musik läuft</string>
     <string name="never">Nie</string>
     <string name="after_s">nach %1$d s</string>
@@ -109,7 +109,6 @@
     <string name="opt_music_only">Nur Musik-Apps</string>
     <string name="opt_autoclose">Schließen, wenn Musik endet</string>
     <string name="info_overlay">Berechtigung für Autostart</string>
-    <string name="info_screensaver">Aktueller Bildschirmschoner</string>
     <string name="btn_setup_howto">Wie einrichten?</string>
 
     <!-- Options: Preset management -->
@@ -271,4 +270,5 @@
     <!-- Interface language -->
     <string name="opt_language">Sprache</string>
     <string name="lang_system">System</string>
+    <string name="osd_pack_updates">Updates für Preset-Pakete verfügbar: %1$d\n(Optionen › Preset-Verwaltung › Preset-Pakete herunterladen)</string>
 </resources>

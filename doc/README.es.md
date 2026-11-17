@@ -41,7 +41,6 @@ Versión actual: **0.1.0, en desarrollo**. Todavía no se ha publicado ninguna v
 - **Título y portada del álbum** en pantalla cuando cambia la canción; la portada también puede
   aparecer dentro de algunas visualizaciones.
 - **Se abre solo** cuando empieza la música y se cierra cuando se detiene (opcional).
-- **Salvapantallas**: Lactea puede ser el salvapantallas de la TV.
 - **Pensado para el mando**: cada acción tiene su tecla, y cada tecla se puede cambiar.
 - **Hasta 4K**, con un modo Auto que elige la mejor resolución para cada preset.
 - **Fluido incluso en TV modestas**: Lactea sabe cuánto pesa cada preset, puede saltarse los lentos
@@ -80,10 +79,6 @@ en la TV):
 |---|---|---|
 | Título y portada de la canción | Acceso a las notificaciones | `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener` |
 | Se abre solo cuando suena música | Mostrar sobre otras apps | `adb shell appops set fr.lactea SYSTEM_ALERT_WINDOW allow` |
-| Lactea como salvapantallas | — | `adb shell settings put secure screensaver_components fr.lactea/fr.lactea.dream.LacteaDreamService` |
-
-Para volver a tu salvapantallas anterior, anota primero su nombre con
-`adb shell settings get secure screensaver_components` y vuelve a ponerlo de la misma manera.
 
 ## Mando a distancia
 
@@ -117,7 +112,7 @@ Mantén pulsado **OK** para abrir las opciones. Están agrupadas por tema:
   nuevo preset con cada canción.
 - **Portada del álbum**: con el título, latiendo al ritmo, dentro de las visualizaciones, búsqueda
   en internet cuando la app de música no da portada.
-- **Inicio automático y salvapantallas**: abrir cuando suena música (tras cuánto tiempo, solo apps
+- **Inicio automático**: abrir cuando suena música (tras cuánto tiempo, solo apps
   de música), cerrar cuando la música se detiene.
 - **Gestión de presets**: navegador, excluir los presets lentos, packs para descargar, probar los
   presets en esta TV (ver más abajo), reiniciar las mediciones, vaciar la lista de exclusiones.
@@ -152,9 +147,7 @@ la prueba, y puede continuar donde se quedó.
 
 ## Limitaciones conocidas
 
-- El salvapantallas todavía no se ha probado en una TV real.
 - Cuando el sonido va a auriculares o altavoces **Bluetooth**, es posible que Lactea no lo reciba.
-- Para descargar los packs, el repositorio de GitHub tiene que ser público, y todavía no lo es.
 - Algunos presets pierden parte de su animación: 7 por errores que el propio MilkDrop rechazaba,
   7 por una [diferencia que aún hay que corregir en projectM](https://github.com/projectM-visualizer/projectm-eval/issues/23).
 

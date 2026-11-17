@@ -3,8 +3,9 @@
 Usage:  python -I tools/make_packs.py [output_dir] [--version N]
 
 Source: third_party/presets-cream-of-the-crop (one top-level folder per category).
-Output: <output_dir>/lactea-pack-<id>.zip + manifest.json, ready to attach to a GitHub
-release (the app reads releases/latest/download/manifest.json) or to serve over HTTP.
+Output: <output_dir>/lactea-pack-<id>.zip + manifest.json. By default the packs/ folder of the
+repository, which the app reads from GitHub (raw.githubusercontent.com/…/main/packs/manifest.json).
+Bump --version when a pack's content changes, so the app offers the update.
 """
 import argparse
 import hashlib
@@ -68,7 +69,7 @@ def build(out: Path, version: str) -> None:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("output", nargs="?", default=str(ROOT / "dist" / "packs"))
+    ap.add_argument("output", nargs="?", default=str(ROOT / "packs"))
     ap.add_argument("--version", default="1")
     a = ap.parse_args()
     build(Path(a.output), a.version)

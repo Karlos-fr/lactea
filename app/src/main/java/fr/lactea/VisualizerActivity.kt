@@ -30,7 +30,6 @@ import fr.lactea.input.Trigger
 import android.graphics.Bitmap
 import fr.lactea.cover.CoverManager
 import fr.lactea.cover.CoverPresets
-import fr.lactea.dream.LacteaDreamService
 import fr.lactea.nowplaying.AutoLaunch
 import fr.lactea.nowplaying.NowPlaying
 import fr.lactea.packs.PackManager
@@ -140,6 +139,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         buildViews()
         applyResolution()
         if (playlist.all().isEmpty()) osd.show(getString(R.string.osd_no_presets), 5000)
+        refreshCatalog(notify = true) // the pack list follows the repository by itself
         // Extras of the launching intent (bench, preset…): onNewIntent only sees later ones.
         applyDevExtras(intent)
     }
@@ -474,10 +474,9 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Info(getString(R.string.info_overlay)) {
                 getString(if (android.provider.Settings.canDrawOverlays(this)) R.string.granted else R.string.missing)
             },
-            MenuItem.Info(getString(R.string.info_screensaver)) { screensaverLabel() },
             MenuItem.Button(getString(R.string.btn_setup_howto)) {
                 osd.show(getString(R.string.osd_setup_howto,
-                    "adb shell appops set $packageName SYSTEM_ALERT_WINDOW allow", LacteaDreamService.ADB_ENABLE), 15000)
+                    "adb shell appops set $packageName SYSTEM_ALERT_WINDOW allow"), 15000)
             },
 
             MenuItem.Header(getString(R.string.h_manage)),
@@ -503,7 +502,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             },
             MenuItem.Button(getString(R.string.btn_packs), { getString(R.string.n_installed, packs.installedIds().size) }) {
                 menu?.push(packsScreen())
-                if (packs.catalog.isEmpty()) refreshCatalog()
+                refreshCatalog()
             },
 
             MenuItem.Header(getString(R.string.h_audio)),
@@ -615,7 +614,19 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         is PackManager.State.Error -> getString(R.string.state_error, s.message)
     }
 
-    private fun refreshCatalog() = packs.refreshCatalog { ui.post { menu?.rebuild() } }
+    /**
+     * Reloads the pack list from the GitHub repository. At start-up ([notify]), says when packs
+     * installed on this TV have a newer version.
+     */
+    private fun refreshCatalog(notify: Boolean = false) = packs.refreshCatalog {
+        ui.post {
+            menu?.rebuild()
+            val updates = packs.updatesAvailable()
+            if (notify && updates.isNotEmpty() && panel == null) {
+                osd.show(getString(R.string.osd_pack_updates, updates.size), 6000)
+            }
+        }
+    }
 
     private fun installPack(p: PackManager.Pack) {
         osd.show(getString(R.string.osd_downloading, p.name))
@@ -842,13 +853,6 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         Log.i(TAG, "Playback ${if (playing) "playing" else "paused"}")
         ui.removeCallbacks(autoClose)
         if (!playing && autoLaunched && settings.autoCloseWhenMusicStops) ui.postDelayed(autoClose, AUTO_CLOSE_MS)
-    }
-
-    private fun screensaverLabel(): String {
-        val current = runCatching {
-            android.provider.Settings.Secure.getString(contentResolver, "screensaver_components")
-        }.getOrNull()?.substringBefore(',') ?: return getString(R.string.unknown)
-        return if (current.startsWith("$packageName/")) "Lactea ✓" else current.substringBefore('/')
     }
 
     private fun showTitle(t: NowPlaying.Track) {

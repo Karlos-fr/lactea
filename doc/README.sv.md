@@ -40,7 +40,6 @@ Aktuell version: **0.1.0, under utveckling**. Ingen version har publicerats än.
 - **Låttitel och skivomslag** på skärmen när låten byts. Omslaget kan också synas inuti vissa
   visualiseringar.
 - **Öppnas av sig själv** när musik börjar spelas, och stängs när den slutar (valfritt).
-- **Skärmsläckare**: Lactea kan vara tv:ns skärmsläckare.
 - **Gjord för fjärrkontrollen**: varje funktion har en knapp, och varje knapp kan ändras.
 - **Upp till 4K**, med ett Auto-läge som väljer bästa upplösning för varje preset.
 - **Jämn även på enklare tv-apparater**: Lactea vet hur tunga presetsen är, kan hoppa över de
@@ -78,10 +77,6 @@ tv:n):
 |---|---|---|
 | Låttitel och skivomslag | Åtkomst till aviseringar | `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener` |
 | Öppnas av sig själv när musik spelas | Visa ovanpå andra appar | `adb shell appops set fr.lactea SYSTEM_ALERT_WINDOW allow` |
-| Lactea som skärmsläckare | — | `adb shell settings put secure screensaver_components fr.lactea/fr.lactea.dream.LacteaDreamService` |
-
-Vill du gå tillbaka till din tidigare skärmsläckare? Notera först dess namn med
-`adb shell settings get secure screensaver_components`, och sätt sedan tillbaka den på samma sätt.
 
 ## Fjärrkontroll
 
@@ -116,7 +111,7 @@ Håll in **OK** för att öppna **Alternativ**. De är grupperade efter tema:
   varje låt.
 - **Skivomslag**: med titeln, pulserar i takt, inuti visualiseringarna, sökning på nätet
   när musikappen inte ger något omslag.
-- **Automatisk start och skärmsläckare**: öppnas när musik
+- **Automatisk start**: öppnas när musik
   spelas (efter hur lång tid, bara musikappar), stängs när musiken slutar.
 - **Hantera presets**: bläddrare, undanta långsamma presets, paket att
   ladda ner, testa presetsen på den här tv:n (se nedan), nollställ mätningarna, töm listan över
@@ -152,10 +147,8 @@ testet, och det kan fortsätta där det slutade.
 
 ## Kända begränsningar
 
-- Skärmsläckaren har inte testats på en riktig tv än.
 - När ljudet går till hörlurar eller högtalare via **Bluetooth** kan det hända att Lactea inte tar
   emot det.
-- För att ladda ner paketen måste GitHub-förrådet vara offentligt, vilket det inte är än.
 - Några presets tappar en del av sin animation: 7 på grund av fel som MilkDrop själv avvisade,
   7 på grund av en [skillnad som ännu ska rättas i projectM](https://github.com/projectM-visualizer/projectm-eval/issues/23).
 
