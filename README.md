@@ -1,52 +1,179 @@
-# Lactea
+<p align="center">
+  <img src="images/header.png" alt="Lactea" width="760" />
+</p>
 
-Visualiseur musical façon MilkDrop pour **Android TV / Google TV**, basé sur
-[projectM](https://github.com/projectM-visualizer/projectm). Il réagit à toute la musique jouée sur
-la TV (Spotify, Deezer, YouTube Music…) en capturant le mixage audio global d'Android.
+<p align="center">
+  <a href="README.md"><img src="images/flags/flag-gb.svg" alt="" width="18" height="12" /> English</a>
+  /
+  <a href="doc/README.de.md"><img src="images/flags/flag-de.svg" alt="" width="18" height="12" /> Deutsch</a>
+  /
+  <a href="doc/README.it.md"><img src="images/flags/flag-it.svg" alt="" width="18" height="12" /> Italiano</a>
+  /
+  <a href="doc/README.es.md"><img src="images/flags/flag-es.svg" alt="" width="18" height="12" /> Español</a>
+  /
+  <a href="doc/README.sv.md"><img src="images/flags/flag-se.svg" alt="" width="18" height="12" /> Svenska</a>
+  /
+  <a href="doc/README.fr.md"><img src="images/flags/flag-fr.svg" alt="" width="18" height="12" /> Français</a>
+</p>
 
-Voir [PLAN.md](PLAN.md) pour la feuille de route.
+<p align="center"><img src="images/screenshots.jpg" alt="Lactea on a TV" width="760" /></p>
 
-## Structure
+# Lactea — music visualizer for Android TV
 
-| Dossier | Contenu |
+Lactea turns the music played on your TV into psychedelic visuals, like the famous **MilkDrop**
+plugin of Winamp. It reacts to **any app that plays sound**: Spotify, Deezer, YouTube Music, Tidal,
+Plex… You keep using your music app as usual; Lactea listens to what the TV plays and draws.
+
+It is built on [projectM](https://github.com/projectM-visualizer/projectm), the open-source
+reimplementation of MilkDrop, and plays the original MilkDrop presets: almost **10,000
+visualizations** made by the MilkDrop community over twenty years.
+
+Current version: **0.1.0, in development**. No release has been published yet. The interface is in
+French for now.
+
+## Features
+
+- **Reacts to all the music played on the TV**, whatever the app, including when the sound goes to
+  a soundbar over HDMI (ARC / eARC).
+- **9,857 presets**: 66 built in, the rest in 10 themed packs to download from the options.
+  Every preset of the collection loads, thanks to [fixes made to projectM](#how-lactea-was-made).
+- **Track title and album cover** on screen when the song changes; the cover can also appear
+  inside some visualizations.
+- **Opens by itself** when music starts playing, and closes when it stops (optional).
+- **Screensaver**: Lactea can be the TV's screensaver.
+- **Made for the remote**: every action has a key, and every key can be changed.
+- **Up to 4K**, with an Auto mode that picks the best resolution for each preset.
+- **Smooth on modest TVs**: Lactea knows how heavy each preset is, can skip the slow ones, and
+  chooses between a fade and a cut so that transitions don't stutter.
+- **Favourites and exclusions**, a preset browser, a shuffle mode and a lock on the current preset.
+
+## Requirements
+
+- A TV or box running **Android TV or Google TV**, Android 8.0 or later, with OpenGL ES 3.0.
+- Tested on a **Sony BRAVIA** (Google TV, Mali-G57 graphics chip).
+- About 8 MB for the app, and about 30 MB to download for all the preset packs.
+
+## Install
+
+1. Download `Lactea-….apk` from the [Releases](../../releases) page.
+2. Install it on the TV, for example with a file manager app from a USB stick, or from a computer:
+   `adb install Lactea-….apk`.
+3. Start **Lactea** from the TV's app list.
+4. Lactea asks for the **microphone permission**: accept it. Android requires it to let an app
+   follow the sound the TV plays. Lactea uses no microphone and records nothing: it only reads
+   the sound level, many times per second, to animate the visuals.
+
+Then play some music in any app and come back to Lactea.
+
+### Optional permissions
+
+Some features need permissions that Android TV does not ask for on screen. Give them from the TV
+settings if your TV offers them, or once from a computer with
+[adb](https://developer.android.com/tools/adb) (developer options and debugging enabled on the
+TV):
+
+| Feature | Permission | From a computer |
+|---|---|---|
+| Track title and album cover | Notification access | `adb shell cmd notification allow_listener fr.lactea/fr.lactea.nowplaying.NowPlayingListener` |
+| Opens by itself when music plays | Display over other apps | `adb shell appops set fr.lactea SYSTEM_ALERT_WINDOW allow` |
+| Lactea as screensaver | — | `adb shell settings put secure screensaver_components fr.lactea/fr.lactea.dream.LacteaDreamService` |
+
+To go back to your previous screensaver, note its name first with
+`adb shell settings get secure screensaver_components`, and put it back the same way.
+
+## Remote control
+
+| Key | Action |
 |---|---|
-| `app/` | Application Android (Kotlin) + pont JNI (`app/src/main/cpp`) |
-| `third_party/projectm` | libprojectM 4.1.8, notre version corrigée ([Karlos-fr/projectm](https://github.com/Karlos-fr/projectm), branche `lactea/4.1.8`, LGPL) : équations lues comme MilkDrop, blocs invalides ignorés, messages d’erreur |
-| `third_party/presets-cream-of-the-crop` | Collection de presets (sous-module) |
-| `third_party/presets-milkdrop-texture-pack` | Textures utilisées par les presets (sous-module) |
-| `spike-visualizer/` | Test initial de capture audio (étape 0) |
-| `tools/` | Banc d'essai FPS (`bench.sh`, `bench_report.py`) |
-| `logos/` | Pistes de logo |
+| ◀ ▶ | Previous / next preset |
+| ▲ ▼ | Audio sensitivity + / − |
+| OK | Show the track title |
+| **Hold OK** | **Options** (always, cannot be changed) |
+| 🔴 Red | Lock the current preset |
+| 🟢 Green | Shuffle on / off |
+| 🟡 Yellow | Add to / remove from favourites — hold: exclude the preset |
+| 🔵 Blue or Menu | Options — hold Blue: preset browser |
+| Info | Name of the preset — hold: list of the keys |
+| Channel + / − | Next / previous song |
+| Play / Pause, ⏭ ⏮ | Sent to your music app |
+| 0 | FPS counter |
+| Back | Close a panel, then leave Lactea |
 
-## Compiler
+Every key can be changed in **Options › Remote control**, with a short or a long press.
 
-```bash
-git clone --recurse-submodules <repo>
-./gradlew assembleDebug
-```
+## Options
 
-Prérequis : SDK Android (plateforme 37), NDK 30.0.16248370, CMake 4.1.2, JDK 17+.
+Hold **OK** to open the options. They are grouped by theme:
 
-## Installer sur la TV
+- **Visual**: render resolution (from 540p to 4K, or Auto), highest resolution in Auto mode,
+  frames per second (30 or 60), mesh detail, FPS counter.
+- **Presets and transitions**: how long each preset stays, fade or cut (Auto chooses for each
+  preset), cuts on the beat, shuffle, favourites only, preset name on change.
+- **Track title**: shown on song change, how long, where, how big; new preset on each song.
+- **Album cover**: with the title, pulsing with the beat, inside the visualizations, online search
+  when the music app gives no cover.
+- **Automatic launch and screensaver**: open when music plays (after how long, music apps only),
+  close when the music stops.
+- **Preset management**: browser, exclude slow presets, packs to download, test the presets on this
+  TV (see below), reset the measures, empty the exclusion list.
+- **Audio**: sensitivity, capture mode (constant level, or following the volume).
+- **Remote control**: change the keys.
 
-```bash
-adb install -r -g app/build/outputs/apk/debug/app-debug.apk
-```
+## Preset packs
 
-Touches par défaut (reconfigurables dans Options › Télécommande) : ◀ ▶ preset · ▲ ▼ sensibilité audio ·
-🔴 verrou · 🟢 aléatoire · 🟡 favori (long : exclure) · 🔵 options (long : navigateur) · Info nom du preset
-(long : aide) · 0 compteur FPS · **appui long OK : options (toujours)**.
+Lactea comes with 66 presets. The rest of the collection is split into 10 packs (Dancer, Drawing,
+Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform), to download from
+**Options › Preset management › Preset packs**. Install only the themes you like, and remove them
+at any time.
 
-## Packs de presets
+## Slow presets
 
-```bash
-python -I tools/make_packs.py          # → dist/packs/*.zip + manifest.json
-```
+Some presets ask a lot of the graphics chip. On the Sony BRAVIA used for testing, in 720p:
 
-Joindre le contenu de `dist/packs/` à une release GitHub : l'appli lit
-`releases/latest/download/manifest.json` (dépôt public requis).
+| | Presets | Share |
+|---|---|---|
+| Smooth (55 frames per second or more) | 6,318 | 64 % |
+| Correct (45–55) | 736 | 7 % |
+| Heavy (20–45) | 1,364 | 14 % |
+| Too heavy (under 20) | 1,439 | 15 % |
 
-## Licences
+Lactea ships with these measures, so **Exclude slow presets** works from the first launch. As each
+preset plays, Lactea measures it again on your TV and uses its own figures.
 
-- libprojectM : LGPL 2.1, utilisée sans modification, liée dynamiquement.
-- Presets : voir la note de licence de *Cream of the Crop* (présumés libres, auteurs crédités dans les noms de fichiers).
+To measure every preset on your TV in one go: **Options › Preset management › Test the presets on
+this TV**. Choose everything or one theme; about 3 seconds per preset (about 8 hours for the whole
+collection). Leave the music playing; any key stops the test, and it can resume where it stopped.
+
+## Known limitations
+
+- The interface is in **French only** for now.
+- The screensaver has not been tested on a real TV yet.
+- When the sound goes to **Bluetooth** headphones or speakers, Lactea may not receive it.
+- Downloading the packs needs the GitHub repository to be public, which is not the case yet.
+- A few presets lose part of their animation: 7 because of errors that MilkDrop itself rejected,
+  7 because of a [difference still to be fixed in projectM](https://github.com/projectM-visualizer/projectm-eval/issues/23).
+
+## How Lactea was made
+
+- **projectM, corrected.** Lactea uses its own version of projectM 4.1.8:
+  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). Testing the 9,857 presets on a TV
+  showed that 67 of them did not load at all, because projectM read their equations differently
+  from MilkDrop. The fix follows MilkDrop's source code and was checked on the 144,906 equation
+  blocks of the collection, without any regression. It has been proposed to the projectM team
+  ([issue](https://github.com/projectM-visualizer/projectm/issues/1083),
+  [pull request](https://github.com/projectM-visualizer/projectm/pull/1084)).
+- **Measured on the TV.** Each preset was loaded and timed on the TV, which gives the figures above.
+- **AI, openly.** Lactea was written with an AI coding agent, **Anthropic Claude** (Claude Code),
+  and its logo was drawn with **OpenAI Codex**. A human leads the project, tests on the TV and
+  decides.
+
+To build Lactea yourself: [doc/BUILDING.md](doc/BUILDING.md).
+
+## Credits and licences
+
+- [projectM](https://github.com/projectM-visualizer/projectm): LGPL 2.1. Lactea's modified
+  version is published at [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm).
+- Presets: [Cream of the Crop](https://github.com/projectM-visualizer/presets-cream-of-the-crop),
+  collected and sorted by ISOSCELES; each preset belongs to its authors, named in its file name.
+- Textures: [MilkDrop texture pack](https://github.com/projectM-visualizer/presets-milkdrop-texture-pack).
+- MilkDrop was created by Ryan Geiss.
