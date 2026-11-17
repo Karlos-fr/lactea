@@ -132,12 +132,18 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         buildViews()
         applyResolution()
         if (playlist.all().isEmpty()) osd.show("Aucun preset trouvé", 5000)
+        // Extras of the launching intent (bench, preset…): onNewIntent only sees later ones.
+        applyDevExtras(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         applyIntent(intent)
         applyResolution()
+        applyDevExtras(intent)
+    }
+
+    private fun applyDevExtras(intent: Intent) {
         // Dev/test: am start -n fr.lactea/.VisualizerActivity --es preset "Category/name"
         //       or --es preset_b64 <base64 of the key> (names with quotes, parentheses…)
         val presetKey = intent.getStringExtra("preset")
@@ -146,7 +152,10 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             }
         // Benchmark: --es bench all | <category prefix>   (results: files/bench/bench.tsv, resumable)
         intent.getStringExtra("bench")?.let { startBench(it) }
-        if (intent.getBooleanExtra("bench_stop", false)) renderer.post { renderer.stopBench() }
+        if (intent.getBooleanExtra("bench_stop", false)) {
+            benchFilter = null
+            renderer.post { renderer.stopBench() }
+        }
         presetKey?.let { key ->
             playlist.all().firstOrNull { it.key == key }?.let { e -> renderer.post { renderer.jumpTo(e) } }
                 ?: Log.w(TAG, "Unknown preset $key")
@@ -176,6 +185,11 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         nowPlaying.start()
         AutoLaunch.visualizerVisible = true
         ui.post(tick)
+        // A benchmark interrupted by leaving the app (settings, Home…) resumes where it stopped.
+        if (benchPaused) {
+            benchPaused = false
+            benchFilter?.let { startBench(it) }
+        }
     }
 
     override fun onPause() {
@@ -188,6 +202,11 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         audio.stop()
         glView.onPause()
         stats.save()
+        if (benchFilter != null) {
+            benchPaused = true
+            benchRunning = false
+            renderer.post { renderer.abortBench() }
+        }
     }
 
     override fun onStop() {
@@ -581,6 +600,9 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     private var benchRunning = false
+    /** Filter of the benchmark in progress, kept until it completes or is stopped. */
+    private var benchFilter: String? = null
+    private var benchPaused = false
 
     /**
      * Loads every preset (matching [filter]) in turn at 720p / 60 FPS max, without touching the
@@ -588,6 +610,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
      * in the file are skipped, so an interrupted run resumes where it stopped.
      */
     private fun startBench(filter: String) {
+        benchFilter = filter
         io.execute {
             val out = java.io.File(filesDir, "bench/bench.tsv").apply { parentFile?.mkdirs() }
             val done = if (out.exists()) out.readLines().mapTo(HashSet()) { it.substringBefore('\t') } else emptySet()
@@ -601,7 +624,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 renderer.post {
                     renderer.startBench(LacteaRenderer.Bench(entries, out, settleMs = 1000, measureMs = 2000) { n ->
                         Log.i(TAG, "BENCH done: $n presets")
-                        ui.post { benchRunning = false; applyResolution(); osd.show("Banc d'essai terminé ($n presets)", 8000) }
+                        ui.post { benchRunning = false; benchFilter = null; applyResolution(); osd.show("Banc d'essai terminé ($n presets)", 8000) }
                     })
                 }
             }

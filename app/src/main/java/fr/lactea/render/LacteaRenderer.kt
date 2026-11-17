@@ -78,6 +78,7 @@ class LacteaRenderer(
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         if (handle != 0L) NativeEngine.destroy(handle)
+        bench = null // tied to the old projectM instance; the activity restarts it
         handle = NativeEngine.create(texturePaths.firstOrNull() ?: "")
         if (handle == 0L) {
             Log.e(TAG, "projectM could not be created")
@@ -165,6 +166,17 @@ class LacteaRenderer(
         NativeEngine.setHardCut(handle, false, 0f)
         NativeEngine.setFps(handle, 60)
         benchLoad()
+    }
+
+    /** Drops the benchmark without reporting it done (the app was left; it restarts it on return). */
+    fun abortBench() {
+        if (bench == null) return
+        bench = null
+        stats.save()
+        if (handle != 0L) {
+            NativeEngine.setPresetLocked(handle, locked)
+            applySettings()
+        }
     }
 
     fun stopBench() {
