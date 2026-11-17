@@ -40,7 +40,7 @@
     <!-- Options: common -->
     <string name="menu_options">Options</string>
     <string name="menu_version">Lactea %1$s</string>
-    <string name="menu_footer">▲▼ move   ◀▶ change   OK confirm   Back: go back</string>
+    <string name="menu_footer">"▲▼ move   ◀▶ change   OK confirm   Back: go back"</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="confirm_again">OK again to confirm</string>
@@ -123,7 +123,7 @@
     <string name="opt_exclude_slow">Exclude slow presets</string>
     <string name="opt_slow_threshold">“Slow” threshold (FPS at 540p)</string>
     <string name="info_summary">Summary</string>
-    <string name="summary_value">%1$d ★  %2$d ✕  %3$d 🐢  %4$d measured</string>
+    <string name="summary_value">"%1$d ★  %2$d ✕  %3$d 🐢  %4$d measured"</string>
     <string name="btn_test">Test the presets on this TV</string>
     <string name="info_reference">Reference measures</string>
     <string name="reference_value">%1$d presets (%2$s)</string>
@@ -171,7 +171,7 @@
     <string name="osd_bench_interrupted">Test stopped — what was measured is kept.\nTo continue: Options › Preset management › Test the presets on this TV</string>
     <string name="osd_bench_start">Test of %1$d presets — about %2$s\nLeave the music playing. Any key stops the test.</string>
     <string name="osd_bench_done">Test finished: %1$d presets measured</string>
-    <string name="hud_bench">Testing presets: %1$d / %2$d  ·  about %3$s left\nAny key stops it (it can resume from the options)</string>
+    <string name="hud_bench">"Testing presets: %1$d / %2$d  ·  about %3$s left\nAny key stops it (it can resume from the options)"</string>
     <string name="hud_auto">" auto"</string>
     <string name="hud_fade">"  fade"</string>
     <string name="hud_line2">avg %1$.1f ms · max %2$.0f ms · audio %3$.2f</string>
@@ -240,7 +240,7 @@
     <string name="info_disk">Space used</string>
     <string name="size_mb">%1$.1f MB</string>
     <string name="h_packs">Packs</string>
-    <string name="pack_label">%1$s  (%2$d presets)</string>
+    <string name="pack_label">"%1$s  (%2$d presets)"</string>
     <string name="pack_install">Install — %1$.1f MB</string>
     <string name="pack_update">Update (v%1$s → v%2$s)</string>
     <string name="pack_installed">Installed ✓ (OK: remove)</string>
@@ -262,8 +262,8 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Preset browser</string>
-    <string name="browser_footer">◀▶ category   OK play   🟡 favourite   🔴 exclude   Back close</string>
-    <string name="browser_subtitle">Category: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow</string>
+    <string name="browser_footer">"◀▶ category   OK play   🟡 favourite   🔴 exclude   Back close"</string>
+    <string name="browser_subtitle">"Category: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow"</string>
     <string name="browser_all">All</string>
 
     <!-- Key help -->

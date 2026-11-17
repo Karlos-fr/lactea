@@ -29,15 +29,33 @@ object Lang {
     private fun chosen(context: Context): String =
         context.getSharedPreferences("lactea", Context.MODE_PRIVATE).getString("language", "") ?: ""
 
+    /** The chosen languages: the system's when none is chosen. */
+    fun locales(context: Context): LocaleList {
+        val tag = chosen(context)
+        return if (tag.isEmpty()) Resources.getSystem().configuration.locales
+            else LocaleList(Locale.forLanguageTag(tag))
+    }
+
     /** [base] with the chosen language applied (the system's when none is chosen). */
     fun wrap(base: Context): Context {
-        val tag = chosen(base)
-        val locales = if (tag.isEmpty()) Resources.getSystem().configuration.locales
-            else LocaleList(Locale.forLanguageTag(tag))
+        val locales = locales(base)
         if (base.resources.configuration.locales == locales) return base
         Locale.setDefault(locales[0])
         val config = Configuration(base.resources.configuration)
         config.setLocales(locales)
         return base.createConfigurationContext(config)
+    }
+
+    /**
+     * Switches already loaded [resources] to the chosen language, without recreating the screen:
+     * recreating it reloads the whole preset library on the main thread (several seconds).
+     */
+    @Suppress("DEPRECATION")
+    fun apply(context: Context, resources: Resources) {
+        val locales = locales(context)
+        Locale.setDefault(locales[0])
+        val config = Configuration(resources.configuration)
+        config.setLocales(locales)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 }

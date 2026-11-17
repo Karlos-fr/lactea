@@ -142,20 +142,17 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         if (playlist.all().isEmpty()) osd.show(getString(R.string.osd_no_presets), 5000)
         // Extras of the launching intent (bench, preset…): onNewIntent only sees later ones.
         applyDevExtras(intent)
-        // Back from a language change: show the options again, on the language line.
-        if (reopenOptions) {
-            reopenOptions = false
-            ui.post { openOptions() }
-        }
     }
 
-    /** Applies a new interface language: texts are reloaded by recreating the screen. */
+    /** Applies a new interface language at once: the options panel is rebuilt in that language. */
     private fun changeLanguage(tag: String) {
         if (tag == settings.language) return
         settings.language = tag
-        L.init(Lang.wrap(applicationContext))
-        reopenOptions = true
-        recreate()
+        Lang.apply(this, resources)
+        Lang.apply(this, applicationContext.resources)
+        L.init(applicationContext)
+        restartAudio() // status text in the new language
+        ui.post { openOptions() }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -973,8 +970,6 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         private const val REQ_AUDIO = 1
         private const val AUTO_CLOSE_MS = 30_000L
         const val EXTRA_AUTO_LAUNCHED = "auto_launched"
-        /** Set before recreating the screen for a language change. */
-        private var reopenOptions = false
         private val VOLUME_KEYS = setOf(KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
         /** Same keys as KeyEvent.isMediaSessionKey(), which only exists from Android 12 (API 31). */
         private val MEDIA_KEYS = setOf(

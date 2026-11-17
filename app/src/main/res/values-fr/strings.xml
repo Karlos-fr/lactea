@@ -33,7 +33,7 @@
     <!-- Options : commun -->
     <string name="menu_options">Options</string>
     <string name="menu_version">Lactea %1$s</string>
-    <string name="menu_footer">▲▼ naviguer   ◀▶ modifier   OK valider   Retour : revenir</string>
+    <string name="menu_footer">"▲▼ naviguer   ◀▶ modifier   OK valider   Retour : revenir"</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="confirm_again">OK à nouveau pour confirmer</string>
@@ -116,7 +116,7 @@
     <string name="opt_exclude_slow">Exclure les presets lents</string>
     <string name="opt_slow_threshold">Seuil « lent » (FPS en 540p)</string>
     <string name="info_summary">Bilan</string>
-    <string name="summary_value">%1$d ★  %2$d ✕  %3$d 🐢  %4$d mesurés</string>
+    <string name="summary_value">"%1$d ★  %2$d ✕  %3$d 🐢  %4$d mesurés"</string>
     <string name="btn_test">Tester les presets sur cette TV</string>
     <string name="info_reference">Mesures de référence</string>
     <string name="reference_value">%1$d presets (%2$s)</string>
@@ -164,7 +164,7 @@
     <string name="osd_bench_interrupted">Test interrompu — ce qui a été mesuré est conservé.\nPour continuer : Options › Gestion des presets › Tester les presets sur cette TV</string>
     <string name="osd_bench_start">Test de %1$d presets — environ %2$s\nLaissez la musique jouer. Une touche interrompt le test.</string>
     <string name="osd_bench_done">Test terminé : %1$d presets mesurés</string>
-    <string name="hud_bench">Test des presets : %1$d / %2$d  ·  reste environ %3$s\nUne touche pour interrompre (reprise possible depuis les options)</string>
+    <string name="hud_bench">"Test des presets : %1$d / %2$d  ·  reste environ %3$s\nUne touche pour interrompre (reprise possible depuis les options)"</string>
     <string name="hud_auto">" auto"</string>
     <string name="hud_fade">"  fondu"</string>
     <string name="hud_line2">moy %1$.1f ms · max %2$.0f ms · audio %3$.2f</string>
@@ -233,7 +233,7 @@
     <string name="info_disk">Espace utilisé</string>
     <string name="size_mb">%1$.1f Mo</string>
     <string name="h_packs">Packs</string>
-    <string name="pack_label">%1$s  (%2$d presets)</string>
+    <string name="pack_label">"%1$s  (%2$d presets)"</string>
     <string name="pack_install">Installer — %1$.1f Mo</string>
     <string name="pack_update">Mettre à jour (v%1$s → v%2$s)</string>
     <string name="pack_installed">Installé ✓ (OK : supprimer)</string>
@@ -255,8 +255,8 @@
 
     <!-- Navigateur de presets -->
     <string name="browser_title">Navigateur de presets</string>
-    <string name="browser_footer">◀▶ catégorie   OK lire   🟡 favori   🔴 exclure   Retour fermer</string>
-    <string name="browser_subtitle">Catégorie : %1$s  (%2$d presets)   ★ favori   ✕ exclu   🐢 lent</string>
+    <string name="browser_footer">"◀▶ catégorie   OK lire   🟡 favori   🔴 exclure   Retour fermer"</string>
+    <string name="browser_subtitle">"Catégorie : %1$s  (%2$d presets)   ★ favori   ✕ exclu   🐢 lent"</string>
     <string name="browser_all">Toutes</string>
 
     <!-- Aide des touches -->
