@@ -11,7 +11,7 @@ Voir [PLAN.md](PLAN.md) pour la feuille de route.
 | Dossier | Contenu |
 |---|---|
 | `app/` | Application Android (Kotlin) + pont JNI (`app/src/main/cpp`) |
-| `third_party/projectm` | libprojectM 4.1.8 (sous-module, LGPL, non modifié) |
+| `third_party/projectm` | libprojectM 4.1.8, notre version corrigée ([Karlos-fr/projectm](https://github.com/Karlos-fr/projectm), branche `lactea/4.1.8`, LGPL) : équations lues comme MilkDrop, blocs invalides ignorés, messages d’erreur |
 | `third_party/presets-cream-of-the-crop` | Collection de presets (sous-module) |
 | `third_party/presets-milkdrop-texture-pack` | Textures utilisées par les presets (sous-module) |
 | `spike-visualizer/` | Test initial de capture audio (étape 0) |

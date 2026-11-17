@@ -6,7 +6,6 @@ import android.util.Log
 import fr.lactea.audio.AudioCapture
 import fr.lactea.cover.CoverPresets
 import fr.lactea.engine.NativeEngine
-import fr.lactea.presets.MilkdropCompat
 import fr.lactea.presets.Playlist
 import fr.lactea.presets.PresetStats
 import fr.lactea.settings.Settings
@@ -121,15 +120,6 @@ class LacteaRenderer(
             2 -> if (!locked) advance(smoothRequested = false)
         }
         NativeEngine.consumeError(handle)?.let { msg ->
-            // MilkDrop was more lenient than projectM with equations: retry once, rewritten its way.
-            val failed = current
-            if (failed != null && failed.key !in compatTried) {
-                compatTried += failed.key
-                if (load(failed, smooth = false, compat = true)) {
-                    if (bench != null) benchRestart()
-                    return@let
-                }
-            }
             current?.let { playlist.markFailed(it.key) }
             if (bench != null) {
                 benchRecord("FAILED", 0f, msg)
@@ -201,11 +191,6 @@ class LacteaRenderer(
     private fun benchLoad() {
         val b = bench ?: return
         load(b.entries[benchIndex], smooth = false)
-        benchRestart()
-    }
-
-    /** Restarts the measure of the current benchmark preset (after a reload). */
-    private fun benchRestart() {
         benchStart = SystemClock.elapsedRealtime()
         benchFrames = 0
         benchLast = 0L
@@ -222,7 +207,7 @@ class LacteaRenderer(
         benchFrames++
         if (elapsed >= b.settleMs + b.measureMs) {
             val fps = benchFrames * 1000f / (elapsed - b.settleMs)
-            benchRecord("OK", fps, if (b.entries[benchIndex].key in compatNeeded) "compat" else "")
+            benchRecord("OK", fps, "")
         }
     }
 
@@ -312,29 +297,15 @@ class LacteaRenderer(
         load(entry, smooth)
     }
 
-    /**
-     * Loads [entry]. With [compat] (or if it needed it before), its equations are first rewritten
-     * the way MilkDrop read them ([MilkdropCompat]); returns false when that changes nothing.
-     */
-    private fun load(entry: Playlist.Entry, smooth: Boolean, compat: Boolean = false): Boolean {
-        if (handle == 0L) return false
-        val useCompat = compat || entry.key in compatNeeded
+    private fun load(entry: Playlist.Entry, smooth: Boolean) {
+        if (handle == 0L) return
+        current = entry
         // Presets sampling random textures are rewritten on the fly: album cover + textures picked
         // by Lactea (projectM's own random pick fails on Android).
         val cover = coverTexture
-        var rewritten = if (entry.key in coverCompatible || CoverPresets.isCompatible(entry.file)) {
+        val rewritten = if (entry.key in coverCompatible || CoverPresets.isCompatible(entry.file)) {
             CoverPresets.read(entry.file)?.let { CoverPresets.rewrite(it, cover, randomTextures) }
         } else null
-        if (useCompat) {
-            val fixed = (rewritten ?: CoverPresets.read(entry.file))?.let { MilkdropCompat.fix(it) }
-            if (fixed == null) {
-                if (compat) return false
-            } else {
-                rewritten = fixed
-                compatNeeded += entry.key
-            }
-        }
-        current = entry
         val withCover = if (rewritten != null && cover != null) rewritten else null
         if (rewritten != null) NativeEngine.loadPresetData(handle, rewritten, smooth)
         else NativeEngine.loadPreset(handle, entry.file.absolutePath, smooth)
@@ -342,14 +313,9 @@ class LacteaRenderer(
         blendUntil = now + (if (smooth) (settings.fadeSeconds * 1000).toLong() else 0L) + SETTLE_MS
         resetMeasure(now)
         Log.i(TAG, "PRESET ${if (smooth) "fade" else "cut"} res=${width}x$height" +
-            (if (withCover != null) " cover=$cover" else "") + (if (useCompat) " compat" else "") + " ${entry.key}")
+            (if (withCover != null) " cover=$cover" else "") + " ${entry.key}")
         listener.onPresetChanged(entry, !smooth)
-        return true
     }
-
-    /** Presets retried with [MilkdropCompat] (this session), and those it fixed. */
-    private val compatTried = HashSet<String>()
-    private val compatNeeded = HashSet<String>()
 
     /** A preset whose expected FPS at the current size would make a fade stutter. */
     private fun isHeavy(entry: Playlist.Entry?): Boolean {

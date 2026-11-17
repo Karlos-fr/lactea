@@ -2,32 +2,32 @@
 
 Mesuré le 17/11/2026 en 1280×720, plafond 60 images/s, 2 s de mesure par preset après 1 s de stabilisation, avec de la musique (Spotify).
 
-**9857 presets testés** — 9855 chargés, **2 échecs** (65 chargés grâce à la lecture « à la MilkDrop » des équations), FPS médian **60**.
+**9857 presets testés** — 9857 chargés, **0 échecs**, FPS médian **60**.
 
 ## Répartition
 
 | Catégorie de FPS | Presets | Part |
 |---|---|---|
-| Fluide (≥ 55) | 6317 | 64.1 % |
-| Correct (45–55) | 734 | 7.4 % |
+| Fluide (≥ 55) | 6318 | 64.1 % |
+| Correct (45–55) | 736 | 7.5 % |
 | Lourd (30–45) | 907 | 9.2 % |
-| Très lourd (20–30) | 459 | 4.7 % |
-| Trop lourd (< 20) | 1438 | 14.6 % |
-| Échec de chargement | 2 | 0.0 % |
+| Très lourd (20–30) | 457 | 4.6 % |
+| Trop lourd (< 20) | 1439 | 14.6 % |
+| Échec de chargement | 0 | 0.0 % |
 
 ## Par catégorie de presets
 
 | Catégorie | Testés | FPS médian | Fluides (≥ 55) | < 30 FPS | Échecs |
 |---|---|---|---|---|---|
-| Dancer | 1357 | 47 | 501 | 176 | 0 |
+| Dancer | 1357 | 47 | 502 | 176 | 0 |
 | Drawing | 1149 | 11 | 282 | 852 | 0 |
-| Fractal | 1360 | 60 | 1128 | 76 | 0 |
-| Geometric | 1033 | 59 | 573 | 338 | 1 |
+| Fractal | 1360 | 60 | 1127 | 76 | 0 |
+| Geometric | 1033 | 59 | 573 | 337 | 0 |
 | Hypnotic | 286 | 60 | 163 | 46 | 0 |
 | Lactea | 6 | 60 | 6 | 0 | 0 |
 | Particles | 395 | 60 | 239 | 86 | 0 |
 | Reaction | 1797 | 60 | 1454 | 156 | 0 |
-| Sparkle | 803 | 60 | 554 | 59 | 1 |
+| Sparkle | 803 | 60 | 555 | 59 | 0 |
 | Supernova | 386 | 60 | 323 | 21 | 0 |
 | Waveform | 1285 | 60 | 1094 | 87 | 0 |
 
@@ -58,10 +58,3 @@ Mesuré le 17/11/2026 en 1280×720, plafond 60 images/s, 2 s de mesure par prese
 - 4 FPS — Reaction/Liquid Gradient/amandio c - the green machine 2 skin lard bone beacon nz+ gibson sac lord
 - 4 FPS — Geometric/Pyramids/amandio c - embrace 08 hog rot nz+
 - 4 FPS — Reaction/Automata/amandio c - the green machine 2 skin lard bone beacon
-
-## Échecs (2)
-
-Équations que même MilkDrop n'acceptait pas (fonction sans parenthèses, syntaxe invalide).
-
-- Geometric/Stripes Dance/martin - beamer code 22h - lines - rhythmic and fast
-- Sparkle/Explosions/LuxXx - Brain Grind i

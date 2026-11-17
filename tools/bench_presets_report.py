@@ -62,8 +62,7 @@ def main() -> int:
           f"Mesuré le {date.today():%d/%m/%Y} en 1280×720, plafond 60 images/s, 2 s de mesure par preset "
           f"après 1 s de stabilisation, avec de la musique (Spotify).", "",
           f"**{n} presets testés** — {len(ok)} chargés, **{len(failed)} échecs**"
-          + (f" ({sum(r[5] == 'compat' for r in ok)} chargés grâce à la lecture « à la MilkDrop » des équations)"
-             if any(r[5] == 'compat' for r in ok) else "")
+
           + (f", FPS médian **{statistics.median(fps_all):.0f}**" if fps_all else "") + ".", "",
           "## Répartition", "", "| Catégorie de FPS | Presets | Part |", "|---|---|---|"]
     for name, _, _ in BUCKETS:
@@ -83,7 +82,7 @@ def main() -> int:
     md += [f"- {r[2]:.0f} FPS — {r[0]}" for r in sorted(ok, key=lambda r: r[2])[:25]]
     if failed:
         md += ["", f"## Échecs ({len(failed)})", "",
-               "Équations que même MilkDrop n'acceptait pas (fonction sans parenthèses, syntaxe invalide).", ""]
+               "Voir le message d'erreur de projectM dans le JSON.", ""]
         md += [f"- {r[0]}" for r in failed[:100]]
         if len(failed) > 100:
             md.append(f"- … et {len(failed) - 100} autres (voir le JSON)")
@@ -93,7 +92,7 @@ def main() -> int:
     (OUT / f"presets-{device}.json").write_text(json.dumps({
         "device": device, "height": 720, "date": f"{date.today():%Y-%m-%d}",
         "fps": {r[0]: round(r[2], 1) for r in ok},
-        "failed": [r[0] for r in failed],
+        "failed": {r[0]: r[5] for r in failed},
     }, ensure_ascii=False, indent=0), encoding="utf-8")
     sys.stdout.reconfigure(encoding="utf-8")
     print("\n".join(md[:30]))

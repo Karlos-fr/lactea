@@ -497,7 +497,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
             MenuItem.Header("À propos"),
             MenuItem.Info("Lactea") { version },
-            MenuItem.Info("Moteur") { "projectM 4.1.8 — LGPL 2.1" },
+            MenuItem.Info("Moteur") { "projectM 4.1.8, version corrigée (github.com/Karlos-fr/projectm) — LGPL 2.1" },
             MenuItem.Info("Presets") { "Cream of the Crop (projectM) + textures MilkDrop" },
         )
     }
