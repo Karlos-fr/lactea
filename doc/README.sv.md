@@ -29,14 +29,13 @@ Det bygger på [projectM](https://github.com/projectM-visualizer/projectm), den 
 nyskrivningen av MilkDrop, och spelar de ursprungliga MilkDrop-presetsen: nästan **10 000
 visualiseringar** som MilkDrop-communityn har skapat under tjugo år.
 
-Aktuell version: **0.1.0, under utveckling**. Ingen version har publicerats än. Gränssnittet är på
-franska för tillfället.
+Aktuell version: **0.1.0, under utveckling**. Ingen version har publicerats än.
 
 ## Funktioner
 
 - **Reagerar på all musik som spelas på tv:n**, oavsett app. Även när ljudet går till en soundbar
   via HDMI (ARC / eARC).
-- **9 857 presets**: 66 ingår, resten finns i 10 tematiska paket att ladda ner från inställningarna.
+- **9 857 presets**: 66 ingår, resten finns i 10 tematiska paket att ladda ner från menyn Alternativ.
   Alla presets i samlingen laddas, tack vare rättningar i projectM (se längre ned).
 - **Låttitel och skivomslag** på skärmen när låten byts. Omslaget kan också synas inuti vissa
   visualiseringar.
@@ -47,6 +46,8 @@ franska för tillfället.
 - **Jämn även på enklare tv-apparater**: Lactea vet hur tunga presetsen är, kan hoppa över de
   långsamma och väljer mellan övertoning och klipp så att övergångarna inte hackar.
 - **Favoriter och undantag**, en preset-bläddrare, ett blandat läge och låsning av aktuell preset.
+- **Sex språk**: engelska, franska, tyska, italienska, spanska och svenska, enligt tv:ns språk
+  (engelska för alla andra språk).
 
 ## Systemkrav
 
@@ -89,46 +90,45 @@ Vill du gå tillbaka till din tidigare skärmsläckare? Notera först dess namn 
 | ◀ ▶ | Föregående / nästa preset |
 | ▲ ▼ | Ljudkänslighet + / − |
 | OK | Visa låttiteln |
-| **Håll in OK** | **Options** (alltid, kan inte ändras) |
+| **Håll in OK** | **Alternativ** (alltid, kan inte ändras) |
 | 🔴 Röd | Lås aktuell preset |
 | 🟢 Grön | Blandat läge på / av |
 | 🟡 Gul | Lägg till i / ta bort från favoriter — håll in: undanta presetet |
-| 🔵 Blå eller Meny | Options — håll in Blå: preset-bläddrare |
+| 🔵 Blå eller Meny | Alternativ — håll in Blå: preset-bläddrare |
 | Info | Presetets namn — håll in: lista över knapparna |
 | Kanal + / − | Nästa / föregående låt |
 | Spela / Paus, ⏭ ⏮ | Skickas till din musikapp |
 | 0 | Räknare för bilder per sekund |
 | Tillbaka | Stäng en panel, och lämna sedan Lactea |
 
-Varje knapp kan ändras i **Options › Télécommande** (fjärrkontroll), med ett kort eller långt tryck.
+Varje knapp kan ändras i **Alternativ › Fjärrkontroll**, med ett kort eller långt tryck.
 
-## Inställningar
+## Alternativ
 
-Håll in **OK** för att öppna inställningarna (**Options**). De är grupperade efter tema:
+Håll in **OK** för att öppna **Alternativ**. De är grupperade efter tema:
 
-- **Visuel** (bild): renderingsupplösning (från 540p till 4K, eller Auto), högsta upplösning i
+- **Bild**: renderingsupplösning (från 540p till 4K, eller Auto), högsta upplösning i
   Auto-läget, bilder per sekund (30 eller 60), detaljnivå för nätet, räknare för bilder per sekund.
-- **Presets et transitions** (presets och övergångar): hur länge varje preset visas, övertoning
+- **Presets och övergångar**: hur länge varje preset visas, övertoning
   eller klipp (Auto väljer för varje preset), klipp i takt med musiken, blandat läge, bara
   favoriter, presetets namn vid byte.
-- **Titre du morceau** (låttitel): visas vid låtbyte, hur länge, var, hur stor. Nytt preset vid
+- **Låttitel**: visas vid låtbyte, hur länge, var, hur stor. Nytt preset vid
   varje låt.
-- **Pochette** (skivomslag): med titeln, pulserar i takt, inuti visualiseringarna, sökning på nätet
+- **Skivomslag**: med titeln, pulserar i takt, inuti visualiseringarna, sökning på nätet
   när musikappen inte ger något omslag.
-- **Lancement automatique et économiseur** (automatisk start och skärmsläckare): öppnas när musik
+- **Automatisk start och skärmsläckare**: öppnas när musik
   spelas (efter hur lång tid, bara musikappar), stängs när musiken slutar.
-- **Gestion des presets** (hantering av presets): bläddrare, undanta långsamma presets, paket att
+- **Hantera presets**: bläddrare, undanta långsamma presets, paket att
   ladda ner, testa presetsen på den här tv:n (se nedan), nollställ mätningarna, töm listan över
   undantag.
-- **Audio** (ljud): känslighet, inspelningsläge (konstant nivå, eller följer volymen).
-- **Télécommande** (fjärrkontroll): ändra knapparna.
+- **Ljud**: känslighet, inspelningsläge (konstant nivå, eller följer volymen).
+- **Fjärrkontroll**: ändra knapparna.
 
 ## Preset-paket
 
 Lactea levereras med 66 presets. Resten av samlingen är uppdelad i 10 paket (Dancer, Drawing,
 Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Ladda ner dem från
-**Options › Gestion des presets › Packs de presets** (inställningar › hantering av presets ›
-preset-paket). Installera bara de teman du gillar, och ta bort dem när du vill.
+**Alternativ › Hantera presets › Preset-paket att ladda ner**. Installera bara de teman du gillar, och ta bort dem när du vill.
 
 ## Långsamma presets
 
@@ -141,18 +141,17 @@ Vissa presets kräver mycket av grafikkretsen. På Sony BRAVIA-tv:n som använde
 | Tunga (20–45) | 1 364 | 14 % |
 | För tunga (under 20) | 1 439 | 15 % |
 
-Lactea levereras med dessa mätningar, så **Exclure les presets lents** (undanta långsamma presets)
+Lactea levereras med dessa mätningar, så **Undanta långsamma presets**
 fungerar från första start. När varje preset spelas mäter Lactea det igen på din tv och använder
 sina egna siffror.
 
-Vill du mäta alla presets på din tv på en gång? Välj **Options › Gestion des presets › Tester les
-presets sur cette TV** (testa presetsen på den här tv:n). Välj allt eller ett tema. Det tar cirka
+Vill du mäta alla presets på din tv på en gång? Välj **Alternativ › Hantera presets › Testa presets på
+den här tv:n**. Välj allt eller ett tema. Det tar cirka
 3 sekunder per preset (cirka 8 timmar för hela samlingen). Låt musiken spela. Valfri knapp stoppar
 testet, och det kan fortsätta där det slutade.
 
 ## Kända begränsningar
 
-- Gränssnittet finns **bara på franska** för tillfället.
 - Skärmsläckaren har inte testats på en riktig tv än.
 - När ljudet går till hörlurar eller högtalare via **Bluetooth** kan det hända att Lactea inte tar
   emot det.

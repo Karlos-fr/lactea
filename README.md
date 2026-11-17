@@ -28,8 +28,7 @@ It is built on [projectM](https://github.com/projectM-visualizer/projectm), the 
 reimplementation of MilkDrop, and plays the original MilkDrop presets: almost **10,000
 visualizations** made by the MilkDrop community over twenty years.
 
-Current version: **0.1.0, in development**. No release has been published yet. The interface is in
-French for now.
+Current version: **0.1.0, in development**. No release has been published yet.
 
 ## Features
 
@@ -46,6 +45,8 @@ French for now.
 - **Smooth on modest TVs**: Lactea knows how heavy each preset is, can skip the slow ones, and
   chooses between a fade and a cut so that transitions don't stutter.
 - **Favourites and exclusions**, a preset browser, a shuffle mode and a lock on the current preset.
+- **Six languages**: English, French, German, Italian, Spanish and Swedish, following the TV's
+  language (English for any other language).
 
 ## Requirements
 
@@ -123,7 +124,7 @@ Hold **OK** to open the options. They are grouped by theme:
 
 Lactea comes with 66 presets. The rest of the collection is split into 10 packs (Dancer, Drawing,
 Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform), to download from
-**Options › Preset management › Preset packs**. Install only the themes you like, and remove them
+**Options › Preset management › Preset packs to download**. Install only the themes you like, and remove them
 at any time.
 
 ## Slow presets
@@ -146,7 +147,6 @@ collection). Leave the music playing; any key stops the test, and it can resume 
 
 ## Known limitations
 
-- The interface is in **French only** for now.
 - The screensaver has not been tested on a real TV yet.
 - When the sound goes to **Bluetooth** headphones or speakers, Lactea may not receive it.
 - Downloading the packs needs the GitHub repository to be public, which is not the case yet.

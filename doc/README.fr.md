@@ -29,8 +29,7 @@ Il s'appuie sur [projectM](https://github.com/projectM-visualizer/projectm), la 
 MilkDrop, et joue les presets MilkDrop d'origine : près de **10 000 visualisations** créées par la
 communauté MilkDrop en vingt ans.
 
-Version actuelle : **0.1.0, en développement**. Aucune version n'est encore publiée. L'interface est
-en français pour l'instant.
+Version actuelle : **0.1.0, en développement**. Aucune version n'est encore publiée.
 
 ## Fonctionnalités
 
@@ -48,6 +47,8 @@ en français pour l'instant.
 - **Fluide même sur une TV modeste** : Lactea sait quels presets sont gourmands, peut écarter les plus
   lents, et choisit entre fondu et coupe pour que les transitions ne saccadent pas.
 - **Favoris et exclusions**, navigateur de presets, mode aléatoire et verrouillage du preset en cours.
+- **Six langues** : français, anglais, allemand, italien, espagnol et suédois, selon la langue de la
+  TV (anglais pour toute autre langue).
 
 ## Configuration requise
 
@@ -126,7 +127,7 @@ Faites un appui long sur **OK** pour ouvrir les options. Elles sont regroupées 
 
 Lactea est livré avec 66 presets. Le reste de la collection est réparti en 10 packs (Dancer,
 Drawing, Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform), à
-télécharger depuis **Options › Gestion des presets › Packs de presets**. N'installez que les thèmes
+télécharger depuis **Options › Gestion des presets › Packs de presets à télécharger**. N'installez que les thèmes
 qui vous plaisent, et retirez-les quand vous voulez.
 
 ## Presets lents
@@ -151,7 +152,6 @@ qui pourra reprendre là où il s'est arrêté.
 
 ## Limites connues
 
-- L'interface est **seulement en français** pour l'instant.
 - L'économiseur d'écran n'a pas encore été testé sur une vraie TV.
 - Quand le son part vers un casque ou une enceinte **Bluetooth**, Lactea peut ne pas le recevoir.
 - Le téléchargement des packs nécessite que le dépôt GitHub soit public, ce qui n'est pas encore le

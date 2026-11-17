@@ -29,8 +29,7 @@ Se basa en [projectM](https://github.com/projectM-visualizer/projectm), la reimp
 de MilkDrop, y reproduce los presets originales de MilkDrop: casi **10 000 visualizaciones** creadas
 por la comunidad de MilkDrop durante veinte años.
 
-Versión actual: **0.1.0, en desarrollo**. Todavía no se ha publicado ninguna versión. Por ahora, la
-interfaz está en francés.
+Versión actual: **0.1.0, en desarrollo**. Todavía no se ha publicado ninguna versión.
 
 ## Funciones
 
@@ -49,6 +48,8 @@ interfaz está en francés.
   y elige entre fundido y corte para que las transiciones no den tirones.
 - **Favoritos y exclusiones**, un navegador de presets, un modo aleatorio y un bloqueo del preset
   actual.
+- **Seis idiomas**: inglés, francés, alemán, italiano, español y sueco, según el idioma de la TV
+  (inglés para cualquier otro idioma).
 
 ## Requisitos
 
@@ -91,46 +92,43 @@ Para volver a tu salvapantallas anterior, anota primero su nombre con
 | ◀ ▶ | Preset anterior / siguiente |
 | ▲ ▼ | Sensibilidad de audio + / − |
 | OK | Mostrar el título de la canción |
-| **Mantener OK** | **Options** (siempre, no se puede cambiar) |
+| **Mantener OK** | **Opciones** (siempre, no se puede cambiar) |
 | 🔴 Rojo | Bloquear el preset actual |
 | 🟢 Verde | Activar / desactivar el modo aleatorio |
 | 🟡 Amarillo | Añadir a / quitar de favoritos — mantener: excluir el preset |
-| 🔵 Azul o Menú | Options — mantener Azul: navegador de presets |
+| 🔵 Azul o Menú | Opciones — mantener Azul: navegador de presets |
 | Info | Nombre del preset — mantener: lista de teclas |
 | Canal + / − | Canción siguiente / anterior |
 | Reproducir / Pausa, ⏭ ⏮ | Se envían a tu app de música |
 | 0 | Contador de imágenes por segundo |
 | Atrás | Cerrar un panel y después salir de Lactea |
 
-Cada tecla se puede cambiar en **Options › Télécommande** (mando a distancia), con una pulsación
-corta o larga.
+Cada tecla se puede cambiar en **Opciones › Mando a distancia**, con una pulsación corta o larga.
 
 ## Opciones
 
 Mantén pulsado **OK** para abrir las opciones. Están agrupadas por tema:
 
-- **Visuel** (imagen): resolución de renderizado (de 540p a 4K, o Auto), resolución máxima en modo
-  Auto, imágenes por segundo (30 o 60), detalle de la malla, contador de imágenes por segundo.
-- **Presets et transitions** (presets y transiciones): cuánto dura cada preset, fundido o corte
-  (Auto elige para cada preset), cortes al ritmo, modo aleatorio, solo favoritos, nombre del preset
-  al cambiar.
-- **Titre du morceau** (título de la canción): se muestra al cambiar de canción, cuánto tiempo,
-  dónde, de qué tamaño; nuevo preset con cada canción.
-- **Pochette** (portada): con el título, latiendo al ritmo, dentro de las visualizaciones, búsqueda
+- **Imagen**: resolución de renderizado (de 540p a 4K, o Auto), resolución máxima en modo Auto,
+  imágenes por segundo (30 o 60), detalle de la malla, contador de imágenes por segundo.
+- **Presets y transiciones**: cuánto dura cada preset, fundido o corte (Auto elige para cada
+  preset), cortes al ritmo, modo aleatorio, solo favoritos, nombre del preset al cambiar.
+- **Título de la canción**: se muestra al cambiar de canción, cuánto tiempo, dónde, de qué tamaño;
+  nuevo preset con cada canción.
+- **Portada del álbum**: con el título, latiendo al ritmo, dentro de las visualizaciones, búsqueda
   en internet cuando la app de música no da portada.
-- **Lancement automatique et économiseur** (inicio automático y salvapantallas): abrir cuando suena
-  música (tras cuánto tiempo, solo apps de música), cerrar cuando la música se detiene.
-- **Gestion des presets** (gestión de presets): navegador, excluir los presets lentos, packs para
-  descargar, probar los presets en esta TV (ver más abajo), reiniciar las mediciones, vaciar la
-  lista de exclusiones.
+- **Inicio automático y salvapantallas**: abrir cuando suena música (tras cuánto tiempo, solo apps
+  de música), cerrar cuando la música se detiene.
+- **Gestión de presets**: navegador, excluir los presets lentos, packs para descargar, probar los
+  presets en esta TV (ver más abajo), reiniciar las mediciones, vaciar la lista de exclusiones.
 - **Audio**: sensibilidad, modo de captura (nivel constante, o según el volumen).
-- **Télécommande** (mando a distancia): cambiar las teclas.
+- **Mando a distancia**: cambiar las teclas.
 
 ## Packs de presets
 
 Lactea incluye 66 presets. El resto de la colección está repartido en 10 packs (Dancer, Drawing,
 Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform), que se descargan
-desde **Options › Gestion des presets › Packs de presets**. Instala solo los temas que te gusten y
+desde **Opciones › Gestión de presets › Packs de presets para descargar**. Instala solo los temas que te gusten y
 quítalos cuando quieras.
 
 ## Presets lentos
@@ -144,18 +142,16 @@ Algunos presets exigen mucho al chip gráfico. En la Sony BRAVIA usada para las 
 | Pesados (20–45) | 1364 | 14 % |
 | Demasiado pesados (menos de 20) | 1439 | 15 % |
 
-Lactea viene con estas mediciones, así que **Exclure les presets lents** (excluir los presets
-lentos) funciona desde el primer inicio. A medida que se reproduce cada preset, Lactea vuelve a
+Lactea viene con estas mediciones, así que **Excluir presets lentos** funciona desde el primer inicio. A medida que se reproduce cada preset, Lactea vuelve a
 medirlo en tu TV y usa sus propias cifras.
 
-Para medir todos los presets en tu TV de una vez: **Options › Gestion des presets › Tester les
-presets sur cette TV** (probar los presets en esta TV). Elige todo o un solo tema; unos 3 segundos
+Para medir todos los presets en tu TV de una vez: **Opciones › Gestión de presets › Probar los
+presets en esta TV**. Elige todo o un solo tema; unos 3 segundos
 por preset (unas 8 horas para toda la colección). Deja la música sonando; cualquier tecla detiene
 la prueba, y puede continuar donde se quedó.
 
 ## Limitaciones conocidas
 
-- Por ahora, la interfaz está **solo en francés**.
 - El salvapantallas todavía no se ha probado en una TV real.
 - Cuando el sonido va a auriculares o altavoces **Bluetooth**, es posible que Lactea no lo reciba.
 - Para descargar los packs, el repositorio de GitHub tiene que ser público, y todavía no lo es.

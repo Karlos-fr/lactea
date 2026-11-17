@@ -29,8 +29,7 @@ Si basa su [projectM](https://github.com/projectM-visualizer/projectm), la riscr
 MilkDrop, e riproduce i preset MilkDrop originali: quasi **10.000 visualizzazioni** create dalla
 comunità di MilkDrop in vent'anni.
 
-Versione attuale: **0.1.0, in sviluppo**. Nessuna versione è ancora stata pubblicata. Per ora
-l'interfaccia è in francese.
+Versione attuale: **0.1.0, in sviluppo**. Nessuna versione è ancora stata pubblicata.
 
 ## Funzionalità
 
@@ -49,6 +48,8 @@ l'interfaccia è in francese.
   e sceglie tra dissolvenza e stacco netto perché le transizioni non scattino.
 - **Preferiti ed esclusioni**, un browser dei preset, una modalità casuale e il blocco del preset
   in corso.
+- **Sei lingue**: inglese, francese, tedesco, italiano, spagnolo e svedese, secondo la lingua della
+  TV (inglese per qualsiasi altra lingua).
 
 ## Requisiti
 
@@ -101,37 +102,35 @@ Per tornare al salvaschermo precedente, annota prima il suo nome con
 | 0 | Contatore di FPS |
 | Indietro | Chiude un pannello, poi esce da Lactea |
 
-Ogni tasto si può cambiare in **Options › Télécommande** (opzioni › telecomando), con una pressione
-breve o lunga.
+Ogni tasto si può cambiare in **Opzioni › Telecomando**, con una pressione breve o lunga.
 
 ## Opzioni
 
 Tieni premuto **OK** per aprire le opzioni. Sono raggruppate per tema:
 
-- **Visuel** (aspetto visivo): risoluzione di rendering (da 540p a 4K, oppure Auto), risoluzione
+- **Aspetto**: risoluzione di rendering (da 540p a 4K, oppure Auto), risoluzione
   massima in modalità Auto, fotogrammi al secondo (30 o 60), dettaglio della griglia, contatore di
   FPS.
-- **Presets et transitions** (preset e transizioni): durata di ogni preset, dissolvenza o stacco
+- **Preset e transizioni**: durata di ogni preset, dissolvenza o stacco
   netto (Auto sceglie per ogni preset), stacchi a tempo di musica, modalità casuale, solo preferiti,
   nome del preset al cambio.
-- **Titre du morceau** (titolo del brano): mostrato al cambio di brano, per quanto tempo, dove,
+- **Titolo del brano**: mostrato al cambio di brano, per quanto tempo, dove,
   quanto grande; nuovo preset a ogni brano.
-- **Pochette** (copertina): con il titolo, che pulsa a tempo, dentro le visualizzazioni, ricerca
+- **Copertina**: con il titolo, che pulsa a tempo, dentro le visualizzazioni, ricerca
   online quando l'app musicale non fornisce la copertina.
-- **Lancement automatique et économiseur** (avvio automatico e salvaschermo): apertura quando suona
+- **Avvio automatico e salvaschermo**: apertura quando suona
   la musica (dopo quanto tempo, solo app musicali), chiusura quando la musica si ferma.
-- **Gestion des presets** (gestione dei preset): browser, escludi i preset lenti, pacchetti da
+- **Gestione preset**: browser, escludi i preset lenti, pacchetti da
   scaricare, test dei preset su questa TV (vedi sotto), azzera le misure, svuota l'elenco delle
   esclusioni.
 - **Audio**: sensibilità, modalità di cattura (livello costante, oppure che segue il volume).
-- **Télécommande** (telecomando): cambia i tasti.
+- **Telecomando**: cambia i tasti.
 
 ## Pacchetti di preset
 
 Lactea include 66 preset. Il resto della raccolta è diviso in 10 pacchetti (Dancer, Drawing,
 Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform), da scaricare da
-**Options › Gestion des presets › Packs de presets** (opzioni › gestione dei preset › pacchetti di
-preset). Installa solo i temi che ti piacciono, e rimuovili quando vuoi.
+**Opzioni › Gestione preset › Pacchetti di preset da scaricare**. Installa solo i temi che ti piacciono, e rimuovili quando vuoi.
 
 ## Preset lenti
 
@@ -144,18 +143,17 @@ Alcuni preset chiedono molto al chip grafico. Sulla Sony BRAVIA usata per i test
 | Pesanti (20–45) | 1.364 | 14 % |
 | Troppo pesanti (meno di 20) | 1.439 | 15 % |
 
-Lactea include queste misure, quindi **Exclure les presets lents** (escludi i preset lenti) funziona
+Lactea include queste misure, quindi **Escludi i preset lenti** funziona
 fin dal primo avvio. Man mano che i preset vengono riprodotti, Lactea li misura di nuovo sulla tua
 TV e usa i propri dati.
 
-Per misurare tutti i preset sulla tua TV in una volta: **Options › Gestion des presets › Tester les
-presets sur cette TV** (testa i preset su questa TV). Scegli tutto o un solo tema; circa 3 secondi
+Per misurare tutti i preset sulla tua TV in una volta: **Opzioni › Gestione preset › Testa i preset su
+questa TV**. Scegli tutto o un solo tema; circa 3 secondi
 per preset (circa 8 ore per l'intera raccolta). Lascia la musica in riproduzione; qualsiasi tasto
 ferma il test, che può riprendere da dove si era fermato.
 
 ## Limiti noti
 
-- Per ora l'interfaccia è **solo in francese**.
 - Il salvaschermo non è ancora stato provato su una TV vera.
 - Quando l'audio va a cuffie o casse **Bluetooth**, Lactea potrebbe non riceverlo.
 - Il download dei pacchetti richiede che il repository GitHub sia pubblico, cosa che non è ancora.

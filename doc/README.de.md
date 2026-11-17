@@ -29,8 +29,7 @@ Es basiert auf [projectM](https://github.com/projectM-visualizer/projectm), der 
 Neuumsetzung von MilkDrop, und spielt die originalen MilkDrop-Presets: fast **10.000
 Visualisierungen**, die die MilkDrop-Community in zwanzig Jahren erstellt hat.
 
-Aktuelle Version: **0.1.0, in Entwicklung**. Es wurde noch keine Version veröffentlicht. Die
-Oberfläche ist vorerst auf Französisch.
+Aktuelle Version: **0.1.0, in Entwicklung**. Es wurde noch keine Version veröffentlicht.
 
 ## Funktionen
 
@@ -50,6 +49,8 @@ Oberfläche ist vorerst auf Französisch.
   ruckeln.
 - **Favoriten und Ausschlüsse**, ein Preset-Browser, ein Zufallsmodus und eine Sperre für das
   aktuelle Preset.
+- **Sechs Sprachen**: Englisch, Französisch, Deutsch, Italienisch, Spanisch und Schwedisch, je nach
+  Sprache des Fernsehers (Englisch für jede andere Sprache).
 
 ## Voraussetzungen
 
@@ -106,36 +107,36 @@ wieder ein.
 | 0 | FPS-Anzeige |
 | Zurück | Ein Fenster schließen, dann Lactea beenden |
 
-Jede Taste lässt sich unter **Options › Télécommande** (Fernbedienung) ändern, mit kurzem oder
+Jede Taste lässt sich unter **Optionen › Fernbedienung** ändern, mit kurzem oder
 langem Druck.
 
 ## Optionen
 
 Halten Sie **OK** gedrückt, um die Optionen zu öffnen. Sie sind nach Themen gruppiert:
 
-- **Visuel** (Darstellung): Render-Auflösung (von 540p bis 4K, oder Auto), höchste Auflösung im
+- **Darstellung**: Render-Auflösung (von 540p bis 4K, oder Auto), höchste Auflösung im
   Auto-Modus, Bilder pro Sekunde (30 oder 60), Detailgrad des Gitters, FPS-Anzeige.
-- **Presets et transitions** (Presets und Übergänge): wie lange jedes Preset bleibt, Überblendung
+- **Presets und Übergänge**: wie lange jedes Preset bleibt, Überblendung
   oder Schnitt (Auto wählt für jedes Preset), Schnitte im Takt, Zufallsmodus, nur Favoriten,
   Preset-Name beim Wechsel.
-- **Titre du morceau** (Songtitel): Anzeige beim Songwechsel, wie lange, wo, wie groß; neues Preset
+- **Songtitel**: Anzeige beim Songwechsel, wie lange, wo, wie groß; neues Preset
   bei jedem Song.
-- **Pochette** (Albumcover): mit dem Titel, im Takt pulsierend, in den Visualisierungen,
+- **Albumcover**: mit dem Titel, im Takt pulsierend, in den Visualisierungen,
   Online-Suche, wenn die Musik-App kein Cover liefert.
-- **Lancement automatique et économiseur** (Automatischer Start und Bildschirmschoner): öffnen, wenn
+- **Autostart und Bildschirmschoner**: öffnen, wenn
   Musik läuft (nach welcher Zeit, nur Musik-Apps), schließen, wenn die Musik endet.
-- **Gestion des presets** (Preset-Verwaltung): Browser, langsame Presets ausschließen, Pakete zum
+- **Preset-Verwaltung**: Browser, langsame Presets ausschließen, Pakete zum
   Herunterladen, die Presets auf diesem Fernseher testen (siehe unten), Messwerte zurücksetzen,
   Ausschlussliste leeren.
 - **Audio**: Empfindlichkeit, Aufnahmemodus (konstanter Pegel oder der Lautstärke folgend).
-- **Télécommande** (Fernbedienung): Tasten ändern.
+- **Fernbedienung**: Tasten ändern.
 
 ## Preset-Pakete
 
 Lactea enthält 66 Presets. Der Rest der Sammlung ist auf 10 Pakete verteilt (Dancer, Drawing,
-Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform), die Sie unter
-**Options › Gestion des presets › Packs de presets** (Preset-Verwaltung › Preset-Pakete)
-herunterladen können. Installieren Sie nur die Themen, die Ihnen gefallen, und entfernen Sie sie
+Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Sie finden sie
+unter **Optionen › Preset-Verwaltung › Preset-Pakete herunterladen**. Installieren Sie nur die
+Themen, die Ihnen gefallen, und entfernen Sie sie
 jederzeit wieder.
 
 ## Langsame Presets
@@ -150,18 +151,17 @@ Manche Presets verlangen dem Grafikchip viel ab. Auf dem Sony BRAVIA, der zum Te
 | Schwer (20–45) | 1.364 | 14 % |
 | Zu schwer (unter 20) | 1.439 | 15 % |
 
-Lactea wird mit diesen Messwerten ausgeliefert, daher funktioniert **Exclure les presets lents**
-(langsame Presets ausschließen) schon beim ersten Start. Während die Presets laufen, misst Lactea
+Lactea wird mit diesen Messwerten ausgeliefert, daher funktioniert **Langsame Presets ausschließen**
+schon beim ersten Start. Während die Presets laufen, misst Lactea
 jedes erneut auf Ihrem Fernseher und verwendet dann seine eigenen Werte.
 
-Um alle Presets auf Ihrem Fernseher in einem Durchgang zu messen: **Options › Gestion des presets ›
-Tester les presets sur cette TV** (Presets auf diesem Fernseher testen). Wählen Sie alles oder ein
+Um alle Presets auf Ihrem Fernseher in einem Durchgang zu messen: **Optionen › Preset-Verwaltung ›
+Presets auf diesem TV testen**. Wählen Sie alles oder ein
 Thema; etwa 3 Sekunden pro Preset (etwa 8 Stunden für die ganze Sammlung). Lassen Sie die Musik
 weiterlaufen; jede Taste beendet den Test, und er kann dort weitermachen, wo er aufgehört hat.
 
 ## Bekannte Einschränkungen
 
-- Die Oberfläche ist vorerst **nur auf Französisch**.
 - Der Bildschirmschoner wurde noch nicht auf einem echten Fernseher getestet.
 - Wenn der Ton an **Bluetooth**-Kopfhörer oder -Lautsprecher geht, empfängt Lactea ihn
   möglicherweise nicht.
