@@ -29,7 +29,7 @@ Si basa su [projectM](https://github.com/projectM-visualizer/projectm), la riscr
 MilkDrop, e riproduce i preset MilkDrop originali: quasi **10.000 visualizzazioni** create dalla
 comunità di MilkDrop in vent'anni.
 
-Versione attuale: **0.1.0, in sviluppo**. Nessuna versione è ancora stata pubblicata.
+Versione attuale: **1.0.0** — [scarica l'APK](https://github.com/Karlos-fr/lactea/releases/latest) · [novità](../CHANGELOG.md) (in inglese).
 
 ## Funzionalità
 

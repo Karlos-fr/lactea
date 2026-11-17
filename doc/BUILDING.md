@@ -23,6 +23,25 @@ cd lactea
 Requirements: Android SDK (platform 37), NDK 30.0.16248370, CMake 4.1.2, JDK 17 or later.
 The APK is built for `armeabi-v7a` (it also runs on 64-bit ARM TVs).
 
+## Release build
+
+The release APK is signed with a key kept out of the repository. Create `keystore.properties` at the
+root (git-ignored):
+
+```properties
+storeFile=D:/path/to/lactea-release.jks
+storePassword=…
+keyAlias=lactea
+keyPassword=…
+```
+
+```bash
+./gradlew assembleRelease     # -> app/build/outputs/apk/release/app-release.apk
+```
+
+Keep the key safe: an update must be signed with the same key to install over a previous version.
+Without `keystore.properties`, the release APK is built unsigned.
+
 ## Install on the TV
 
 ```bash

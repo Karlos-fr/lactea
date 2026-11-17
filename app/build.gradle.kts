@@ -1,5 +1,12 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
+}
+
+// Release signing key, kept out of the repository (keystore.properties is git-ignored).
+val keystoreProps = Properties().apply {
+    rootProject.file("keystore.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 
 android {
@@ -11,12 +18,12 @@ android {
         applicationId = "fr.lactea"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 100
+        versionName = "1.0.0"
 
         ndk {
-            // Sony BRAVIA AE2 runs a 32-bit userspace. arm64-v8a will be added for other boxes.
-            abiFilters += listOf("armeabi-v7a")
+            // 32-bit for TVs like the Sony BRAVIA AE2 (32-bit userspace), 64-bit for the others.
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
         externalNativeBuild {
             cmake {
@@ -26,9 +33,19 @@ android {
         }
     }
 
+    signingConfigs {
+        if (keystoreProps.containsKey("storeFile")) create("release") {
+            storeFile = file(keystoreProps.getProperty("storeFile"))
+            storePassword = keystoreProps.getProperty("storePassword")
+            keyAlias = keystoreProps.getProperty("keyAlias")
+            keyPassword = keystoreProps.getProperty("keyPassword")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.findByName("release")
         }
         debug {
             // projectM is heavy; keep native code optimised even in debug builds.

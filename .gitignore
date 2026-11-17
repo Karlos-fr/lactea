@@ -11,3 +11,5 @@ spike-visualizer/.gradle/
 spike-visualizer/local.properties
 logos/codex-log.txt
 dist/
+keystore.properties
+*.jks

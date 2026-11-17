@@ -29,7 +29,7 @@ Det bygger på [projectM](https://github.com/projectM-visualizer/projectm), den 
 nyskrivningen av MilkDrop, och spelar de ursprungliga MilkDrop-presetsen: nästan **10 000
 visualiseringar** som MilkDrop-communityn har skapat under tjugo år.
 
-Aktuell version: **0.1.0, under utveckling**. Ingen version har publicerats än.
+Aktuell version: **1.0.0** — [ladda ner APK:n](https://github.com/Karlos-fr/lactea/releases/latest) · [nyheter](../CHANGELOG.md) (på engelska).
 
 ## Funktioner
 
