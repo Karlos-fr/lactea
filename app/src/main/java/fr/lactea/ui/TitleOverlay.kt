@@ -66,8 +66,10 @@ class TitleOverlay(context: Context) : LinearLayout(context) {
         gravity = Gravity.CENTER
         clipChildren = false
         addView(coverFrame)
-        addView(title)
-        addView(artist)
+        // Full width, text centred: with WRAP_CONTENT the text kept the width measured for an
+        // earlier, shorter title and its first letters were cut off.
+        addView(title, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+        addView(artist, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
         visibility = GONE
     }
 
