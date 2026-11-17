@@ -106,6 +106,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         settings = Settings(this)
         bindings = KeyBindings(settings)
         stats = PresetStats(settings)
+        PresetStats.loadReferenceAsync(this, stats)
         playlist = Playlist(settings, stats)
         library = PresetLibrary(this)
         packs = PackManager(this, settings)
@@ -152,10 +153,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             }
         // Benchmark: --es bench all | <category prefix>   (results: files/bench/bench.tsv, resumable)
         intent.getStringExtra("bench")?.let { startBench(it) }
-        if (intent.getBooleanExtra("bench_stop", false)) {
-            benchFilter = null
-            renderer.post { renderer.stopBench() }
-        }
+        if (intent.getBooleanExtra("bench_stop", false)) interruptBench()
         presetKey?.let { key ->
             playlist.all().firstOrNull { it.key == key }?.let { e -> renderer.post { renderer.jumpTo(e) } }
                 ?: Log.w(TAG, "Unknown preset $key")
@@ -244,6 +242,11 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
         if (captureAction != null) return handleCapture(e)
         if (e.keyCode in VOLUME_KEYS) return super.dispatchKeyEvent(e)
+        if (benchRunning && e.action == KeyEvent.ACTION_DOWN && !KeyEvent.isMediaSessionKey(e.keyCode)) {
+            swallowUpKey = e.keyCode
+            interruptBench()
+            return true
+        }
         // Remember the event so a panel opened by it ignores the release of the same key.
         currentEvent = e
         try {
@@ -463,6 +466,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Info("Bilan") {
                 "${settings.favorites.size} ★  ${settings.blacklist.size} ✕  ${stats.slowCount(settings.fpsCap)} 🐢  ${stats.count()} mesurés"
             },
+            MenuItem.Button("Tester les presets sur cette TV") {
+                menu?.push(benchScreen())
+            },
+            MenuItem.Info("Mesures de référence") {
+                if (stats.referenceCount() == 0) "—" else "${stats.referenceCount()} presets (${stats.referenceDevice})"
+            },
             MenuItem.Button("Réinitialiser les mesures FPS", { confirmLabel("stats", "") }) {
                 confirm("stats") { stats.reset(); osd.show("Mesures réinitialisées") }
             },
@@ -491,6 +500,35 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Info("Moteur") { "projectM 4.1.8 — LGPL 2.1" },
             MenuItem.Info("Presets") { "Cream of the Crop (projectM) + textures MilkDrop" },
         )
+    }
+
+    private val benchFile get() = java.io.File(filesDir, "bench/bench.tsv")
+
+    /** Test of the presets on this TV: everything, or one category at a time. */
+    private fun benchScreen(): MenuScreen = MenuScreen("Tester les presets",
+        "Mesure la fluidité de chaque preset sur cette TV (environ 3 s par preset, en 720p). " +
+            "Laissez la musique jouer ; une touche interrompt le test, qui pourra reprendre là où il s'est arrêté.") {
+        val done = runCatching { benchFile.readLines().mapTo(HashSet()) { it.substringBefore('\t') } }.getOrDefault(HashSet())
+        val all = playlist.all()
+        val left = all.count { it.key !in done }
+        val items = mutableListOf<MenuItem>(
+            MenuItem.Info("Déjà testés") { "${all.size - left} / ${all.size}" },
+            MenuItem.Button(if (left == all.size) "Tout tester" else "Continuer le test",
+                { if (left == 0) "rien à tester" else "$left presets · environ ${durationText(left)}" }) {
+                if (left > 0) { closePanel(); startBench("all") }
+            },
+            MenuItem.Button("Recommencer de zéro", { confirmLabel("bench-reset", "efface les résultats du test") }) {
+                confirm("bench-reset") { benchFile.delete(); osd.show("Résultats du test effacés"); menu?.rebuild() }
+            },
+            MenuItem.Header("Par catégorie"),
+        )
+        all.groupBy { it.key.substringBefore('/') }.toSortedMap().forEach { (cat, entries) ->
+            val n = entries.count { it.key !in done }
+            items += MenuItem.Button(cat, { if (n == 0) "testée ✓" else "$n presets · environ ${durationText(n)}" }) {
+                if (n > 0) { closePanel(); startBench("$cat/") }
+            }
+        }
+        items
     }
 
     private fun remoteScreen(): MenuScreen = MenuScreen("Télécommande",
@@ -603,6 +641,22 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     /** Filter of the benchmark in progress, kept until it completes or is stopped. */
     private var benchFilter: String? = null
     private var benchPaused = false
+    private var benchTotal = 0
+
+    /** About 3.2 s per preset (1 s to settle, 2 s of measure, loading). */
+    private fun durationText(presets: Int): String {
+        val min = (presets * 3.2 / 60).toInt().coerceAtLeast(1)
+        return if (min < 60) "$min min" else "${min / 60} h ${"%02d".format(min % 60)}"
+    }
+
+    /** Stops the benchmark at the user's request; what was measured is kept. */
+    private fun interruptBench() {
+        benchFilter = null
+        benchPaused = false
+        renderer.post { renderer.stopBench() }
+        osd.show("Test interrompu — ce qui a été mesuré est conservé.\n" +
+            "Pour continuer : Options › Gestion des presets › Tester les presets", 8000)
+    }
 
     /**
      * Loads every preset (matching [filter]) in turn at 720p / 60 FPS max, without touching the
@@ -620,11 +674,24 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 benchRunning = true
                 titleOverlay.hide()
                 glView.holder.setFixedSize(1280, 720)
-                osd.show("Banc d'essai : ${entries.size} presets", 5000)
+                benchTotal = entries.size
+                if (entries.isNotEmpty()) {
+                    osd.show("Test de ${entries.size} presets — environ ${durationText(entries.size)}\n" +
+                        "Laissez la musique jouer. Une touche interrompt le test.", 8000)
+                }
                 renderer.post {
                     renderer.startBench(LacteaRenderer.Bench(entries, out, settleMs = 1000, measureMs = 2000) { n ->
                         Log.i(TAG, "BENCH done: $n presets")
-                        ui.post { benchRunning = false; benchFilter = null; applyResolution(); osd.show("Banc d'essai terminé ($n presets)", 8000) }
+                        ui.post {
+                            benchRunning = false
+                            hud.visibility = if (settings.showHud) View.VISIBLE else View.GONE
+                            applyResolution()
+                            if (benchFilter != null) {
+                                benchFilter = null
+                                osd.show("Test terminé : $n presets mesurés", 8000)
+                            }
+                            menu?.rebuild()
+                        }
                     })
                 }
             }
@@ -803,13 +870,17 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     private val tick = object : Runnable {
         override fun run() {
-            if (settings.showHud) {
+            if (benchRunning) {
+                val done = renderer.benchProgress.substringBefore('/').toIntOrNull() ?: 0
+                hud.visibility = View.VISIBLE
+                hud.text = "Test des presets : $done / $benchTotal  ·  reste environ ${durationText(benchTotal - done)}" +
+                    "\nUne touche pour interrompre (reprise possible depuis les options)"
+            } else if (settings.showHud) {
                 val s = renderer.hud
                 hud.text = "${s.fps} FPS  ${s.width}×${s.height}" +
                     (if (settings.resolution == 0) " auto" else "") +
                     (if (s.blending) "  fondu" else "") +
                     (if (locked) "  🔒" else "") +
-                    (if (benchRunning) "  banc d'essai ${renderer.benchProgress}" else "") +
                     "\nmoy ${"%.1f".format(s.avgMs)} ms · max ${"%.0f".format(s.maxMs)} ms · audio ${"%.2f".format(audio.level)}"
             }
             if (packs.state !is PackManager.State.Idle) menu?.rebuild()

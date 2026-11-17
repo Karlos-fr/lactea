@@ -50,6 +50,7 @@ class LacteaDreamService : DreamService(), LacteaRenderer.Listener, NowPlaying.L
 
         settings = Settings(this)
         stats = PresetStats(settings)
+        PresetStats.loadReferenceAsync(this, stats)
         val playlist = Playlist(settings, stats)
         val library = PresetLibrary(this)
         val packs = PackManager(this, settings)
