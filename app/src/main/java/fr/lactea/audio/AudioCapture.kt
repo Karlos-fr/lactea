@@ -1,5 +1,7 @@
 package fr.lactea.audio
 
+import fr.lactea.R
+import fr.lactea.i18n.L
 import android.media.audiofx.Visualizer
 import android.util.Log
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -16,7 +18,7 @@ class AudioCapture {
 
     @Volatile var level: Float = 0f   // RMS 0..1 of the latest buffer, for the overlay
         private set
-    @Volatile var status: String = "stopped"
+    @Volatile var status: String = L.s(R.string.audio_stopped)
         private set
 
     /** @param asPlayed false = normalised level, true = follows the playback volume. */
@@ -39,10 +41,10 @@ class AudioCapture {
             }, Visualizer.getMaxCaptureRate(), true, false)
             v.enabled = true
             visualizer = v
-            status = "capturing ${v.captureSize} @ ${Visualizer.getMaxCaptureRate() / 1000} Hz"
+            status = L.s(R.string.audio_capturing, v.captureSize, Visualizer.getMaxCaptureRate() / 1000)
             Log.i(TAG, "Audio capture started: $status")
         } catch (t: Throwable) {
-            status = "capture failed: ${t.message}"
+            status = L.s(R.string.audio_failed, t.message ?: "?")
             Log.e(TAG, status, t)
         }
     }
@@ -54,7 +56,7 @@ class AudioCapture {
         }
         visualizer = null
         queue.clear()
-        status = "stopped"
+        status = L.s(R.string.audio_stopped)
     }
 
     /** Hands every pending buffer to [consumer]; call from the GL thread. */

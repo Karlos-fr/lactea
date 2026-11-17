@@ -1,6 +1,8 @@
 package fr.lactea.ui
 
 import android.content.Context
+import fr.lactea.R
+import fr.lactea.i18n.L
 import android.view.KeyEvent
 import android.widget.TextView
 import fr.lactea.presets.Playlist
@@ -24,8 +26,8 @@ class BrowserPanel(
     private var entries: List<Playlist.Entry> = emptyList()
 
     init {
-        titleView.text = "Navigateur de presets"
-        footerView.text = "◀▶ catégorie   OK lire   🟡 favori   🔴 exclure   Retour fermer"
+        titleView.text = context.getString(R.string.browser_title)
+        footerView.text = context.getString(R.string.browser_footer)
         reload(focus = playlist.current())
     }
 
@@ -40,8 +42,8 @@ class BrowserPanel(
     private fun filter() {
         val cat = categories.getOrElse(categoryIndex) { ALL }
         val all = playlist.all()
-        entries = if (cat == ALL) all else all.filter { it.category == cat }
-        subtitleView.text = "Catégorie : $cat  (${entries.size} presets)   ★ favori   ✕ exclu   🐢 lent"
+        entries = if (categoryIndex == 0) all else all.filter { it.category == cat }
+        subtitleView.text = context.getString(R.string.browser_subtitle, cat, entries.size)
     }
 
     override fun bindRow(index: Int, label: TextView, value: TextView, isSelected: Boolean) {
@@ -78,7 +80,7 @@ class BrowserPanel(
     }
 
     companion object {
-        private const val ALL = "Toutes"
+        private val ALL get() = L.s(R.string.browser_all)
         private val ARROWS = setOf(KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT)
     }
 }

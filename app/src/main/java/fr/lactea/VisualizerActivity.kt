@@ -132,7 +132,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
         buildViews()
         applyResolution()
-        if (playlist.all().isEmpty()) osd.show("Aucun preset trouvé", 5000)
+        if (playlist.all().isEmpty()) osd.show(getString(R.string.osd_no_presets), 5000)
         // Extras of the launching intent (bench, preset…): onNewIntent only sees later ones.
         applyDevExtras(intent)
     }
@@ -230,7 +230,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     // ------------------------------------------------------------------ Keys
 
     override fun dispatchKeyEvent(e: KeyEvent): Boolean {
-        if (autoLaunched && e.action == KeyEvent.ACTION_DOWN && !KeyEvent.isMediaSessionKey(e.keyCode) &&
+        if (autoLaunched && e.action == KeyEvent.ACTION_DOWN && e.keyCode !in MEDIA_KEYS &&
             e.keyCode !in VOLUME_KEYS
         ) {
             autoLaunched = false // the user is now in charge: no automatic close
@@ -242,7 +242,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
         if (captureAction != null) return handleCapture(e)
         if (e.keyCode in VOLUME_KEYS) return super.dispatchKeyEvent(e)
-        if (benchRunning && e.action == KeyEvent.ACTION_DOWN && !KeyEvent.isMediaSessionKey(e.keyCode)) {
+        if (benchRunning && e.action == KeyEvent.ACTION_DOWN && e.keyCode !in MEDIA_KEYS) {
             swallowUpKey = e.keyCode
             interruptBench()
             return true
@@ -267,38 +267,38 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 locked = !locked
                 val l = locked
                 renderer.post { renderer.setLocked(l) }
-                osd.show(if (l) "🔒 Preset verrouillé" else "🔓 Preset déverrouillé")
+                osd.show(getString(if (l) R.string.osd_locked else R.string.osd_unlocked))
             }
             Action.TOGGLE_SHUFFLE -> {
                 settings.shuffle = !settings.shuffle
-                osd.show(if (settings.shuffle) "🔀 Mode aléatoire" else "➡ Mode séquentiel")
+                osd.show(getString(if (settings.shuffle) R.string.osd_shuffle_on else R.string.osd_shuffle_off))
             }
             Action.TOGGLE_FAVORITE -> playlist.current()?.let {
                 val added = settings.toggleFavorite(it.key)
-                osd.show(if (added) "★ Ajouté aux favoris\n${it.name}" else "☆ Retiré des favoris\n${it.name}")
+                osd.show(getString(if (added) R.string.osd_fav_added else R.string.osd_fav_removed, it.name))
             }
             Action.TOGGLE_BLACKLIST -> playlist.current()?.let {
                 val added = settings.toggleBlacklist(it.key)
-                osd.show(if (added) "✕ Preset exclu\n${it.name}" else "Preset réintégré\n${it.name}")
+                osd.show(getString(if (added) R.string.osd_excluded else R.string.osd_restored, it.name))
                 if (added) renderer.post { renderer.next() }
             }
             Action.SHOW_TITLE -> {
                 val t = nowPlaying.track
                 when {
                     t != null -> showTitle(t)
-                    !nowPlaying.permissionGranted -> osd.show("Titre indisponible : autorisation à accorder\n(Options › Titre du morceau)", 4000)
-                    else -> osd.show("Aucune musique détectée")
+                    !nowPlaying.permissionGranted -> osd.show(getString(R.string.osd_title_permission), 4000)
+                    else -> osd.show(getString(R.string.osd_no_music))
                 }
             }
             Action.SHOW_PRESET_NAME -> playlist.current()?.let { showPresetLabel(it) }
-            Action.PLAY_PAUSE -> { nowPlaying.playPause(); osd.show(if (nowPlaying.playing) "⏸ Pause" else "▶ Lecture", 1200) }
-            Action.NEXT_TRACK -> { nowPlaying.nextTrack(); osd.show("⏭ Morceau suivant", 1200) }
-            Action.PREVIOUS_TRACK -> { nowPlaying.previousTrack(); osd.show("⏮ Morceau précédent", 1200) }
+            Action.PLAY_PAUSE -> { nowPlaying.playPause(); osd.show(getString(if (nowPlaying.playing) R.string.osd_pause else R.string.osd_play), 1200) }
+            Action.NEXT_TRACK -> { nowPlaying.nextTrack(); osd.show(getString(R.string.osd_next_track), 1200) }
+            Action.PREVIOUS_TRACK -> { nowPlaying.previousTrack(); osd.show(getString(R.string.osd_prev_track), 1200) }
             Action.SENSITIVITY_UP, Action.SENSITIVITY_DOWN -> {
                 val delta = if (a == Action.SENSITIVITY_UP) 0.1f else -0.1f
                 settings.beatSensitivity = (Math.round((settings.beatSensitivity + delta) * 10) / 10f).coerceIn(0.1f, 5f)
                 applyRender()
-                osd.show("Sensibilité audio : ${"%.1f".format(settings.beatSensitivity)}", 1200)
+                osd.show(getString(R.string.osd_sensitivity, settings.beatSensitivity), 1200)
             }
             Action.OPEN_OPTIONS -> openOptions()
             Action.OPEN_BROWSER -> openBrowser()
@@ -353,10 +353,10 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     private fun confirmLabel(key: String, normal: String) =
-        if (confirmKey == key && SystemClock.uptimeMillis() < confirmUntil) "OK à nouveau pour confirmer" else normal
+        if (confirmKey == key && SystemClock.uptimeMillis() < confirmUntil) getString(R.string.confirm_again) else normal
 
-    private fun rootScreen(): MenuScreen = MenuScreen("Options", "Lactea $version") {
-        val resLabels = listOf("Auto") + Settings.RESOLUTIONS.map { if (it == 2160) "2160p (4K)" else "${it}p" }
+    private fun rootScreen(): MenuScreen = MenuScreen(getString(R.string.menu_options), getString(R.string.menu_version, version)) {
+        val resLabels = listOf(getString(R.string.res_auto)) + Settings.RESOLUTIONS.map { if (it == 2160) getString(R.string.res_4k) else "${it}p" }
         val autoMaxChoices = listOf(720, 1080, 1440, 2160)
         val durations = listOf(10, 15, 20, 25, 30, 45, 60, 90, 120)
         val fades = listOf(0.5f, 1f, 1.5f, 2f, 3f, 5f)
@@ -367,177 +367,173 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         val titleDurations = listOf(3, 4, 6, 8, 12)
         val autoDelays = listOf(0, 10, 30, 60, 120, 300)
         listOf(
-            MenuItem.Header("Visuel"),
-            MenuItem.Choice("Résolution de rendu", resLabels,
+            MenuItem.Header(getString(R.string.h_visual)),
+            MenuItem.Choice(getString(R.string.opt_resolution), resLabels,
                 { if (settings.resolution == 0) 0 else Settings.RESOLUTIONS.indexOf(settings.resolution) + 1 },
                 { settings.resolution = if (it == 0) 0 else Settings.RESOLUTIONS[it - 1]; applyResolution() }),
-            MenuItem.Choice("Résolution maximale en Auto", autoMaxChoices.map { "${it}p" },
+            MenuItem.Choice(getString(R.string.opt_auto_max), autoMaxChoices.map { "${it}p" },
                 { autoMaxChoices.indexOf(settings.autoMaxResolution).coerceAtLeast(0) },
                 { settings.autoMaxResolution = autoMaxChoices[it] }),
-            MenuItem.Choice("Images par seconde max", listOf("30", "60"),
+            MenuItem.Choice(getString(R.string.opt_fps), listOf("30", "60"),
                 { if (settings.fpsCap == 30) 0 else 1 },
                 { settings.fpsCap = if (it == 0) 30 else 60; applyRender() }),
-            MenuItem.Choice("Finesse de la déformation", Settings.MESH_SIZES.map { "${it.first}×${it.second}" },
+            MenuItem.Choice(getString(R.string.opt_mesh), Settings.MESH_SIZES.map { "${it.first}×${it.second}" },
                 { settings.meshIndex }, { settings.meshIndex = it; applyRender() }),
-            MenuItem.Toggle("Compteur FPS", { settings.showHud }, {
+            MenuItem.Toggle(getString(R.string.opt_hud), { settings.showHud }, {
                 settings.showHud = it; hud.visibility = if (it) View.VISIBLE else View.GONE
             }),
 
-            MenuItem.Header("Presets et transitions"),
-            MenuItem.Choice("Durée d'un preset", durations.map { "$it s" },
+            MenuItem.Header(getString(R.string.h_presets)),
+            MenuItem.Choice(getString(R.string.opt_duration), durations.map { "$it s" },
                 { durations.indexOf(settings.presetDuration).coerceAtLeast(0) },
                 { settings.presetDuration = durations[it]; applyRender() }),
-            MenuItem.Choice("Transition", listOf("Auto (fondu ou coupe)", "Toujours un fondu", "Toujours une coupe"),
+            MenuItem.Choice(getString(R.string.opt_transition), listOf(getString(R.string.tr_auto), getString(R.string.tr_fade), getString(R.string.tr_cut)),
                 { modes.indexOf(settings.transitionMode).coerceAtLeast(0) },
                 { settings.transitionMode = modes[it] }),
-            MenuItem.Choice("Durée du fondu", fades.map { "${"%.1f".format(it)} s" },
+            MenuItem.Choice(getString(R.string.opt_fade), fades.map { "${"%.1f".format(it)} s" },
                 { fades.indexOf(settings.fadeSeconds).coerceAtLeast(0) },
                 { settings.fadeSeconds = fades[it]; applyRender() }),
-            MenuItem.Toggle("Coupes franches sur les temps forts", { settings.hardCutsOnBeat },
+            MenuItem.Toggle(getString(R.string.opt_beat_cuts), { settings.hardCutsOnBeat },
                 { settings.hardCutsOnBeat = it; applyRender() }),
-            MenuItem.Choice("Sensibilité des coupes", cutSens.map { "%.1f".format(it) },
+            MenuItem.Choice(getString(R.string.opt_cut_sens), cutSens.map { "%.1f".format(it) },
                 { cutSens.indexOf(settings.hardCutSensitivity).coerceAtLeast(0) },
                 { settings.hardCutSensitivity = cutSens[it]; applyRender() }),
-            MenuItem.Toggle("Mode aléatoire", { settings.shuffle }, { settings.shuffle = it }),
-            MenuItem.Toggle("Favoris uniquement", { settings.favoritesOnly }, { settings.favoritesOnly = it }),
-            MenuItem.Toggle("Nom du preset au changement", { settings.showPresetNameOnChange },
+            MenuItem.Toggle(getString(R.string.opt_shuffle), { settings.shuffle }, { settings.shuffle = it }),
+            MenuItem.Toggle(getString(R.string.opt_fav_only), { settings.favoritesOnly }, { settings.favoritesOnly = it }),
+            MenuItem.Toggle(getString(R.string.opt_name_on_change), { settings.showPresetNameOnChange },
                 { settings.showPresetNameOnChange = it }),
 
-            MenuItem.Header("Titre du morceau"),
-            MenuItem.Toggle("Afficher à chaque morceau", { settings.showTitleOnTrackChange },
+            MenuItem.Header(getString(R.string.h_title)),
+            MenuItem.Toggle(getString(R.string.opt_title_each), { settings.showTitleOnTrackChange },
                 { settings.showTitleOnTrackChange = it }),
-            MenuItem.Choice("Durée d'affichage", titleDurations.map { "$it s" },
+            MenuItem.Choice(getString(R.string.opt_title_duration), titleDurations.map { "$it s" },
                 { titleDurations.indexOf(settings.titleSeconds).coerceAtLeast(0) },
                 { settings.titleSeconds = titleDurations[it]; previewTitle() }),
-            MenuItem.Choice("Position", listOf("Centre", "Bas"),
+            MenuItem.Choice(getString(R.string.opt_position), listOf(getString(R.string.pos_center), getString(R.string.pos_bottom)),
                 { settings.titlePosition }, { settings.titlePosition = it; previewTitle() }),
-            MenuItem.Choice("Taille", listOf("Petite", "Moyenne", "Grande"),
+            MenuItem.Choice(getString(R.string.opt_size), listOf(getString(R.string.size_small), getString(R.string.size_medium), getString(R.string.size_large)),
                 { settings.titleSize }, { settings.titleSize = it; previewTitle() }),
-            MenuItem.Toggle("Nouveau preset à chaque morceau", { settings.newPresetOnTrack },
+            MenuItem.Toggle(getString(R.string.opt_new_preset_track), { settings.newPresetOnTrack },
                 { settings.newPresetOnTrack = it }),
-            MenuItem.Info("En cours") {
+            MenuItem.Info(getString(R.string.info_now_playing)) {
                 nowPlaying.track?.let { "${it.title} — ${it.source}" }
-                    ?: if (nowPlaying.permissionGranted) "aucune musique détectée" else "autorisation manquante"
+                    ?: getString(if (nowPlaying.permissionGranted) R.string.np_none else R.string.np_no_permission)
             },
-            MenuItem.Button("Comment autoriser l'accès au titre ?",
-                { if (nowPlaying.permissionGranted) "Autorisé ✓" else "" }) {
-                osd.show("Depuis un PC relié à la TV :\n${NowPlaying.ADB_GRANT}\npuis relancez Lactea", 12000)
+            MenuItem.Button(getString(R.string.btn_title_howto),
+                { if (nowPlaying.permissionGranted) getString(R.string.allowed) else "" }) {
+                osd.show(getString(R.string.osd_title_howto, NowPlaying.ADB_GRANT), 12000)
             },
 
-            MenuItem.Header("Pochette"),
-            MenuItem.Toggle("Afficher la pochette avec le titre", { settings.coverWithTitle },
+            MenuItem.Header(getString(R.string.h_cover)),
+            MenuItem.Toggle(getString(R.string.opt_cover_title), { settings.coverWithTitle },
                 { settings.coverWithTitle = it; previewTitle() }),
-            MenuItem.Toggle("Pulsation sur le rythme", { settings.coverPulse },
+            MenuItem.Toggle(getString(R.string.opt_cover_pulse), { settings.coverPulse },
                 { settings.coverPulse = it; previewTitle() }),
-            MenuItem.Toggle("Pochette dans les presets compatibles", { settings.coverInPresets },
+            MenuItem.Toggle(getString(R.string.opt_cover_presets), { settings.coverInPresets },
                 { settings.coverInPresets = it; applyCoverSettings() }),
-            MenuItem.Toggle("Preset pochette à chaque morceau", { settings.coverPresetOnTrack },
+            MenuItem.Toggle(getString(R.string.opt_cover_preset_track), { settings.coverPresetOnTrack },
                 { settings.coverPresetOnTrack = it }),
-            MenuItem.Toggle("Secours en ligne (Deezer, iTunes)", { settings.coverOnline },
+            MenuItem.Toggle(getString(R.string.opt_cover_online), { settings.coverOnline },
                 { settings.coverOnline = it }),
-            MenuItem.Info("Pochette actuelle") { covers.current?.source ?: "aucune" },
-            MenuItem.Info("Presets compatibles") { "${renderer.coverCompatible.size}" },
+            MenuItem.Info(getString(R.string.info_cover)) { covers.current?.source ?: getString(R.string.none) },
+            MenuItem.Info(getString(R.string.info_cover_presets)) { "${renderer.coverCompatible.size}" },
 
-            MenuItem.Header("Lancement automatique et économiseur"),
-            MenuItem.Choice("Ouvrir Lactea quand la musique joue", autoDelays.map {
-                if (it == 0) "Jamais" else if (it < 60) "après $it s" else "après ${it / 60} min"
+            MenuItem.Header(getString(R.string.h_auto)),
+            MenuItem.Choice(getString(R.string.opt_autolaunch), autoDelays.map {
+                if (it == 0) getString(R.string.never) else if (it < 60) getString(R.string.after_s, it) else getString(R.string.after_min, it / 60)
             }, { autoDelays.indexOf(settings.autoLaunchDelay).coerceAtLeast(0) },
                 { settings.autoLaunchDelay = autoDelays[it] }),
-            MenuItem.Toggle("Seulement les applis de musique", { settings.autoLaunchMusicAppsOnly },
+            MenuItem.Toggle(getString(R.string.opt_music_only), { settings.autoLaunchMusicAppsOnly },
                 { settings.autoLaunchMusicAppsOnly = it }),
-            MenuItem.Toggle("Fermer quand la musique s'arrête", { settings.autoCloseWhenMusicStops },
+            MenuItem.Toggle(getString(R.string.opt_autoclose), { settings.autoCloseWhenMusicStops },
                 { settings.autoCloseWhenMusicStops = it }),
-            MenuItem.Info("Autorisation d'ouverture auto") {
-                if (android.provider.Settings.canDrawOverlays(this)) "Accordée ✓" else "Manquante"
+            MenuItem.Info(getString(R.string.info_overlay)) {
+                getString(if (android.provider.Settings.canDrawOverlays(this)) R.string.granted else R.string.missing)
             },
-            MenuItem.Info("Économiseur d'écran actuel") { screensaverLabel() },
-            MenuItem.Button("Comment configurer ?") {
-                osd.show("Depuis un PC relié à la TV :\n" +
-                    "Ouverture auto : adb shell appops set $packageName SYSTEM_ALERT_WINDOW allow\n" +
-                    "Économiseur : ${LacteaDreamService.ADB_ENABLE}", 15000)
+            MenuItem.Info(getString(R.string.info_screensaver)) { screensaverLabel() },
+            MenuItem.Button(getString(R.string.btn_setup_howto)) {
+                osd.show(getString(R.string.osd_setup_howto,
+                    "adb shell appops set $packageName SYSTEM_ALERT_WINDOW allow", LacteaDreamService.ADB_ENABLE), 15000)
             },
 
-            MenuItem.Header("Gestion des presets"),
-            MenuItem.Button("Navigateur de presets", { "${playlist.all().size} presets" }) { openBrowser() },
-            MenuItem.Toggle("Exclure les presets lents", { settings.excludeSlow }, { settings.excludeSlow = it }),
-            MenuItem.Choice("Seuil « lent » (FPS en 540p)", thresholds.map { "< $it" },
+            MenuItem.Header(getString(R.string.h_manage)),
+            MenuItem.Button(getString(R.string.btn_browser), { getString(R.string.n_presets, playlist.all().size) }) { openBrowser() },
+            MenuItem.Toggle(getString(R.string.opt_exclude_slow), { settings.excludeSlow }, { settings.excludeSlow = it }),
+            MenuItem.Choice(getString(R.string.opt_slow_threshold), thresholds.map { "< $it" },
                 { thresholds.indexOf(settings.slowThreshold).coerceAtLeast(0) },
                 { settings.slowThreshold = thresholds[it] }),
-            MenuItem.Info("Bilan") {
-                "${settings.favorites.size} ★  ${settings.blacklist.size} ✕  ${stats.slowCount(settings.fpsCap)} 🐢  ${stats.count()} mesurés"
+            MenuItem.Info(getString(R.string.info_summary)) {
+                getString(R.string.summary_value, settings.favorites.size, settings.blacklist.size, stats.slowCount(settings.fpsCap), stats.count())
             },
-            MenuItem.Button("Tester les presets sur cette TV") {
+            MenuItem.Button(getString(R.string.btn_test)) {
                 menu?.push(benchScreen())
             },
-            MenuItem.Info("Mesures de référence") {
-                if (stats.referenceCount() == 0) "—" else "${stats.referenceCount()} presets (${stats.referenceDevice})"
+            MenuItem.Info(getString(R.string.info_reference)) {
+                if (stats.referenceCount() == 0) "—" else getString(R.string.reference_value, stats.referenceCount(), stats.referenceDevice)
             },
-            MenuItem.Button("Réinitialiser les mesures FPS", { confirmLabel("stats", "") }) {
-                confirm("stats") { stats.reset(); osd.show("Mesures réinitialisées") }
+            MenuItem.Button(getString(R.string.btn_reset_stats), { confirmLabel("stats", "") }) {
+                confirm("stats") { stats.reset(); osd.show(getString(R.string.osd_stats_reset)) }
             },
-            MenuItem.Button("Vider la liste des exclus", { confirmLabel("blacklist", "${settings.blacklist.size}") }) {
-                confirm("blacklist") { settings.blacklist = emptySet(); osd.show("Liste des exclus vidée") }
+            MenuItem.Button(getString(R.string.btn_clear_blacklist), { confirmLabel("blacklist", "${settings.blacklist.size}") }) {
+                confirm("blacklist") { settings.blacklist = emptySet(); osd.show(getString(R.string.osd_blacklist_cleared)) }
             },
-            MenuItem.Button("Packs de presets à télécharger", { "${packs.installedIds().size} installés" }) {
+            MenuItem.Button(getString(R.string.btn_packs), { getString(R.string.n_installed, packs.installedIds().size) }) {
                 menu?.push(packsScreen())
                 if (packs.catalog.isEmpty()) refreshCatalog()
             },
 
-            MenuItem.Header("Audio"),
-            MenuItem.Choice("Sensibilité audio", sens.map { "%.1f".format(it) },
+            MenuItem.Header(getString(R.string.h_audio)),
+            MenuItem.Choice(getString(R.string.opt_audio_sens), sens.map { "%.1f".format(it) },
                 { sens.indexOfFirst { kotlin.math.abs(it - settings.beatSensitivity) < 0.05f }.coerceAtLeast(0) },
                 { settings.beatSensitivity = sens[it]; applyRender() }),
-            MenuItem.Choice("Mode de capture", listOf("Niveau constant", "Suit le volume"),
+            MenuItem.Choice(getString(R.string.opt_capture_mode), listOf(getString(R.string.mode_constant), getString(R.string.mode_volume)),
                 { settings.captureMode }, { settings.captureMode = it; restartAudio() }),
-            MenuItem.Info("Capture") { audio.status },
+            MenuItem.Info(getString(R.string.info_capture)) { audio.status },
 
-            MenuItem.Header("Télécommande"),
-            MenuItem.Button("Configurer les touches") { menu?.push(remoteScreen()) },
-            MenuItem.Button("Aide des touches") { onAction(Action.SHOW_HELP) },
+            MenuItem.Header(getString(R.string.h_remote)),
+            MenuItem.Button(getString(R.string.btn_keys)) { menu?.push(remoteScreen()) },
+            MenuItem.Button(getString(R.string.btn_key_help)) { onAction(Action.SHOW_HELP) },
 
-            MenuItem.Header("À propos"),
+            MenuItem.Header(getString(R.string.h_about)),
             MenuItem.Info("Lactea") { version },
-            MenuItem.Info("Moteur") { "projectM 4.1.8, version corrigée (github.com/Karlos-fr/projectm) — LGPL 2.1" },
-            MenuItem.Info("Presets") { "Cream of the Crop (projectM) + textures MilkDrop" },
+            MenuItem.Info(getString(R.string.info_engine)) { getString(R.string.engine_value) },
+            MenuItem.Info(getString(R.string.info_presets)) { getString(R.string.presets_value) },
         )
     }
 
     private val benchFile get() = java.io.File(filesDir, "bench/bench.tsv")
 
     /** Test of the presets on this TV: everything, or one category at a time. */
-    private fun benchScreen(): MenuScreen = MenuScreen("Tester les presets",
-        "Mesure la fluidité de chaque preset sur cette TV (environ 3 s par preset, en 720p). " +
-            "Laissez la musique jouer ; une touche interrompt le test, qui pourra reprendre là où il s'est arrêté.") {
+    private fun benchScreen(): MenuScreen = MenuScreen(getString(R.string.bench_title), getString(R.string.bench_subtitle)) {
         val done = runCatching { benchFile.readLines().mapTo(HashSet()) { it.substringBefore('\t') } }.getOrDefault(HashSet())
         val all = playlist.all()
         val left = all.count { it.key !in done }
         val items = mutableListOf<MenuItem>(
-            MenuItem.Info("Déjà testés") { "${all.size - left} / ${all.size}" },
-            MenuItem.Button(if (left == all.size) "Tout tester" else "Continuer le test",
-                { if (left == 0) "rien à tester" else "$left presets · environ ${durationText(left)}" }) {
+            MenuItem.Info(getString(R.string.bench_done_count)) { "${all.size - left} / ${all.size}" },
+            MenuItem.Button(getString(if (left == all.size) R.string.bench_all else R.string.bench_continue),
+                { if (left == 0) getString(R.string.bench_nothing) else getString(R.string.bench_left, left, durationText(left)) }) {
                 if (left > 0) { closePanel(); startBench("all") }
             },
-            MenuItem.Button("Recommencer de zéro", { confirmLabel("bench-reset", "efface les résultats du test") }) {
-                confirm("bench-reset") { benchFile.delete(); osd.show("Résultats du test effacés"); menu?.rebuild() }
+            MenuItem.Button(getString(R.string.bench_restart), { confirmLabel("bench-reset", getString(R.string.bench_restart_hint)) }) {
+                confirm("bench-reset") { benchFile.delete(); osd.show(getString(R.string.osd_bench_cleared)); menu?.rebuild() }
             },
-            MenuItem.Header("Par catégorie"),
+            MenuItem.Header(getString(R.string.h_by_category)),
         )
         all.groupBy { it.key.substringBefore('/') }.toSortedMap().forEach { (cat, entries) ->
             val n = entries.count { it.key !in done }
-            items += MenuItem.Button(cat, { if (n == 0) "testée ✓" else "$n presets · environ ${durationText(n)}" }) {
+            items += MenuItem.Button(cat, { if (n == 0) getString(R.string.bench_cat_done) else getString(R.string.bench_left, n, durationText(n)) }) {
                 if (n > 0) { closePanel(); startBench("$cat/") }
             }
         }
         items
     }
 
-    private fun remoteScreen(): MenuScreen = MenuScreen("Télécommande",
-        "OK sur une action pour ajouter ou retirer des touches. Appui long OK : options (fixe)") {
+    private fun remoteScreen(): MenuScreen = MenuScreen(getString(R.string.h_remote), getString(R.string.remote_subtitle)) {
         listOf<MenuItem>(
-            MenuItem.Button("Réinitialiser toutes les touches", { confirmLabel("keys", "") }) {
-                confirm("keys") { bindings.resetToDefaults(); osd.show("Touches réinitialisées") }
+            MenuItem.Button(getString(R.string.btn_reset_keys), { confirmLabel("keys", "") }) {
+                confirm("keys") { bindings.resetToDefaults(); osd.show(getString(R.string.osd_keys_reset)) }
             },
-            MenuItem.Header("Actions"),
+            MenuItem.Header(getString(R.string.h_actions)),
         ) + Action.entries.map { a ->
             MenuItem.Button(a.label, { bindings.triggersFor(a).joinToString(", ") { it.label }.ifEmpty { "—" } }) {
                 menu?.push(actionScreen(a))
@@ -545,32 +541,32 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
     }
 
-    private fun actionScreen(a: Action): MenuScreen = MenuScreen(a.label, "Touches associées à cette action") {
+    private fun actionScreen(a: Action): MenuScreen = MenuScreen(a.label, getString(R.string.action_subtitle)) {
         listOf<MenuItem>(
-            MenuItem.Button("Ajouter une touche…") { startCapture(a) },
-            MenuItem.Header("Touches actuelles"),
+            MenuItem.Button(getString(R.string.btn_add_key)) { startCapture(a) },
+            MenuItem.Header(getString(R.string.h_current_keys)),
         ) + bindings.triggersFor(a).map { t ->
-            if (t in KeyBindings.RESERVED) MenuItem.Info(t.label) { "fixe" }
-            else MenuItem.Button("Retirer : ${t.label}") { bindings.unbind(t) }
+            if (t in KeyBindings.RESERVED) MenuItem.Info(t.label) { getString(R.string.key_fixed) }
+            else MenuItem.Button(getString(R.string.btn_remove_key, t.label)) { bindings.unbind(t) }
         }
     }
 
-    private fun packsScreen(): MenuScreen = MenuScreen("Packs de presets", settings.manifestUrl) {
+    private fun packsScreen(): MenuScreen = MenuScreen(getString(R.string.packs_title), settings.manifestUrl) {
         val items = mutableListOf<MenuItem>(
-            MenuItem.Info("Catalogue") { packs.catalogStatus },
-            MenuItem.Info("État") { packStateText() },
-            MenuItem.Button("Actualiser le catalogue") { refreshCatalog() },
-            MenuItem.Info("Espace utilisé") { "%.1f Mo".format(packs.diskUsageBytes() / 1e6) },
-            MenuItem.Header("Packs"),
+            MenuItem.Info(getString(R.string.info_catalog)) { packs.catalogStatus },
+            MenuItem.Info(getString(R.string.info_state)) { packStateText() },
+            MenuItem.Button(getString(R.string.btn_refresh)) { refreshCatalog() },
+            MenuItem.Info(getString(R.string.info_disk)) { getString(R.string.size_mb, packs.diskUsageBytes() / 1e6) },
+            MenuItem.Header(getString(R.string.h_packs)),
         )
         val catalogIds = packs.catalog.map { it.id }.toSet()
         packs.catalog.forEach { p ->
-            items += MenuItem.Button("${p.name}  (${p.presets} presets)", {
+            items += MenuItem.Button(getString(R.string.pack_label, p.name, p.presets), {
                 val installed = packs.installedVersion(p.id)
                 when {
-                    installed == null -> "Installer — %.1f Mo".format(p.size / 1e6)
-                    installed != p.version -> "Mettre à jour (v$installed → v${p.version})"
-                    else -> confirmLabel("pack-${p.id}", "Installé ✓ (OK : supprimer)")
+                    installed == null -> getString(R.string.pack_install, p.size / 1e6)
+                    installed != p.version -> getString(R.string.pack_update, installed, p.version)
+                    else -> confirmLabel("pack-${p.id}", getString(R.string.pack_installed))
                 }
             }) {
                 val installed = packs.installedVersion(p.id)
@@ -579,7 +575,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             }
         }
         packs.installedIds().filter { it !in catalogIds }.forEach { id ->
-            items += MenuItem.Button(id, { confirmLabel("pack-$id", "Installé ✓ (OK : supprimer)") }) {
+            items += MenuItem.Button(id, { confirmLabel("pack-$id", getString(R.string.pack_installed)) }) {
                 confirm("pack-$id") { removePack(id) }
             }
         }
@@ -587,24 +583,25 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     private fun packStateText(): String = when (val s = packs.state) {
-        is PackManager.State.Idle -> "Prêt"
+        is PackManager.State.Idle -> getString(R.string.state_ready)
         is PackManager.State.Downloading ->
-            if (s.total > 0) "Téléchargement ${s.packId} : ${s.done * 100 / s.total} %" else "Téléchargement ${s.packId}…"
-        is PackManager.State.Extracting -> "Installation ${s.packId}…"
-        is PackManager.State.Error -> "Erreur : ${s.message}"
+            if (s.total > 0) getString(R.string.state_downloading_pct, s.packId, (s.done * 100 / s.total).toInt())
+            else getString(R.string.state_downloading, s.packId)
+        is PackManager.State.Extracting -> getString(R.string.state_installing, s.packId)
+        is PackManager.State.Error -> getString(R.string.state_error, s.message)
     }
 
     private fun refreshCatalog() = packs.refreshCatalog { ui.post { menu?.rebuild() } }
 
     private fun installPack(p: PackManager.Pack) {
-        osd.show("Téléchargement de ${p.name}…")
+        osd.show(getString(R.string.osd_downloading, p.name))
         packs.install(p) { ok ->
-            if (ok) reloadLibrary("${p.name} installé")
-            else ui.post { osd.show("Échec : ${packStateText()}", 4000) }
+            if (ok) reloadLibrary(getString(R.string.osd_installed, p.name))
+            else ui.post { osd.show(getString(R.string.osd_failed, packStateText()), 4000) }
         }
     }
 
-    private fun removePack(id: String) = packs.remove(id) { reloadLibrary("Pack $id supprimé") }
+    private fun removePack(id: String) = packs.remove(id) { reloadLibrary(getString(R.string.osd_pack_removed, id)) }
 
     /** Rescans presets after a pack change (background), then updates playlist and textures. */
     private fun reloadLibrary(message: String) {
@@ -616,7 +613,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             Log.i(TAG, "Library reloaded: ${entries.size} presets")
             indexCoverPresets()
             ui.post {
-                osd.show("$message — ${entries.size} presets")
+                osd.show(getString(R.string.osd_library, message, entries.size))
                 menu?.rebuild()
             }
         }
@@ -646,7 +643,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     /** About 3.2 s per preset (1 s to settle, 2 s of measure, loading). */
     private fun durationText(presets: Int): String {
         val min = (presets * 3.2 / 60).toInt().coerceAtLeast(1)
-        return if (min < 60) "$min min" else "${min / 60} h ${"%02d".format(min % 60)}"
+        return if (min < 60) getString(R.string.duration_min, min) else getString(R.string.duration_h, min / 60, min % 60)
     }
 
     /** Stops the benchmark at the user's request; what was measured is kept. */
@@ -654,8 +651,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         benchFilter = null
         benchPaused = false
         renderer.post { renderer.stopBench() }
-        osd.show("Test interrompu — ce qui a été mesuré est conservé.\n" +
-            "Pour continuer : Options › Gestion des presets › Tester les presets", 8000)
+        osd.show(getString(R.string.osd_bench_interrupted), 8000)
     }
 
     /**
@@ -676,8 +672,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 glView.holder.setFixedSize(1280, 720)
                 benchTotal = entries.size
                 if (entries.isNotEmpty()) {
-                    osd.show("Test de ${entries.size} presets — environ ${durationText(entries.size)}\n" +
-                        "Laissez la musique jouer. Une touche interrompt le test.", 8000)
+                    osd.show(getString(R.string.osd_bench_start, entries.size, durationText(entries.size)), 8000)
                 }
                 renderer.post {
                     renderer.startBench(LacteaRenderer.Bench(entries, out, settleMs = 1000, measureMs = 2000) { n ->
@@ -688,7 +683,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                             applyResolution()
                             if (benchFilter != null) {
                                 benchFilter = null
-                                osd.show("Test terminé : $n presets mesurés", 8000)
+                                osd.show(getString(R.string.osd_bench_done, n), 8000)
                             }
                             menu?.rebuild()
                         }
@@ -712,7 +707,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         captureAction = a
         captureKey = -1
         captureConflict = null
-        showCaptureBox("Appuyez sur la touche pour\n« ${a.label} »\n\nMaintenez-la pour un appui long · Retour pour annuler")
+        showCaptureBox(getString(R.string.capture_press, a.label))
     }
 
     private fun handleCapture(e: KeyEvent): Boolean {
@@ -723,12 +718,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                     bindings.bind(t, a)
                     endCapture("${t.label} → ${a.label}")
                 }
-                KeyEvent.KEYCODE_BACK -> endCapture("Annulé")
+                KeyEvent.KEYCODE_BACK -> endCapture(getString(R.string.osd_cancelled))
             }
             return true
         }
         if (e.keyCode == KeyEvent.KEYCODE_BACK) {
-            if (e.action == KeyEvent.ACTION_UP) endCapture("Annulé")
+            if (e.action == KeyEvent.ACTION_UP) endCapture(getString(R.string.osd_cancelled))
             return true
         }
         when (e.action) {
@@ -740,7 +735,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 (e.isLongPress || SystemClock.uptimeMillis() - captureDown >= RemoteInput.LONG_PRESS_MS)
             ) {
                 captureLong = true
-                showCaptureBox("${KeyBindings.keyName(e.keyCode)} (appui long)…")
+                showCaptureBox(getString(R.string.capture_long, KeyBindings.keyName(e.keyCode)))
             }
             KeyEvent.ACTION_UP -> if (e.keyCode == captureKey) finishCapture(a, Trigger(e.keyCode, captureLong))
         }
@@ -751,15 +746,15 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         captureKey = -1
         when {
             t.keyCode in KeyBindings.FORBIDDEN ->
-                showCaptureBox("${t.label} : touche réservée au système.\nEssayez une autre touche · Retour pour annuler")
+                showCaptureBox(getString(R.string.capture_forbidden, t.label))
             t in KeyBindings.RESERVED ->
-                showCaptureBox("${t.label} ouvre toujours les options.\nEssayez une autre touche · Retour pour annuler")
+                showCaptureBox(getString(R.string.capture_reserved, t.label))
             else -> when (val existing = bindings.actionFor(t)) {
                 null -> { bindings.bind(t, a); endCapture("${t.label} → ${a.label}") }
-                a -> endCapture("${t.label} est déjà associée à cette action")
+                a -> endCapture(getString(R.string.capture_same, t.label))
                 else -> {
                     captureConflict = t
-                    showCaptureBox("${t.label} est déjà utilisée pour\n« ${existing.label} ».\n\nOK : réattribuer · Retour : annuler")
+                    showCaptureBox(getString(R.string.capture_conflict, t.label, existing.label))
                 }
             }
         }
@@ -795,7 +790,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     override fun onPresetFailed(entry: Playlist.Entry?, message: String) {
         Log.w(TAG, "Preset failed: ${entry?.key}: $message")
-        ui.post { osd.show("Preset ignoré (erreur)\n${entry?.name ?: ""}", 2500) }
+        ui.post { osd.show(getString(R.string.osd_preset_skipped, entry?.name ?: ""), 2500) }
     }
 
     // ------------------------------------------------------------------ Now playing (main thread)
@@ -828,7 +823,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private fun screensaverLabel(): String {
         val current = runCatching {
             android.provider.Settings.Secure.getString(contentResolver, "screensaver_components")
-        }.getOrNull()?.substringBefore(',') ?: return "inconnu"
+        }.getOrNull()?.substringBefore(',') ?: return getString(R.string.unknown)
         return if (current.startsWith("$packageName/")) "Lactea ✓" else current.substringBefore('/')
     }
 
@@ -841,7 +836,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     /** Shows the title (or a sample) behind the options panel while its settings change. */
     private fun previewTitle() {
-        showTitle(nowPlaying.track ?: NowPlaying.Track("Titre du morceau", "Artiste", "Album", "Lactea"))
+        showTitle(nowPlaying.track ?: NowPlaying.Track(getString(R.string.sample_title), getString(R.string.sample_artist), getString(R.string.sample_album), "Lactea"))
     }
 
     // ------------------------------------------------------------------ Helpers
@@ -873,15 +868,14 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             if (benchRunning) {
                 val done = renderer.benchProgress.substringBefore('/').toIntOrNull() ?: 0
                 hud.visibility = View.VISIBLE
-                hud.text = "Test des presets : $done / $benchTotal  ·  reste environ ${durationText(benchTotal - done)}" +
-                    "\nUne touche pour interrompre (reprise possible depuis les options)"
+                hud.text = getString(R.string.hud_bench, done, benchTotal, durationText(benchTotal - done))
             } else if (settings.showHud) {
                 val s = renderer.hud
                 hud.text = "${s.fps} FPS  ${s.width}×${s.height}" +
-                    (if (settings.resolution == 0) " auto" else "") +
-                    (if (s.blending) "  fondu" else "") +
+                    (if (settings.resolution == 0) getString(R.string.hud_auto) else "") +
+                    (if (s.blending) getString(R.string.hud_fade) else "") +
                     (if (locked) "  🔒" else "") +
-                    "\nmoy ${"%.1f".format(s.avgMs)} ms · max ${"%.0f".format(s.maxMs)} ms · audio ${"%.2f".format(audio.level)}"
+                    "\n" + getString(R.string.hud_line2, s.avgMs, s.maxMs, audio.level)
             }
             if (packs.state !is PackManager.State.Idle) menu?.rebuild()
             ui.postDelayed(this, 500)
@@ -953,5 +947,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         private const val AUTO_CLOSE_MS = 30_000L
         const val EXTRA_AUTO_LAUNCHED = "auto_launched"
         private val VOLUME_KEYS = setOf(KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
+        /** Same keys as KeyEvent.isMediaSessionKey(), which only exists from Android 12 (API 31). */
+        private val MEDIA_KEYS = setOf(
+            KeyEvent.KEYCODE_MEDIA_PLAY, KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
+            KeyEvent.KEYCODE_MUTE, KeyEvent.KEYCODE_HEADSETHOOK, KeyEvent.KEYCODE_MEDIA_STOP,
+            KeyEvent.KEYCODE_MEDIA_NEXT, KeyEvent.KEYCODE_MEDIA_PREVIOUS, KeyEvent.KEYCODE_MEDIA_REWIND,
+            KeyEvent.KEYCODE_MEDIA_RECORD, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD,
+        )
     }
 }

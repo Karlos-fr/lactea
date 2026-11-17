@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Messages à l'écran -->
+    <string name="osd_no_presets">Aucun preset trouvé</string>
+    <string name="osd_locked">🔒 Preset verrouillé</string>
+    <string name="osd_unlocked">🔓 Preset déverrouillé</string>
+    <string name="osd_shuffle_on">🔀 Mode aléatoire</string>
+    <string name="osd_shuffle_off">➡ Mode séquentiel</string>
+    <string name="osd_fav_added">★ Ajouté aux favoris\n%1$s</string>
+    <string name="osd_fav_removed">☆ Retiré des favoris\n%1$s</string>
+    <string name="osd_excluded">✕ Preset exclu\n%1$s</string>
+    <string name="osd_restored">Preset réintégré\n%1$s</string>
+    <string name="osd_title_permission">Titre indisponible : autorisation à accorder\n(Options › Titre du morceau)</string>
+    <string name="osd_no_music">Aucune musique détectée</string>
+    <string name="osd_pause">⏸ Pause</string>
+    <string name="osd_play">▶ Lecture</string>
+    <string name="osd_next_track">⏭ Morceau suivant</string>
+    <string name="osd_prev_track">⏮ Morceau précédent</string>
+    <string name="osd_sensitivity">Sensibilité audio : %1$.1f</string>
+    <string name="osd_preset_skipped">Preset ignoré (erreur)\n%1$s</string>
+    <string name="osd_stats_reset">Mesures réinitialisées</string>
+    <string name="osd_blacklist_cleared">Liste des exclus vidée</string>
+    <string name="osd_keys_reset">Touches réinitialisées</string>
+    <string name="osd_cancelled">Annulé</string>
+    <string name="osd_downloading">Téléchargement de %1$s…</string>
+    <string name="osd_installed">%1$s installé</string>
+    <string name="osd_failed">Échec : %1$s</string>
+    <string name="osd_pack_removed">Pack %1$s supprimé</string>
+    <string name="osd_library">%1$s — %2$d presets</string>
+    <string name="osd_title_howto">Depuis un PC relié à la TV :\n%1$s\npuis relancez Lactea</string>
+    <string name="osd_setup_howto">Depuis un PC relié à la TV :\nOuverture auto : %1$s\nÉconomiseur : %2$s</string>
+
+    <!-- Options : commun -->
+    <string name="menu_options">Options</string>
+    <string name="menu_version">Lactea %1$s</string>
+    <string name="menu_footer">▲▼ naviguer   ◀▶ modifier   OK valider   Retour : revenir</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="confirm_again">OK à nouveau pour confirmer</string>
+    <string name="none">aucune</string>
+    <string name="unknown">inconnu</string>
+    <string name="granted">Accordée ✓</string>
+    <string name="allowed">Autorisé ✓</string>
+    <string name="missing">Manquante</string>
+    <string name="n_presets">%1$d presets</string>
+
+    <!-- Options : Visuel -->
+    <string name="h_visual">Visuel</string>
+    <string name="opt_resolution">Résolution de rendu</string>
+    <string name="res_auto">Auto</string>
+    <string name="res_4k">2160p (4K)</string>
+    <string name="opt_auto_max">Résolution maximale en Auto</string>
+    <string name="opt_fps">Images par seconde max</string>
+    <string name="opt_mesh">Finesse de la déformation</string>
+    <string name="opt_hud">Compteur FPS</string>
+
+    <!-- Options : Presets et transitions -->
+    <string name="h_presets">Presets et transitions</string>
+    <string name="opt_duration">Durée d\'un preset</string>
+    <string name="opt_transition">Transition</string>
+    <string name="tr_auto">Auto (fondu ou coupe)</string>
+    <string name="tr_fade">Toujours un fondu</string>
+    <string name="tr_cut">Toujours une coupe</string>
+    <string name="opt_fade">Durée du fondu</string>
+    <string name="opt_beat_cuts">Coupes franches sur les temps forts</string>
+    <string name="opt_cut_sens">Sensibilité des coupes</string>
+    <string name="opt_shuffle">Mode aléatoire</string>
+    <string name="opt_fav_only">Favoris uniquement</string>
+    <string name="opt_name_on_change">Nom du preset au changement</string>
+
+    <!-- Options : Titre du morceau -->
+    <string name="h_title">Titre du morceau</string>
+    <string name="opt_title_each">Afficher à chaque morceau</string>
+    <string name="opt_title_duration">Durée d\'affichage</string>
+    <string name="opt_position">Position</string>
+    <string name="pos_center">Centre</string>
+    <string name="pos_bottom">Bas</string>
+    <string name="opt_size">Taille</string>
+    <string name="size_small">Petite</string>
+    <string name="size_medium">Moyenne</string>
+    <string name="size_large">Grande</string>
+    <string name="opt_new_preset_track">Nouveau preset à chaque morceau</string>
+    <string name="info_now_playing">En cours</string>
+    <string name="np_none">aucune musique détectée</string>
+    <string name="np_no_permission">autorisation manquante</string>
+    <string name="btn_title_howto">Comment autoriser l\'accès au titre ?</string>
+    <string name="sample_title">Titre du morceau</string>
+    <string name="sample_artist">Artiste</string>
+    <string name="sample_album">Album</string>
+
+    <!-- Options : Pochette -->
+    <string name="h_cover">Pochette</string>
+    <string name="opt_cover_title">Afficher la pochette avec le titre</string>
+    <string name="opt_cover_pulse">Pulsation sur le rythme</string>
+    <string name="opt_cover_presets">Pochette dans les presets compatibles</string>
+    <string name="opt_cover_preset_track">Preset pochette à chaque morceau</string>
+    <string name="opt_cover_online">Secours en ligne (Deezer, iTunes)</string>
+    <string name="info_cover">Pochette actuelle</string>
+    <string name="info_cover_presets">Presets compatibles</string>
+
+    <!-- Options : Lancement automatique et économiseur -->
+    <string name="h_auto">Lancement automatique et économiseur</string>
+    <string name="opt_autolaunch">Ouvrir Lactea quand la musique joue</string>
+    <string name="never">Jamais</string>
+    <string name="after_s">après %1$d s</string>
+    <string name="after_min">après %1$d min</string>
+    <string name="opt_music_only">Seulement les applis de musique</string>
+    <string name="opt_autoclose">Fermer quand la musique s\'arrête</string>
+    <string name="info_overlay">Autorisation d\'ouverture auto</string>
+    <string name="info_screensaver">Économiseur d\'écran actuel</string>
+    <string name="btn_setup_howto">Comment configurer ?</string>
+
+    <!-- Options : Gestion des presets -->
+    <string name="h_manage">Gestion des presets</string>
+    <string name="btn_browser">Navigateur de presets</string>
+    <string name="opt_exclude_slow">Exclure les presets lents</string>
+    <string name="opt_slow_threshold">Seuil « lent » (FPS en 540p)</string>
+    <string name="info_summary">Bilan</string>
+    <string name="summary_value">%1$d ★  %2$d ✕  %3$d 🐢  %4$d mesurés</string>
+    <string name="btn_test">Tester les presets sur cette TV</string>
+    <string name="info_reference">Mesures de référence</string>
+    <string name="reference_value">%1$d presets (%2$s)</string>
+    <string name="btn_reset_stats">Réinitialiser les mesures FPS</string>
+    <string name="btn_clear_blacklist">Vider la liste des exclus</string>
+    <string name="btn_packs">Packs de presets à télécharger</string>
+    <string name="n_installed">%1$d installés</string>
+
+    <!-- Options : Audio -->
+    <string name="h_audio">Audio</string>
+    <string name="opt_audio_sens">Sensibilité audio</string>
+    <string name="opt_capture_mode">Mode de capture</string>
+    <string name="mode_constant">Niveau constant</string>
+    <string name="mode_volume">Suit le volume</string>
+    <string name="info_capture">Capture</string>
+    <string name="audio_stopped">arrêtée</string>
+    <string name="audio_capturing">capture %1$d @ %2$d Hz</string>
+    <string name="audio_failed">échec de la capture : %1$s</string>
+
+    <!-- Options : Télécommande, À propos -->
+    <string name="h_remote">Télécommande</string>
+    <string name="btn_keys">Configurer les touches</string>
+    <string name="btn_key_help">Aide des touches</string>
+    <string name="h_about">À propos</string>
+    <string name="info_engine">Moteur</string>
+    <string name="engine_value">projectM 4.1.8, version corrigée (github.com/Karlos-fr/projectm) — LGPL 2.1</string>
+    <string name="info_presets">Presets</string>
+    <string name="presets_value">Cream of the Crop (projectM) + textures MilkDrop</string>
+
+    <!-- Test des presets -->
+    <string name="bench_title">Tester les presets</string>
+    <string name="bench_subtitle">Mesure la fluidité de chaque preset sur cette TV (environ 3 s par preset, en 720p). Laissez la musique jouer ; une touche interrompt le test, qui pourra reprendre là où il s\'est arrêté.</string>
+    <string name="bench_done_count">Déjà testés</string>
+    <string name="bench_all">Tout tester</string>
+    <string name="bench_continue">Continuer le test</string>
+    <string name="bench_nothing">rien à tester</string>
+    <string name="bench_left">%1$d presets · environ %2$s</string>
+    <string name="bench_restart">Recommencer de zéro</string>
+    <string name="bench_restart_hint">efface les résultats du test</string>
+    <string name="osd_bench_cleared">Résultats du test effacés</string>
+    <string name="h_by_category">Par catégorie</string>
+    <string name="bench_cat_done">testée ✓</string>
+    <string name="duration_min">%1$d min</string>
+    <string name="duration_h">%1$d h %2$02d</string>
+    <string name="osd_bench_interrupted">Test interrompu — ce qui a été mesuré est conservé.\nPour continuer : Options › Gestion des presets › Tester les presets sur cette TV</string>
+    <string name="osd_bench_start">Test de %1$d presets — environ %2$s\nLaissez la musique jouer. Une touche interrompt le test.</string>
+    <string name="osd_bench_done">Test terminé : %1$d presets mesurés</string>
+    <string name="hud_bench">Test des presets : %1$d / %2$d  ·  reste environ %3$s\nUne touche pour interrompre (reprise possible depuis les options)</string>
+    <string name="hud_auto">" auto"</string>
+    <string name="hud_fade">"  fondu"</string>
+    <string name="hud_line2">moy %1$.1f ms · max %2$.0f ms · audio %3$.2f</string>
+
+    <!-- Configuration de la télécommande -->
+    <string name="remote_subtitle">OK sur une action pour ajouter ou retirer des touches. Appui long OK : options (fixe)</string>
+    <string name="btn_reset_keys">Réinitialiser toutes les touches</string>
+    <string name="h_actions">Actions</string>
+    <string name="action_subtitle">Touches associées à cette action</string>
+    <string name="btn_add_key">Ajouter une touche…</string>
+    <string name="h_current_keys">Touches actuelles</string>
+    <string name="key_fixed">fixe</string>
+    <string name="btn_remove_key">Retirer : %1$s</string>
+    <string name="capture_press">Appuyez sur la touche pour\n« %1$s »\n\nMaintenez-la pour un appui long · Retour pour annuler</string>
+    <string name="capture_long">%1$s (appui long)…</string>
+    <string name="capture_forbidden">%1$s : touche réservée au système.\nEssayez une autre touche · Retour pour annuler</string>
+    <string name="capture_reserved">%1$s ouvre toujours les options.\nEssayez une autre touche · Retour pour annuler</string>
+    <string name="capture_same">%1$s est déjà associée à cette action</string>
+    <string name="capture_conflict">%1$s est déjà utilisée pour\n« %2$s ».\n\nOK : réattribuer · Retour : annuler</string>
+    <string name="long_press_suffix">" (appui long)"</string>
+
+    <!-- Actions -->
+    <string name="action_next_preset">Preset suivant</string>
+    <string name="action_prev_preset">Preset précédent</string>
+    <string name="action_lock">Verrouiller le preset</string>
+    <string name="action_shuffle">Mode aléatoire</string>
+    <string name="action_favorite">Ajouter / retirer des favoris</string>
+    <string name="action_blacklist">Exclure / réintégrer le preset</string>
+    <string name="action_show_title">Afficher le titre</string>
+    <string name="action_show_preset_name">Afficher le nom du preset</string>
+    <string name="action_sens_up">Sensibilité audio +</string>
+    <string name="action_sens_down">Sensibilité audio −</string>
+    <string name="action_options">Panneau d\'options</string>
+    <string name="action_browser">Navigateur de presets</string>
+    <string name="action_help">Aide des touches</string>
+    <string name="action_hud">Compteur FPS</string>
+    <string name="action_play_pause">Musique : lecture / pause</string>
+    <string name="action_next_track">Musique : morceau suivant</string>
+    <string name="action_prev_track">Musique : morceau précédent</string>
+
+    <!-- Touches de la télécommande -->
+    <string name="key_right">▶ Droite</string>
+    <string name="key_left">◀ Gauche</string>
+    <string name="key_up">▲ Haut</string>
+    <string name="key_down">▼ Bas</string>
+    <string name="key_enter">Entrée</string>
+    <string name="key_red">🔴 Rouge</string>
+    <string name="key_green">🟢 Vert</string>
+    <string name="key_yellow">🟡 Jaune</string>
+    <string name="key_blue">🔵 Bleu</string>
+    <string name="key_channel_up">Chaîne +</string>
+    <string name="key_channel_down">Chaîne −</string>
+    <string name="key_play_pause">Lecture/Pause</string>
+    <string name="key_next">Suivant ⏭</string>
+    <string name="key_previous">Précédent ⏮</string>
+    <string name="key_ff">Avance rapide</string>
+    <string name="key_rewind">Retour rapide</string>
+    <string name="key_captions">Sous-titres</string>
+    <string name="key_digit">Touche %1$d</string>
+
+    <!-- Packs de presets -->
+    <string name="packs_title">Packs de presets</string>
+    <string name="info_catalog">Catalogue</string>
+    <string name="info_state">État</string>
+    <string name="btn_refresh">Actualiser le catalogue</string>
+    <string name="info_disk">Espace utilisé</string>
+    <string name="size_mb">%1$.1f Mo</string>
+    <string name="h_packs">Packs</string>
+    <string name="pack_label">%1$s  (%2$d presets)</string>
+    <string name="pack_install">Installer — %1$.1f Mo</string>
+    <string name="pack_update">Mettre à jour (v%1$s → v%2$s)</string>
+    <string name="pack_installed">Installé ✓ (OK : supprimer)</string>
+    <string name="state_ready">Prêt</string>
+    <string name="state_downloading_pct">Téléchargement %1$s : %2$d %%</string>
+    <string name="state_downloading">Téléchargement %1$s…</string>
+    <string name="state_installing">Installation %1$s…</string>
+    <string name="state_error">Erreur : %1$s</string>
+    <string name="catalog_not_loaded">Catalogue non chargé</string>
+    <string name="catalog_loading">Chargement du catalogue…</string>
+    <string name="catalog_count">%1$d packs disponibles</string>
+    <string name="catalog_error">Catalogue indisponible : %1$s</string>
+    <string name="pack_error">%1$s : %2$s</string>
+    <string name="err_bad_id">identifiant de pack invalide</string>
+    <string name="err_sha">empreinte SHA-256 incorrecte</string>
+    <string name="err_path">chemin interdit dans le zip</string>
+    <string name="err_install">installation impossible</string>
+    <string name="err_redirects">trop de redirections</string>
+
+    <!-- Navigateur de presets -->
+    <string name="browser_title">Navigateur de presets</string>
+    <string name="browser_footer">◀▶ catégorie   OK lire   🟡 favori   🔴 exclure   Retour fermer</string>
+    <string name="browser_subtitle">Catégorie : %1$s  (%2$d presets)   ★ favori   ✕ exclu   🐢 lent</string>
+    <string name="browser_all">Toutes</string>
+
+    <!-- Aide des touches -->
+    <string name="help_title">Lactea — touches de la télécommande</string>
+    <string name="help_subtitle">Modifiables dans Options › Télécommande</string>
+    <string name="help_footer">Appuyez sur Retour pour fermer</string>
+    <string name="help_back">Retour</string>
+    <string name="help_back_value">fermer un panneau / quitter</string>
+</resources>

@@ -1,6 +1,7 @@
 package fr.lactea.ui
 
 import android.content.Context
+import fr.lactea.R
 import android.graphics.Typeface
 import android.view.KeyEvent
 import android.widget.TextView
@@ -26,7 +27,7 @@ class MenuPanel(context: Context, root: MenuScreen, private val onClose: () -> U
     private var items: List<MenuItem> = emptyList()
 
     init {
-        footerView.text = "▲▼ naviguer   ◀▶ modifier   OK valider   Retour : revenir"
+        footerView.text = context.getString(R.string.menu_footer)
         show(root, 0)
     }
 
@@ -64,7 +65,7 @@ class MenuPanel(context: Context, root: MenuScreen, private val onClose: () -> U
                 val v = item.options.getOrElse(item.get()) { "?" }
                 if (isSelected) "◀  $v  ▶" else v
             }
-            is MenuItem.Toggle -> if (item.get()) "Oui" else "Non"
+            is MenuItem.Toggle -> context.getString(if (item.get()) R.string.yes else R.string.no)
             is MenuItem.Button -> item.value()
             is MenuItem.Info -> item.value()
         }

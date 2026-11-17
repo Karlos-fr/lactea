@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Lactea's texts. English is the default, used for every system language without a translation.
+  Translations: values-fr, values-de, values-it, values-es, values-sv.
+  Menu paths quoted in texts ("Options › …") must match the menu names of the same language.
+-->
+<resources>
+    <string name="app_name" translatable="false">Lactea</string>
+
+    <!-- On-screen messages -->
+    <string name="osd_no_presets">No preset found</string>
+    <string name="osd_locked">🔒 Preset locked</string>
+    <string name="osd_unlocked">🔓 Preset unlocked</string>
+    <string name="osd_shuffle_on">🔀 Shuffle</string>
+    <string name="osd_shuffle_off">➡ In order</string>
+    <string name="osd_fav_added">★ Added to favourites\n%1$s</string>
+    <string name="osd_fav_removed">☆ Removed from favourites\n%1$s</string>
+    <string name="osd_excluded">✕ Preset excluded\n%1$s</string>
+    <string name="osd_restored">Preset restored\n%1$s</string>
+    <string name="osd_title_permission">Title unavailable: permission needed\n(Options › Track title)</string>
+    <string name="osd_no_music">No music detected</string>
+    <string name="osd_pause">⏸ Pause</string>
+    <string name="osd_play">▶ Play</string>
+    <string name="osd_next_track">⏭ Next song</string>
+    <string name="osd_prev_track">⏮ Previous song</string>
+    <string name="osd_sensitivity">Audio sensitivity: %1$.1f</string>
+    <string name="osd_preset_skipped">Preset skipped (error)\n%1$s</string>
+    <string name="osd_stats_reset">Measures reset</string>
+    <string name="osd_blacklist_cleared">Exclusion list emptied</string>
+    <string name="osd_keys_reset">Keys reset</string>
+    <string name="osd_cancelled">Cancelled</string>
+    <string name="osd_downloading">Downloading %1$s…</string>
+    <string name="osd_installed">%1$s installed</string>
+    <string name="osd_failed">Failed: %1$s</string>
+    <string name="osd_pack_removed">Pack %1$s removed</string>
+    <string name="osd_library">%1$s — %2$d presets</string>
+    <string name="osd_title_howto">From a computer connected to the TV:\n%1$s\nthen restart Lactea</string>
+    <string name="osd_setup_howto">From a computer connected to the TV:\nAutomatic opening: %1$s\nScreensaver: %2$s</string>
+
+    <!-- Options: common -->
+    <string name="menu_options">Options</string>
+    <string name="menu_version">Lactea %1$s</string>
+    <string name="menu_footer">▲▼ move   ◀▶ change   OK confirm   Back: go back</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="confirm_again">OK again to confirm</string>
+    <string name="none">none</string>
+    <string name="unknown">unknown</string>
+    <string name="granted">Granted ✓</string>
+    <string name="allowed">Allowed ✓</string>
+    <string name="missing">Missing</string>
+    <string name="n_presets">%1$d presets</string>
+
+    <!-- Options: Visual -->
+    <string name="h_visual">Visual</string>
+    <string name="opt_resolution">Render resolution</string>
+    <string name="res_auto">Auto</string>
+    <string name="res_4k">2160p (4K)</string>
+    <string name="opt_auto_max">Highest resolution in Auto</string>
+    <string name="opt_fps">Max frames per second</string>
+    <string name="opt_mesh">Mesh detail</string>
+    <string name="opt_hud">FPS counter</string>
+
+    <!-- Options: Presets and transitions -->
+    <string name="h_presets">Presets and transitions</string>
+    <string name="opt_duration">Preset duration</string>
+    <string name="opt_transition">Transition</string>
+    <string name="tr_auto">Auto (fade or cut)</string>
+    <string name="tr_fade">Always a fade</string>
+    <string name="tr_cut">Always a cut</string>
+    <string name="opt_fade">Fade duration</string>
+    <string name="opt_beat_cuts">Hard cuts on strong beats</string>
+    <string name="opt_cut_sens">Cut sensitivity</string>
+    <string name="opt_shuffle">Shuffle</string>
+    <string name="opt_fav_only">Favourites only</string>
+    <string name="opt_name_on_change">Preset name on change</string>
+
+    <!-- Options: Track title -->
+    <string name="h_title">Track title</string>
+    <string name="opt_title_each">Show on each song</string>
+    <string name="opt_title_duration">Display time</string>
+    <string name="opt_position">Position</string>
+    <string name="pos_center">Centre</string>
+    <string name="pos_bottom">Bottom</string>
+    <string name="opt_size">Size</string>
+    <string name="size_small">Small</string>
+    <string name="size_medium">Medium</string>
+    <string name="size_large">Large</string>
+    <string name="opt_new_preset_track">New preset on each song</string>
+    <string name="info_now_playing">Now playing</string>
+    <string name="np_none">no music detected</string>
+    <string name="np_no_permission">permission missing</string>
+    <string name="btn_title_howto">How to allow the track title?</string>
+    <string name="sample_title">Track title</string>
+    <string name="sample_artist">Artist</string>
+    <string name="sample_album">Album</string>
+
+    <!-- Options: Album cover -->
+    <string name="h_cover">Album cover</string>
+    <string name="opt_cover_title">Show the cover with the title</string>
+    <string name="opt_cover_pulse">Pulse with the beat</string>
+    <string name="opt_cover_presets">Cover in compatible presets</string>
+    <string name="opt_cover_preset_track">Cover preset on each song</string>
+    <string name="opt_cover_online">Online fallback (Deezer, iTunes)</string>
+    <string name="info_cover">Current cover</string>
+    <string name="info_cover_presets">Compatible presets</string>
+
+    <!-- Options: Automatic launch and screensaver -->
+    <string name="h_auto">Automatic launch and screensaver</string>
+    <string name="opt_autolaunch">Open Lactea when music plays</string>
+    <string name="never">Never</string>
+    <string name="after_s">after %1$d s</string>
+    <string name="after_min">after %1$d min</string>
+    <string name="opt_music_only">Music apps only</string>
+    <string name="opt_autoclose">Close when the music stops</string>
+    <string name="info_overlay">Automatic opening permission</string>
+    <string name="info_screensaver">Current screensaver</string>
+    <string name="btn_setup_howto">How to set it up?</string>
+
+    <!-- Options: Preset management -->
+    <string name="h_manage">Preset management</string>
+    <string name="btn_browser">Preset browser</string>
+    <string name="opt_exclude_slow">Exclude slow presets</string>
+    <string name="opt_slow_threshold">“Slow” threshold (FPS at 540p)</string>
+    <string name="info_summary">Summary</string>
+    <string name="summary_value">%1$d ★  %2$d ✕  %3$d 🐢  %4$d measured</string>
+    <string name="btn_test">Test the presets on this TV</string>
+    <string name="info_reference">Reference measures</string>
+    <string name="reference_value">%1$d presets (%2$s)</string>
+    <string name="btn_reset_stats">Reset the FPS measures</string>
+    <string name="btn_clear_blacklist">Empty the exclusion list</string>
+    <string name="btn_packs">Preset packs to download</string>
+    <string name="n_installed">%1$d installed</string>
+
+    <!-- Options: Audio -->
+    <string name="h_audio">Audio</string>
+    <string name="opt_audio_sens">Audio sensitivity</string>
+    <string name="opt_capture_mode">Capture mode</string>
+    <string name="mode_constant">Constant level</string>
+    <string name="mode_volume">Follows the volume</string>
+    <string name="info_capture">Capture</string>
+    <string name="audio_stopped">stopped</string>
+    <string name="audio_capturing">capturing %1$d @ %2$d Hz</string>
+    <string name="audio_failed">capture failed: %1$s</string>
+
+    <!-- Options: Remote control, About -->
+    <string name="h_remote">Remote control</string>
+    <string name="btn_keys">Set up the keys</string>
+    <string name="btn_key_help">Key help</string>
+    <string name="h_about">About</string>
+    <string name="info_engine">Engine</string>
+    <string name="engine_value">projectM 4.1.8, corrected version (github.com/Karlos-fr/projectm) — LGPL 2.1</string>
+    <string name="info_presets">Presets</string>
+    <string name="presets_value">Cream of the Crop (projectM) + MilkDrop textures</string>
+
+    <!-- Preset test -->
+    <string name="bench_title">Test the presets</string>
+    <string name="bench_subtitle">Measures how smoothly each preset runs on this TV (about 3 s per preset, in 720p). Leave the music playing; any key stops the test, which can resume where it stopped.</string>
+    <string name="bench_done_count">Already tested</string>
+    <string name="bench_all">Test everything</string>
+    <string name="bench_continue">Continue the test</string>
+    <string name="bench_nothing">nothing to test</string>
+    <string name="bench_left">%1$d presets · about %2$s</string>
+    <string name="bench_restart">Start again from zero</string>
+    <string name="bench_restart_hint">deletes the test results</string>
+    <string name="osd_bench_cleared">Test results deleted</string>
+    <string name="h_by_category">By category</string>
+    <string name="bench_cat_done">tested ✓</string>
+    <string name="duration_min">%1$d min</string>
+    <string name="duration_h">%1$d h %2$02d</string>
+    <string name="osd_bench_interrupted">Test stopped — what was measured is kept.\nTo continue: Options › Preset management › Test the presets on this TV</string>
+    <string name="osd_bench_start">Test of %1$d presets — about %2$s\nLeave the music playing. Any key stops the test.</string>
+    <string name="osd_bench_done">Test finished: %1$d presets measured</string>
+    <string name="hud_bench">Testing presets: %1$d / %2$d  ·  about %3$s left\nAny key stops it (it can resume from the options)</string>
+    <string name="hud_auto">" auto"</string>
+    <string name="hud_fade">"  fade"</string>
+    <string name="hud_line2">avg %1$.1f ms · max %2$.0f ms · audio %3$.2f</string>
+
+    <!-- Remote control setup -->
+    <string name="remote_subtitle">OK on an action to add or remove keys. Hold OK: options (fixed)</string>
+    <string name="btn_reset_keys">Reset all keys</string>
+    <string name="h_actions">Actions</string>
+    <string name="action_subtitle">Keys linked to this action</string>
+    <string name="btn_add_key">Add a key…</string>
+    <string name="h_current_keys">Current keys</string>
+    <string name="key_fixed">fixed</string>
+    <string name="btn_remove_key">Remove: %1$s</string>
+    <string name="capture_press">Press the key for\n“%1$s”\n\nHold it for a long press · Back to cancel</string>
+    <string name="capture_long">%1$s (long press)…</string>
+    <string name="capture_forbidden">%1$s: key reserved by the system.\nTry another key · Back to cancel</string>
+    <string name="capture_reserved">%1$s always opens the options.\nTry another key · Back to cancel</string>
+    <string name="capture_same">%1$s is already linked to this action</string>
+    <string name="capture_conflict">%1$s is already used for\n“%2$s”.\n\nOK: reassign · Back: cancel</string>
+    <string name="long_press_suffix">" (long press)"</string>
+
+    <!-- Actions -->
+    <string name="action_next_preset">Next preset</string>
+    <string name="action_prev_preset">Previous preset</string>
+    <string name="action_lock">Lock the preset</string>
+    <string name="action_shuffle">Shuffle</string>
+    <string name="action_favorite">Add / remove favourite</string>
+    <string name="action_blacklist">Exclude / restore the preset</string>
+    <string name="action_show_title">Show the title</string>
+    <string name="action_show_preset_name">Show the preset name</string>
+    <string name="action_sens_up">Audio sensitivity +</string>
+    <string name="action_sens_down">Audio sensitivity −</string>
+    <string name="action_options">Options panel</string>
+    <string name="action_browser">Preset browser</string>
+    <string name="action_help">Key help</string>
+    <string name="action_hud">FPS counter</string>
+    <string name="action_play_pause">Music: play / pause</string>
+    <string name="action_next_track">Music: next song</string>
+    <string name="action_prev_track">Music: previous song</string>
+
+    <!-- Remote keys -->
+    <string name="key_right">▶ Right</string>
+    <string name="key_left">◀ Left</string>
+    <string name="key_up">▲ Up</string>
+    <string name="key_down">▼ Down</string>
+    <string name="key_enter">Enter</string>
+    <string name="key_red">🔴 Red</string>
+    <string name="key_green">🟢 Green</string>
+    <string name="key_yellow">🟡 Yellow</string>
+    <string name="key_blue">🔵 Blue</string>
+    <string name="key_channel_up">Channel +</string>
+    <string name="key_channel_down">Channel −</string>
+    <string name="key_play_pause">Play/Pause</string>
+    <string name="key_next">Next ⏭</string>
+    <string name="key_previous">Previous ⏮</string>
+    <string name="key_ff">Fast forward</string>
+    <string name="key_rewind">Rewind</string>
+    <string name="key_captions">Subtitles</string>
+    <string name="key_digit">Key %1$d</string>
+
+    <!-- Preset packs -->
+    <string name="packs_title">Preset packs</string>
+    <string name="info_catalog">Catalogue</string>
+    <string name="info_state">Status</string>
+    <string name="btn_refresh">Refresh the catalogue</string>
+    <string name="info_disk">Space used</string>
+    <string name="size_mb">%1$.1f MB</string>
+    <string name="h_packs">Packs</string>
+    <string name="pack_label">%1$s  (%2$d presets)</string>
+    <string name="pack_install">Install — %1$.1f MB</string>
+    <string name="pack_update">Update (v%1$s → v%2$s)</string>
+    <string name="pack_installed">Installed ✓ (OK: remove)</string>
+    <string name="state_ready">Ready</string>
+    <string name="state_downloading_pct">Downloading %1$s: %2$d %%</string>
+    <string name="state_downloading">Downloading %1$s…</string>
+    <string name="state_installing">Installing %1$s…</string>
+    <string name="state_error">Error: %1$s</string>
+    <string name="catalog_not_loaded">Catalogue not loaded</string>
+    <string name="catalog_loading">Loading the catalogue…</string>
+    <string name="catalog_count">%1$d packs available</string>
+    <string name="catalog_error">Catalogue unavailable: %1$s</string>
+    <string name="pack_error">%1$s: %2$s</string>
+    <string name="err_bad_id">invalid pack id</string>
+    <string name="err_sha">wrong SHA-256 checksum</string>
+    <string name="err_path">forbidden path in the zip</string>
+    <string name="err_install">installation failed</string>
+    <string name="err_redirects">too many redirects</string>
+
+    <!-- Preset browser -->
+    <string name="browser_title">Preset browser</string>
+    <string name="browser_footer">◀▶ category   OK play   🟡 favourite   🔴 exclude   Back close</string>
+    <string name="browser_subtitle">Category: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow</string>
+    <string name="browser_all">All</string>
+
+    <!-- Key help -->
+    <string name="help_title">Lactea — remote control keys</string>
+    <string name="help_subtitle">Can be changed in Options › Remote control</string>
+    <string name="help_footer">Press Back to close</string>
+    <string name="help_back">Back</string>
+    <string name="help_back_value">close a panel / leave</string>
+</resources>

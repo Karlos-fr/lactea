@@ -1,5 +1,6 @@
 package fr.lactea.packs
 
+import fr.lactea.R
 import android.content.Context
 import android.util.Log
 import fr.lactea.settings.Settings
@@ -22,7 +23,7 @@ import java.util.zip.ZipInputStream
  *   "description": "…" } ] }
  * "url" may be relative to the manifest URL.
  */
-class PackManager(context: Context, private val settings: Settings) {
+class PackManager(private val context: Context, private val settings: Settings) {
 
     data class Pack(
         val id: String,
@@ -48,7 +49,7 @@ class PackManager(context: Context, private val settings: Settings) {
 
     @Volatile var catalog: List<Pack> = emptyList()
         private set
-    @Volatile var catalogStatus: String = "Catalogue non chargé"
+    @Volatile var catalogStatus: String = context.getString(R.string.catalog_not_loaded)
         private set
     @Volatile var state: State = State.Idle
         private set
@@ -70,7 +71,7 @@ class PackManager(context: Context, private val settings: Settings) {
     fun diskUsageBytes(): Long = packsDir.walkTopDown().filter { it.isFile }.sumOf { it.length() }
 
     fun refreshCatalog(onDone: () -> Unit) {
-        catalogStatus = "Chargement du catalogue…"
+        catalogStatus = context.getString(R.string.catalog_loading)
         executor.execute {
             try {
                 val text = httpGet(settings.manifestUrl).use { it.readBytes() }.toString(Charsets.UTF_8)
@@ -89,10 +90,10 @@ class PackManager(context: Context, private val settings: Settings) {
                         description = o.optString("description"),
                     )
                 }
-                catalogStatus = "${catalog.size} packs disponibles"
+                catalogStatus = context.getString(R.string.catalog_count, catalog.size)
             } catch (t: Throwable) {
                 Log.w(TAG, "Catalog failed", t)
-                catalogStatus = "Catalogue indisponible : ${t.message}"
+                catalogStatus = context.getString(R.string.catalog_error, t.message ?: "?")
             }
             onDone()
         }
@@ -105,7 +106,7 @@ class PackManager(context: Context, private val settings: Settings) {
                 true
             } catch (t: Throwable) {
                 Log.w(TAG, "Install ${pack.id} failed", t)
-                state = State.Error("${pack.name} : ${t.message}")
+                state = State.Error(context.getString(R.string.pack_error, pack.name, t.message ?: "?"))
                 false
             }
             if (ok) state = State.Idle
@@ -121,7 +122,7 @@ class PackManager(context: Context, private val settings: Settings) {
     }
 
     private fun doInstall(pack: Pack) {
-        require(SAFE_ID.matches(pack.id)) { "identifiant de pack invalide" }
+        require(SAFE_ID.matches(pack.id)) { context.getString(R.string.err_bad_id) }
         tmpDir.mkdirs()
         val zip = File(tmpDir, "${pack.id}.zip")
         val digest = MessageDigest.getInstance("SHA-256")
@@ -143,7 +144,7 @@ class PackManager(context: Context, private val settings: Settings) {
         val hash = digest.digest().joinToString("") { "%02x".format(it) }
         if (hash != pack.sha256) {
             zip.delete()
-            throw IOException("empreinte SHA-256 incorrecte")
+            throw IOException(context.getString(R.string.err_sha))
         }
 
         state = State.Extracting(pack.id)
@@ -155,7 +156,7 @@ class PackManager(context: Context, private val settings: Settings) {
             while (true) {
                 val e = zin.nextEntry ?: break
                 val out = File(staging, e.name)
-                if (!out.canonicalPath.startsWith(stagingPath)) throw IOException("chemin interdit dans le zip")
+                if (!out.canonicalPath.startsWith(stagingPath)) throw IOException(context.getString(R.string.err_path))
                 if (e.isDirectory) out.mkdirs() else {
                     out.parentFile?.mkdirs()
                     out.outputStream().use { zin.copyTo(it) }
@@ -165,7 +166,7 @@ class PackManager(context: Context, private val settings: Settings) {
         File(staging, ".version").writeText(pack.version)
         val target = File(packsDir, pack.id)
         target.deleteRecursively()
-        if (!staging.renameTo(target)) throw IOException("installation impossible")
+        if (!staging.renameTo(target)) throw IOException(context.getString(R.string.err_install))
         zip.delete()
     }
 
@@ -186,7 +187,7 @@ class PackManager(context: Context, private val settings: Settings) {
                 else -> throw IOException("HTTP $code")
             }
         }
-        throw IOException("trop de redirections")
+        throw IOException(context.getString(R.string.err_redirects))
     }
 
     companion object {

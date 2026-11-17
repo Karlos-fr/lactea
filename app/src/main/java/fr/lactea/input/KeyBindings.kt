@@ -1,34 +1,38 @@
 package fr.lactea.input
 
 import android.view.KeyEvent
+import fr.lactea.R
+import fr.lactea.i18n.L
 import fr.lactea.settings.Settings
 import org.json.JSONArray
 import org.json.JSONObject
 
 /** Everything the remote can trigger. */
-enum class Action(val label: String) {
-    NEXT_PRESET("Preset suivant"),
-    PREVIOUS_PRESET("Preset précédent"),
-    TOGGLE_LOCK("Verrouiller le preset"),
-    TOGGLE_SHUFFLE("Mode aléatoire"),
-    TOGGLE_FAVORITE("Ajouter / retirer des favoris"),
-    TOGGLE_BLACKLIST("Exclure / réintégrer le preset"),
-    SHOW_TITLE("Afficher le titre"),
-    SHOW_PRESET_NAME("Afficher le nom du preset"),
-    SENSITIVITY_UP("Sensibilité audio +"),
-    SENSITIVITY_DOWN("Sensibilité audio −"),
-    OPEN_OPTIONS("Panneau d'options"),
-    OPEN_BROWSER("Navigateur de presets"),
-    SHOW_HELP("Aide des touches"),
-    TOGGLE_HUD("Compteur FPS"),
-    PLAY_PAUSE("Musique : lecture / pause"),
-    NEXT_TRACK("Musique : morceau suivant"),
-    PREVIOUS_TRACK("Musique : morceau précédent"),
+enum class Action(private val labelRes: Int) {
+    NEXT_PRESET(R.string.action_next_preset),
+    PREVIOUS_PRESET(R.string.action_prev_preset),
+    TOGGLE_LOCK(R.string.action_lock),
+    TOGGLE_SHUFFLE(R.string.action_shuffle),
+    TOGGLE_FAVORITE(R.string.action_favorite),
+    TOGGLE_BLACKLIST(R.string.action_blacklist),
+    SHOW_TITLE(R.string.action_show_title),
+    SHOW_PRESET_NAME(R.string.action_show_preset_name),
+    SENSITIVITY_UP(R.string.action_sens_up),
+    SENSITIVITY_DOWN(R.string.action_sens_down),
+    OPEN_OPTIONS(R.string.action_options),
+    OPEN_BROWSER(R.string.action_browser),
+    SHOW_HELP(R.string.action_help),
+    TOGGLE_HUD(R.string.action_hud),
+    PLAY_PAUSE(R.string.action_play_pause),
+    NEXT_TRACK(R.string.action_next_track),
+    PREVIOUS_TRACK(R.string.action_prev_track);
+
+    val label: String get() = L.s(labelRes)
 }
 
 /** A physical key, pressed briefly or held. */
 data class Trigger(val keyCode: Int, val long: Boolean) {
-    val label: String get() = KeyBindings.keyName(keyCode) + if (long) " (appui long)" else ""
+    val label: String get() = KeyBindings.keyName(keyCode) + if (long) L.s(R.string.long_press_suffix) else ""
 }
 
 /**
@@ -146,32 +150,33 @@ class KeyBindings(private val settings: Settings) {
             Trigger(KeyEvent.KEYCODE_CHANNEL_DOWN, false) to Action.PREVIOUS_TRACK,
         )
 
-        private val NAMES = mapOf(
-            KeyEvent.KEYCODE_DPAD_RIGHT to "▶ Droite",
-            KeyEvent.KEYCODE_DPAD_LEFT to "◀ Gauche",
-            KeyEvent.KEYCODE_DPAD_UP to "▲ Haut",
-            KeyEvent.KEYCODE_DPAD_DOWN to "▼ Bas",
+        /** Key names: a text resource, or a name that is the same in every language. */
+        private val NAMES: Map<Int, Any> = mapOf(
+            KeyEvent.KEYCODE_DPAD_RIGHT to R.string.key_right,
+            KeyEvent.KEYCODE_DPAD_LEFT to R.string.key_left,
+            KeyEvent.KEYCODE_DPAD_UP to R.string.key_up,
+            KeyEvent.KEYCODE_DPAD_DOWN to R.string.key_down,
             KeyEvent.KEYCODE_DPAD_CENTER to "OK",
-            KeyEvent.KEYCODE_ENTER to "Entrée",
-            KeyEvent.KEYCODE_PROG_RED to "🔴 Rouge",
-            KeyEvent.KEYCODE_PROG_GREEN to "🟢 Vert",
-            KeyEvent.KEYCODE_PROG_YELLOW to "🟡 Jaune",
-            KeyEvent.KEYCODE_PROG_BLUE to "🔵 Bleu",
+            KeyEvent.KEYCODE_ENTER to R.string.key_enter,
+            KeyEvent.KEYCODE_PROG_RED to R.string.key_red,
+            KeyEvent.KEYCODE_PROG_GREEN to R.string.key_green,
+            KeyEvent.KEYCODE_PROG_YELLOW to R.string.key_yellow,
+            KeyEvent.KEYCODE_PROG_BLUE to R.string.key_blue,
             KeyEvent.KEYCODE_INFO to "Info",
             KeyEvent.KEYCODE_MENU to "Menu",
             KeyEvent.KEYCODE_GUIDE to "Guide",
-            KeyEvent.KEYCODE_CHANNEL_UP to "Chaîne +",
-            KeyEvent.KEYCODE_CHANNEL_DOWN to "Chaîne −",
-            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE to "Lecture/Pause",
-            KeyEvent.KEYCODE_MEDIA_NEXT to "Suivant ⏭",
-            KeyEvent.KEYCODE_MEDIA_PREVIOUS to "Précédent ⏮",
-            KeyEvent.KEYCODE_MEDIA_FAST_FORWARD to "Avance rapide",
-            KeyEvent.KEYCODE_MEDIA_REWIND to "Retour rapide",
-            KeyEvent.KEYCODE_CAPTIONS to "Sous-titres",
+            KeyEvent.KEYCODE_CHANNEL_UP to R.string.key_channel_up,
+            KeyEvent.KEYCODE_CHANNEL_DOWN to R.string.key_channel_down,
+            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE to R.string.key_play_pause,
+            KeyEvent.KEYCODE_MEDIA_NEXT to R.string.key_next,
+            KeyEvent.KEYCODE_MEDIA_PREVIOUS to R.string.key_previous,
+            KeyEvent.KEYCODE_MEDIA_FAST_FORWARD to R.string.key_ff,
+            KeyEvent.KEYCODE_MEDIA_REWIND to R.string.key_rewind,
+            KeyEvent.KEYCODE_CAPTIONS to R.string.key_captions,
         )
 
-        fun keyName(code: Int): String = NAMES[code]
-            ?: if (code in KeyEvent.KEYCODE_0..KeyEvent.KEYCODE_9) "Touche ${code - KeyEvent.KEYCODE_0}"
+        fun keyName(code: Int): String = NAMES[code]?.let { if (it is Int) L.s(it) else it.toString() }
+            ?: if (code in KeyEvent.KEYCODE_0..KeyEvent.KEYCODE_9) L.s(R.string.key_digit, code - KeyEvent.KEYCODE_0)
             else KeyEvent.keyCodeToString(code).removePrefix("KEYCODE_").lowercase().replace('_', ' ')
     }
 }

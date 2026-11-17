@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lactea's texts, Swedish. Menu paths quoted in texts ("Alternativ › …") must match the menu names below. -->
+<resources>
+
+    <!-- On-screen messages -->
+    <string name="osd_no_presets">Inget preset hittades</string>
+    <string name="osd_locked">🔒 Preset låst</string>
+    <string name="osd_unlocked">🔓 Preset upplåst</string>
+    <string name="osd_shuffle_on">🔀 Blanda</string>
+    <string name="osd_shuffle_off">➡ I ordning</string>
+    <string name="osd_fav_added">★ Tillagd i favoriter\n%1$s</string>
+    <string name="osd_fav_removed">☆ Borttagen från favoriter\n%1$s</string>
+    <string name="osd_excluded">✕ Preset undantaget\n%1$s</string>
+    <string name="osd_restored">Preset återställt\n%1$s</string>
+    <string name="osd_title_permission">Titel ej tillgänglig: behörighet krävs\n(Alternativ › Låttitel)</string>
+    <string name="osd_no_music">Ingen musik hittades</string>
+    <string name="osd_pause">⏸ Paus</string>
+    <string name="osd_play">▶ Spela</string>
+    <string name="osd_next_track">⏭ Nästa låt</string>
+    <string name="osd_prev_track">⏮ Föregående låt</string>
+    <string name="osd_sensitivity">Ljudkänslighet: %1$.1f</string>
+    <string name="osd_preset_skipped">Preset överhoppat (fel)\n%1$s</string>
+    <string name="osd_stats_reset">Mätningar nollställda</string>
+    <string name="osd_blacklist_cleared">Undantagslistan tömd</string>
+    <string name="osd_keys_reset">Knappar återställda</string>
+    <string name="osd_cancelled">Avbrutet</string>
+    <string name="osd_downloading">Laddar ner %1$s…</string>
+    <string name="osd_installed">%1$s installerat</string>
+    <string name="osd_failed">Misslyckades: %1$s</string>
+    <string name="osd_pack_removed">Paketet %1$s borttaget</string>
+    <string name="osd_library">%1$s — %2$d presets</string>
+    <string name="osd_title_howto">Från en dator ansluten till tv:n:\n%1$s\nstarta sedan om Lactea</string>
+    <string name="osd_setup_howto">Från en dator ansluten till tv:n:\nAutomatisk öppning: %1$s\nSkärmsläckare: %2$s</string>
+
+    <!-- Options: common -->
+    <string name="menu_options">Alternativ</string>
+    <string name="menu_version">Lactea %1$s</string>
+    <string name="menu_footer">▲▼ flytta   ◀▶ ändra   OK bekräfta   Tillbaka: gå tillbaka</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
+    <string name="confirm_again">OK igen för att bekräfta</string>
+    <string name="none">ingen</string>
+    <string name="unknown">okänd</string>
+    <string name="granted">Beviljad ✓</string>
+    <string name="allowed">Tillåten ✓</string>
+    <string name="missing">Saknas</string>
+    <string name="n_presets">%1$d presets</string>
+
+    <!-- Options: Visual -->
+    <string name="h_visual">Bild</string>
+    <string name="opt_resolution">Renderingsupplösning</string>
+    <string name="res_auto">Auto</string>
+    <string name="res_4k">2160p (4K)</string>
+    <string name="opt_auto_max">Högsta upplösning i Auto</string>
+    <string name="opt_fps">Max bilder per sekund</string>
+    <string name="opt_mesh">Nätets detaljnivå</string>
+    <string name="opt_hud">FPS-räknare</string>
+
+    <!-- Options: Presets and transitions -->
+    <string name="h_presets">Presets och övergångar</string>
+    <string name="opt_duration">Presetets längd</string>
+    <string name="opt_transition">Övergång</string>
+    <string name="tr_auto">Auto (övertoning eller klipp)</string>
+    <string name="tr_fade">Alltid övertoning</string>
+    <string name="tr_cut">Alltid klipp</string>
+    <string name="opt_fade">Övertoningens längd</string>
+    <string name="opt_beat_cuts">Hårda klipp på starka taktslag</string>
+    <string name="opt_cut_sens">Klippkänslighet</string>
+    <string name="opt_shuffle">Blanda</string>
+    <string name="opt_fav_only">Bara favoriter</string>
+    <string name="opt_name_on_change">Presetnamn vid byte</string>
+
+    <!-- Options: Track title -->
+    <string name="h_title">Låttitel</string>
+    <string name="opt_title_each">Visa vid varje låt</string>
+    <string name="opt_title_duration">Visningstid</string>
+    <string name="opt_position">Position</string>
+    <string name="pos_center">Mitten</string>
+    <string name="pos_bottom">Nederkant</string>
+    <string name="opt_size">Storlek</string>
+    <string name="size_small">Liten</string>
+    <string name="size_medium">Mellan</string>
+    <string name="size_large">Stor</string>
+    <string name="opt_new_preset_track">Nytt preset vid varje låt</string>
+    <string name="info_now_playing">Spelas nu</string>
+    <string name="np_none">ingen musik hittades</string>
+    <string name="np_no_permission">behörighet saknas</string>
+    <string name="btn_title_howto">Hur tillåter man låttiteln?</string>
+    <string name="sample_title">Låttitel</string>
+    <string name="sample_artist">Artist</string>
+    <string name="sample_album">Album</string>
+
+    <!-- Options: Album cover -->
+    <string name="h_cover">Skivomslag</string>
+    <string name="opt_cover_title">Visa omslaget med titeln</string>
+    <string name="opt_cover_pulse">Pulsera i takt</string>
+    <string name="opt_cover_presets">Omslag i kompatibla presets</string>
+    <string name="opt_cover_preset_track">Omslagspreset vid varje låt</string>
+    <string name="opt_cover_online">Sök på nätet (Deezer, iTunes)</string>
+    <string name="info_cover">Aktuellt omslag</string>
+    <string name="info_cover_presets">Kompatibla presets</string>
+
+    <!-- Options: Automatic launch and screensaver -->
+    <string name="h_auto">Automatisk start och skärmsläckare</string>
+    <string name="opt_autolaunch">Öppna Lactea när musik spelas</string>
+    <string name="never">Aldrig</string>
+    <string name="after_s">efter %1$d s</string>
+    <string name="after_min">efter %1$d min</string>
+    <string name="opt_music_only">Bara musikappar</string>
+    <string name="opt_autoclose">Stäng när musiken slutar</string>
+    <string name="info_overlay">Behörighet för automatisk öppning</string>
+    <string name="info_screensaver">Aktuell skärmsläckare</string>
+    <string name="btn_setup_howto">Hur ställer man in det?</string>
+
+    <!-- Options: Preset management -->
+    <string name="h_manage">Hantera presets</string>
+    <string name="btn_browser">Preset-bläddrare</string>
+    <string name="opt_exclude_slow">Undanta långsamma presets</string>
+    <string name="opt_slow_threshold">Gräns för ”långsam” (FPS i 540p)</string>
+    <string name="info_summary">Sammanfattning</string>
+    <string name="summary_value">%1$d ★  %2$d ✕  %3$d 🐢  %4$d mätta</string>
+    <string name="btn_test">Testa presets på den här tv:n</string>
+    <string name="info_reference">Referensmätningar</string>
+    <string name="reference_value">%1$d presets (%2$s)</string>
+    <string name="btn_reset_stats">Nollställ FPS-mätningarna</string>
+    <string name="btn_clear_blacklist">Töm undantagslistan</string>
+    <string name="btn_packs">Preset-paket att ladda ner</string>
+    <string name="n_installed">%1$d installerade</string>
+
+    <!-- Options: Audio -->
+    <string name="h_audio">Ljud</string>
+    <string name="opt_audio_sens">Ljudkänslighet</string>
+    <string name="opt_capture_mode">Inspelningsläge</string>
+    <string name="mode_constant">Konstant nivå</string>
+    <string name="mode_volume">Följer volymen</string>
+    <string name="info_capture">Inspelning</string>
+    <string name="audio_stopped">stoppad</string>
+    <string name="audio_capturing">spelar in %1$d @ %2$d Hz</string>
+    <string name="audio_failed">inspelning misslyckades: %1$s</string>
+
+    <!-- Options: Remote control, About -->
+    <string name="h_remote">Fjärrkontroll</string>
+    <string name="btn_keys">Ställ in knapparna</string>
+    <string name="btn_key_help">Knapphjälp</string>
+    <string name="h_about">Om</string>
+    <string name="info_engine">Motor</string>
+    <string name="engine_value">projectM 4.1.8, rättad version (github.com/Karlos-fr/projectm) — LGPL 2.1</string>
+    <string name="info_presets">Presets</string>
+    <string name="presets_value">Cream of the Crop (projectM) + MilkDrop-texturer</string>
+
+    <!-- Preset test -->
+    <string name="bench_title">Testa presets</string>
+    <string name="bench_subtitle">Mäter hur jämnt varje preset körs på den här tv:n (cirka 3 s per preset, i 720p). Låt musiken spela. Valfri knapp stoppar testet, och det kan fortsätta där det slutade.</string>
+    <string name="bench_done_count">Redan testade</string>
+    <string name="bench_all">Testa allt</string>
+    <string name="bench_continue">Fortsätt testet</string>
+    <string name="bench_nothing">inget att testa</string>
+    <string name="bench_left">%1$d presets · cirka %2$s</string>
+    <string name="bench_restart">Börja om från noll</string>
+    <string name="bench_restart_hint">raderar testresultaten</string>
+    <string name="osd_bench_cleared">Testresultaten raderade</string>
+    <string name="h_by_category">Per kategori</string>
+    <string name="bench_cat_done">testad ✓</string>
+    <string name="duration_min">%1$d min</string>
+    <string name="duration_h">%1$d h %2$02d</string>
+    <string name="osd_bench_interrupted">Testet stoppat — det som mätts sparas.\nFortsätt: Alternativ › Hantera presets › Testa presets på den här tv:n</string>
+    <string name="osd_bench_start">Test av %1$d presets — cirka %2$s\nLåt musiken spela. Valfri knapp stoppar testet.</string>
+    <string name="osd_bench_done">Testet klart: %1$d presets mätta</string>
+    <string name="hud_bench">Testar presets: %1$d / %2$d  ·  cirka %3$s kvar\nValfri knapp stoppar (kan fortsätta från alternativen)</string>
+    <string name="hud_auto">" auto"</string>
+    <string name="hud_fade">"  tona"</string>
+    <string name="hud_line2">medel %1$.1f ms · max %2$.0f ms · ljud %3$.2f</string>
+
+    <!-- Remote control setup -->
+    <string name="remote_subtitle">OK på en funktion för att lägga till eller ta bort knappar. Håll in OK: alternativ (fast)</string>
+    <string name="btn_reset_keys">Återställ alla knappar</string>
+    <string name="h_actions">Funktioner</string>
+    <string name="action_subtitle">Knappar kopplade till funktionen</string>
+    <string name="btn_add_key">Lägg till knapp…</string>
+    <string name="h_current_keys">Aktuella knappar</string>
+    <string name="key_fixed">fast</string>
+    <string name="btn_remove_key">Ta bort: %1$s</string>
+    <string name="capture_press">Tryck på knappen för\n”%1$s”\n\nHåll in för långt tryck · Tillbaka för att avbryta</string>
+    <string name="capture_long">%1$s (långt tryck)…</string>
+    <string name="capture_forbidden">%1$s: knappen är reserverad av systemet.\nPröva en annan knapp · Tillbaka för att avbryta</string>
+    <string name="capture_reserved">%1$s öppnar alltid alternativen.\nPröva en annan knapp · Tillbaka för att avbryta</string>
+    <string name="capture_same">%1$s är redan kopplad till funktionen</string>
+    <string name="capture_conflict">%1$s används redan för\n”%2$s”.\n\nOK: flytta hit · Tillbaka: avbryt</string>
+    <string name="long_press_suffix">" (långt tryck)"</string>
+
+    <!-- Actions -->
+    <string name="action_next_preset">Nästa preset</string>
+    <string name="action_prev_preset">Föregående preset</string>
+    <string name="action_lock">Lås presetet</string>
+    <string name="action_shuffle">Blanda</string>
+    <string name="action_favorite">Lägg till / ta bort favorit</string>
+    <string name="action_blacklist">Undanta / återställ presetet</string>
+    <string name="action_show_title">Visa titeln</string>
+    <string name="action_show_preset_name">Visa presetnamnet</string>
+    <string name="action_sens_up">Ljudkänslighet +</string>
+    <string name="action_sens_down">Ljudkänslighet −</string>
+    <string name="action_options">Alternativpanel</string>
+    <string name="action_browser">Preset-bläddrare</string>
+    <string name="action_help">Knapphjälp</string>
+    <string name="action_hud">FPS-räknare</string>
+    <string name="action_play_pause">Musik: spela / paus</string>
+    <string name="action_next_track">Musik: nästa låt</string>
+    <string name="action_prev_track">Musik: föregående låt</string>
+
+    <!-- Remote keys -->
+    <string name="key_right">▶ Höger</string>
+    <string name="key_left">◀ Vänster</string>
+    <string name="key_up">▲ Upp</string>
+    <string name="key_down">▼ Ner</string>
+    <string name="key_enter">Enter</string>
+    <string name="key_red">🔴 Röd</string>
+    <string name="key_green">🟢 Grön</string>
+    <string name="key_yellow">🟡 Gul</string>
+    <string name="key_blue">🔵 Blå</string>
+    <string name="key_channel_up">Kanal +</string>
+    <string name="key_channel_down">Kanal −</string>
+    <string name="key_play_pause">Spela/Paus</string>
+    <string name="key_next">Nästa ⏭</string>
+    <string name="key_previous">Föregående ⏮</string>
+    <string name="key_ff">Snabbspola framåt</string>
+    <string name="key_rewind">Spola bakåt</string>
+    <string name="key_captions">Undertexter</string>
+    <string name="key_digit">Knapp %1$d</string>
+
+    <!-- Preset packs -->
+    <string name="packs_title">Preset-paket</string>
+    <string name="info_catalog">Katalog</string>
+    <string name="info_state">Status</string>
+    <string name="btn_refresh">Uppdatera katalogen</string>
+    <string name="info_disk">Använt utrymme</string>
+    <string name="size_mb">%1$.1f MB</string>
+    <string name="h_packs">Paket</string>
+    <string name="pack_label">%1$s  (%2$d presets)</string>
+    <string name="pack_install">Installera — %1$.1f MB</string>
+    <string name="pack_update">Uppdatera (v%1$s → v%2$s)</string>
+    <string name="pack_installed">Installerat ✓ (OK: ta bort)</string>
+    <string name="state_ready">Klar</string>
+    <string name="state_downloading_pct">Laddar ner %1$s: %2$d %%</string>
+    <string name="state_downloading">Laddar ner %1$s…</string>
+    <string name="state_installing">Installerar %1$s…</string>
+    <string name="state_error">Fel: %1$s</string>
+    <string name="catalog_not_loaded">Katalogen inte laddad</string>
+    <string name="catalog_loading">Laddar katalogen…</string>
+    <string name="catalog_count">%1$d paket tillgängliga</string>
+    <string name="catalog_error">Katalogen ej tillgänglig: %1$s</string>
+    <string name="pack_error">%1$s: %2$s</string>
+    <string name="err_bad_id">ogiltigt paket-id</string>
+    <string name="err_sha">fel SHA-256-kontrollsumma</string>
+    <string name="err_path">förbjuden sökväg i zip-filen</string>
+    <string name="err_install">installationen misslyckades</string>
+    <string name="err_redirects">för många omdirigeringar</string>
+
+    <!-- Preset browser -->
+    <string name="browser_title">Preset-bläddrare</string>
+    <string name="browser_footer">◀▶ kategori   OK spela   🟡 favorit   🔴 undanta   Tillbaka stäng</string>
+    <string name="browser_subtitle">Kategori: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam</string>
+    <string name="browser_all">Alla</string>
+
+    <!-- Key help -->
+    <string name="help_title">Lactea — fjärrkontrollens knappar</string>
+    <string name="help_subtitle">Kan ändras i Alternativ › Fjärrkontroll</string>
+    <string name="help_footer">Tryck på Tillbaka för att stänga</string>
+    <string name="help_back">Tillbaka</string>
+    <string name="help_back_value">stäng en panel / avsluta</string>
+</resources>

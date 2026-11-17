@@ -1,6 +1,7 @@
 package fr.lactea.ui
 
 import android.content.Context
+import fr.lactea.R
 import android.view.KeyEvent
 import android.widget.TextView
 import fr.lactea.input.Action
@@ -12,12 +13,12 @@ class HelpPanel(context: Context, bindings: KeyBindings, private val onClose: ()
     private val lines: List<Pair<String, String>> =
         Action.entries.map { a ->
             a.label to bindings.triggersFor(a).joinToString(", ") { it.label }.ifEmpty { "—" }
-        } + listOf("Retour" to "fermer un panneau / quitter")
+        } + listOf(context.getString(R.string.help_back) to context.getString(R.string.help_back_value))
 
     init {
-        titleView.text = "Lactea — touches de la télécommande"
-        subtitleView.text = "Modifiables dans Options › Télécommande"
-        footerView.text = "Appuyez sur Retour pour fermer"
+        titleView.text = context.getString(R.string.help_title)
+        subtitleView.text = context.getString(R.string.help_subtitle)
+        footerView.text = context.getString(R.string.help_footer)
         setCount(lines.size)
     }
 
