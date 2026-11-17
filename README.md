@@ -46,7 +46,7 @@ Current version: **0.1.0, in development**. No release has been published yet.
   chooses between a fade and a cut so that transitions don't stutter.
 - **Favourites and exclusions**, a preset browser, a shuffle mode and a lock on the current preset.
 - **Six languages**: English, French, German, Italian, Spanish and Swedish, following the TV's
-  language (English for any other language).
+  language (English for any other language), or chosen in **Options › Language**.
 
 ## Requirements
 

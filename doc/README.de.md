@@ -50,7 +50,7 @@ Aktuelle Version: **0.1.0, in Entwicklung**. Es wurde noch keine Version veröff
 - **Favoriten und Ausschlüsse**, ein Preset-Browser, ein Zufallsmodus und eine Sperre für das
   aktuelle Preset.
 - **Sechs Sprachen**: Englisch, Französisch, Deutsch, Italienisch, Spanisch und Schwedisch, je nach
-  Sprache des Fernsehers (Englisch für jede andere Sprache).
+  Sprache des Fernsehers (Englisch für jede andere Sprache), oder wählbar unter **Optionen › Sprache**.
 
 ## Voraussetzungen
 

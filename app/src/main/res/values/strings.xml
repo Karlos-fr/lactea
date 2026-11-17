@@ -272,4 +272,8 @@
     <string name="help_footer">Press Back to close</string>
     <string name="help_back">Back</string>
     <string name="help_back_value">close a panel / leave</string>
+
+    <!-- Interface language -->
+    <string name="opt_language">Language</string>
+    <string name="lang_system">System</string>
 </resources>

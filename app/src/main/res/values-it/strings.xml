@@ -267,4 +267,8 @@
     <string name="help_footer">Premi Indietro per chiudere</string>
     <string name="help_back">Indietro</string>
     <string name="help_back_value">chiude un pannello / esce</string>
+
+    <!-- Interface language -->
+    <string name="opt_language">Lingua</string>
+    <string name="lang_system">Sistema</string>
 </resources>

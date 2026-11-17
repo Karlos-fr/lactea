@@ -9,6 +9,9 @@ import kotlin.reflect.KProperty
 class Settings(context: Context) {
     val prefs: SharedPreferences = context.getSharedPreferences("lactea", Context.MODE_PRIVATE)
 
+    /** Interface language: a language tag ("fr", "de"…), or "" to follow the system. */
+    var language by string("language", "")
+
     // --- Visuel ---
     /** Render height in pixels (16:9), or 0 for Auto. */
     var resolution by int("resolution", 0)

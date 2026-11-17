@@ -265,4 +265,8 @@
     <string name="help_footer">Pulsa Atrás para cerrar</string>
     <string name="help_back">Atrás</string>
     <string name="help_back_value">cerrar un panel / salir</string>
+
+    <!-- Interface language -->
+    <string name="opt_language">Idioma</string>
+    <string name="lang_system">Sistema</string>
 </resources>

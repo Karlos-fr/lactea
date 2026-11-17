@@ -48,7 +48,7 @@ Version actuelle : **0.1.0, en développement**. Aucune version n'est encore pub
   lents, et choisit entre fondu et coupe pour que les transitions ne saccadent pas.
 - **Favoris et exclusions**, navigateur de presets, mode aléatoire et verrouillage du preset en cours.
 - **Six langues** : français, anglais, allemand, italien, espagnol et suédois, selon la langue de la
-  TV (anglais pour toute autre langue).
+  TV (anglais pour toute autre langue), ou choisie dans **Options › Langue**.
 
 ## Configuration requise
 

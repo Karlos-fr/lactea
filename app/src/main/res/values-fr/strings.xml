@@ -265,4 +265,8 @@
     <string name="help_footer">Appuyez sur Retour pour fermer</string>
     <string name="help_back">Retour</string>
     <string name="help_back_value">fermer un panneau / quitter</string>
+
+    <!-- Interface language -->
+    <string name="opt_language">Langue</string>
+    <string name="lang_system">Système</string>
 </resources>

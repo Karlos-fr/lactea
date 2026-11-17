@@ -1,6 +1,8 @@
 package fr.lactea.dream
 
 import android.Manifest
+import android.content.Context
+import fr.lactea.i18n.Lang
 import android.content.pm.PackageManager
 import android.opengl.GLSurfaceView
 import android.os.Handler
@@ -41,6 +43,10 @@ class LacteaDreamService : DreamService(), LacteaRenderer.Listener, NowPlaying.L
     private val audio = AudioCapture()
     private val ui = Handler(Looper.getMainLooper())
     private var autoHeight = 720
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(Lang.wrap(base))
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()

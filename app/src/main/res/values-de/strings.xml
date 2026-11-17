@@ -267,4 +267,8 @@
     <string name="help_footer">Zurück drücken zum Schließen</string>
     <string name="help_back">Zurück</string>
     <string name="help_back_value">Fenster schließen / beenden</string>
+
+    <!-- Interface language -->
+    <string name="opt_language">Sprache</string>
+    <string name="lang_system">System</string>
 </resources>

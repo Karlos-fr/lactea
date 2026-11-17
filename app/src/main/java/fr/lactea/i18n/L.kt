@@ -11,7 +11,7 @@ object L {
     private lateinit var res: Resources
 
     fun init(context: Context) {
-        res = context.applicationContext.resources
+        res = context.resources
     }
 
     fun s(id: Int): String = res.getString(id)

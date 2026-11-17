@@ -267,4 +267,8 @@
     <string name="help_footer">Tryck på Tillbaka för att stänga</string>
     <string name="help_back">Tillbaka</string>
     <string name="help_back_value">stäng en panel / avsluta</string>
+
+    <!-- Interface language -->
+    <string name="opt_language">Språk</string>
+    <string name="lang_system">System</string>
 </resources>

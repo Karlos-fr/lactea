@@ -47,7 +47,7 @@ Aktuell version: **0.1.0, under utveckling**. Ingen version har publicerats än.
   långsamma och väljer mellan övertoning och klipp så att övergångarna inte hackar.
 - **Favoriter och undantag**, en preset-bläddrare, ett blandat läge och låsning av aktuell preset.
 - **Sex språk**: engelska, franska, tyska, italienska, spanska och svenska, enligt tv:ns språk
-  (engelska för alla andra språk).
+  (engelska för alla andra språk), eller valt under **Alternativ › Språk**.
 
 ## Systemkrav
 

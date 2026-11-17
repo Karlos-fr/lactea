@@ -49,7 +49,7 @@ Versión actual: **0.1.0, en desarrollo**. Todavía no se ha publicado ninguna v
 - **Favoritos y exclusiones**, un navegador de presets, un modo aleatorio y un bloqueo del preset
   actual.
 - **Seis idiomas**: inglés, francés, alemán, italiano, español y sueco, según el idioma de la TV
-  (inglés para cualquier otro idioma).
+  (inglés para cualquier otro idioma), o elegido en **Opciones › Idioma**.
 
 ## Requisitos
 

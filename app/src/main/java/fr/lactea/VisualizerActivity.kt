@@ -2,6 +2,7 @@ package fr.lactea
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -20,6 +21,8 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import fr.lactea.audio.AudioCapture
+import fr.lactea.i18n.L
+import fr.lactea.i18n.Lang
 import fr.lactea.input.Action
 import fr.lactea.input.KeyBindings
 import fr.lactea.input.RemoteInput
@@ -99,6 +102,10 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private var confirmKey: String? = null
     private var confirmUntil = 0L
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(Lang.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -135,6 +142,20 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         if (playlist.all().isEmpty()) osd.show(getString(R.string.osd_no_presets), 5000)
         // Extras of the launching intent (bench, preset…): onNewIntent only sees later ones.
         applyDevExtras(intent)
+        // Back from a language change: show the options again, on the language line.
+        if (reopenOptions) {
+            reopenOptions = false
+            ui.post { openOptions() }
+        }
+    }
+
+    /** Applies a new interface language: texts are reloaded by recreating the screen. */
+    private fun changeLanguage(tag: String) {
+        if (tag == settings.language) return
+        settings.language = tag
+        L.init(Lang.wrap(applicationContext))
+        reopenOptions = true
+        recreate()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -366,7 +387,13 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         val modes = listOf(Settings.TRANSITION_AUTO, Settings.TRANSITION_FADE, Settings.TRANSITION_CUT)
         val titleDurations = listOf(3, 4, 6, 8, 12)
         val autoDelays = listOf(0, 10, 30, 60, 120, 300)
+        val languages = listOf("") + Lang.SUPPORTED
         listOf(
+            MenuItem.Choice(getString(R.string.opt_language),
+                languages.map { if (it.isEmpty()) getString(R.string.lang_system) else Lang.nativeName(it) },
+                { languages.indexOf(settings.language).coerceAtLeast(0) },
+                { changeLanguage(languages[it]) }),
+
             MenuItem.Header(getString(R.string.h_visual)),
             MenuItem.Choice(getString(R.string.opt_resolution), resLabels,
                 { if (settings.resolution == 0) 0 else Settings.RESOLUTIONS.indexOf(settings.resolution) + 1 },
@@ -946,6 +973,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         private const val REQ_AUDIO = 1
         private const val AUTO_CLOSE_MS = 30_000L
         const val EXTRA_AUTO_LAUNCHED = "auto_launched"
+        /** Set before recreating the screen for a language change. */
+        private var reopenOptions = false
         private val VOLUME_KEYS = setOf(KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
         /** Same keys as KeyEvent.isMediaSessionKey(), which only exists from Android 12 (API 31). */
         private val MEDIA_KEYS = setOf(
