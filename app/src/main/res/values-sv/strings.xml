@@ -3,7 +3,7 @@
 <resources>
 
     <!-- On-screen messages -->
-    <string name="osd_no_presets">Inget preset hittades</string>
+    <string name="osd_no_presets">Inga presets installerade än: håll in OK › Hantera presets › Preset-paket att ladda ner</string>
     <string name="osd_locked">🔒 Preset låst</string>
     <string name="osd_unlocked">🔓 Preset upplåst</string>
     <string name="osd_shuffle_on">🔀 Blanda</string>
@@ -271,4 +271,15 @@
     <string name="opt_language">Språk</string>
     <string name="lang_system">System</string>
     <string name="osd_pack_updates">Uppdateringar av preset-paket finns: %1$d\n(Alternativ › Hantera presets › Preset-paket att ladda ner)</string>
+
+    <!-- Welcome (no pack installed) -->
+    <string name="welcome_title">Välkommen till Lactea</string>
+    <string name="welcome_subtitle">Välj vilka presets du vill ladda ner. Du kan lägga till eller ta bort paket senare i alternativen.</string>
+    <string name="welcome_download">Ladda ner</string>
+    <string name="welcome_download_value">%1$d presets — %2$.1f MB</string>
+    <string name="welcome_nothing">välj minst ett paket</string>
+    <string name="welcome_recommended">%1$s — rekommenderas</string>
+    <string name="welcome_selected">✓ vald — %1$.1f MB</string>
+    <string name="welcome_not_selected">%1$.1f MB</string>
+    <string name="welcome_retry">Försök igen</string>
 </resources>

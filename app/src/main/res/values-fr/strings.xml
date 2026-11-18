@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Messages à l'écran -->
-    <string name="osd_no_presets">Aucun preset trouvé</string>
+    <string name="osd_no_presets">Aucun preset installé : appui long sur OK › Gestion des presets › Packs de presets à télécharger</string>
     <string name="osd_locked">🔒 Preset verrouillé</string>
     <string name="osd_unlocked">🔓 Preset déverrouillé</string>
     <string name="osd_shuffle_on">🔀 Mode aléatoire</string>
@@ -269,4 +269,15 @@
     <string name="opt_language">Langue</string>
     <string name="lang_system">Système</string>
     <string name="osd_pack_updates">Mises à jour de packs disponibles : %1$d\n(Options › Gestion des presets › Packs de presets à télécharger)</string>
+
+    <!-- Welcome (no pack installed) -->
+    <string name="welcome_title">Bienvenue dans Lactea</string>
+    <string name="welcome_subtitle">Choisissez les presets à télécharger. Vous pourrez ajouter ou retirer des packs plus tard dans les options.</string>
+    <string name="welcome_download">Télécharger</string>
+    <string name="welcome_download_value">%1$d presets — %2$.1f Mo</string>
+    <string name="welcome_nothing">choisissez au moins un pack</string>
+    <string name="welcome_recommended">%1$s — recommandé</string>
+    <string name="welcome_selected">✓ choisi — %1$.1f Mo</string>
+    <string name="welcome_not_selected">%1$.1f Mo</string>
+    <string name="welcome_retry">Réessayer</string>
 </resources>

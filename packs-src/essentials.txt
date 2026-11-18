@@ -1,0 +1,63 @@
+# Presets of the Essentials pack: the best of the collection, by its own key
+# (path in third_party/presets-cream-of-the-crop, without .milk). Lactea's own presets
+# (packs-src/Lactea) are added to the pack too.
+Dancer/Blobby/carved in skin nz
+Dancer/Glowsticks Mirror/$$$ Royal - Mashup (427)
+Dancer/Glowsticks/293
+Dancer/Infect/suksma - flexi 27goats digital-artorg - scathing review2 slobbering hot vessel cadavar G0N
+Dancer/Serpent/amandio c - the funnel - mess n777 - fuckingdelic --- Isosceles edit
+Dancer/Whirl Mirror/Hexcollie, shifter, martin - Anime vs The stalion Mang
+Drawing/Explosions/signed 'nuph phoaqing death warrants mate wew an' good devvo dub bun ewe
+Drawing/Explosions/Stahlregen & geiss + rovastar + flexi - Altar to a Shadow Eminence (Coffee and distortions) nz+ scalene vescicles sqopholdinge
+Drawing/Growth/suksma - chemosynthetic nosferatu - automating transformation with b n s3 - claim form fsh shf flx nz+
+Drawing/Liquid/craving 'spinach man' action figures suppositoric nutrition
+Drawing/Rorschach/repressed americans - more martin movement4 - bizzare japanese electrogasm yummy bubble gum m
+Drawing/Trails/content with infinite masochism
+Fractal/Core/Benjam - Fractal Timepiece
+Fractal/Lattice/beta106S - Phat - randombox - mantra 4
+Fractal/Nested Circle/LuX - Heavy Texture Trip 1_a
+Fractal/Nested Ellipse/suksma - camden defib lancaster tucker's neck
+Fractal/Nested Spiral/va ultramix2 - 361_1
+Fractal/Pointy/Rovastar - VooV's Light Pattern
+Geometric/Cube/shifter - tumbling cubes (ripples)_phat_frame_rate_tweak
+Geometric/Sphere Wild/hard flat snot plane ytian vartime nuggeth
+Geometric/Stripes Circle/ORB - Waaa (LamersAss Remix 3)
+Geometric/Wire Circles/Serge circles006
+Geometric/Wire Morph/ORB - Mega Spectrum
+Geometric/Wire Torus/suksma - darker nets of validation - log smell
+Hypnotic/Illusion/amandio c, flexi, martin - Planet escher - cubesBW
+Hypnotic/Polar Mirror/GreatWho + Flexi - Lasershow [bipolar stranger party]
+Hypnotic/Polar Rolling/suksma - water + god roam3
+Hypnotic/Polar Static/TonyMilkdrop - Tricolors [Flexi - fwiw + alien complex] --- Isosceles edit
+Hypnotic/Polar Warp/flexi - grind my glitch up [139]
+Hypnotic/Polar Warp/flexi - grind my glitch up [316]
+Particles/Blobby/flexi - prison without any scale - suksma loves martin and flexi and bricks - sth
+Particles/Grid/Rovastar - Parallelogram Bin 2 (Naked Mix)
+Particles/Points Fast/suksma - flukerication machinist
+Particles/Points Trails/Flexi - space voyage [shifter's esc shader]
+Particles/Points/Waltra - Fractal Inferno
+Particles/Spaz/martin - pixies party d-strux wille
+Reaction/Dunes/shifter + Flexi - liquid circuitry from the other kids toys hive
+Reaction/Liquid Blobby/orb - acid sunrise [fexi colorized]
+Reaction/Liquid Gradient/rce-ordinary - want (fears mix)
+Reaction/Liquid Ripples/blood red raw holy - self-directed devolute
+Reaction/Liquid Simmering/suksma - fame is fore ache click tech - thee phair - shf fab where you're going worm tips
+Reaction/Rorschach/NeW Adam Master Mashup FX 2 Geiss - Reaction Diffusion 34 + Swelling Spiral  + Liquid Fire  + Geiss an70
+Sparkle/Explosions/ougiel - poison communitae
+Sparkle/Explosions/Stahlregen + Amandio C - Rototranslate difference layers 2 + on dotes2 - flacc(2)
+Sparkle/Explosions/suksma - flexi - fractrip (bccn Jelly V4) - mer de noms thomas2 xfr+
+Sparkle/Glimmer Mirror/Adam Eatit Mashup FX 2 martin - disco mix + Lodus + Geiss + Ludicrous speed 2
+Sparkle/Mass Circles/Stahlregen + Amandio C - Rototranslate difference layers 2 + on dotes2 roams
+Sparkle/Mass Stars/Waltra - Blur
+Supernova/Burst/EoS+Phat - the lights at night_spikes
+Supernova/Burst/suksma - compelled me to mash, the bastard
+Supernova/Gas/Waltra - Heaven
+Supernova/Radiate/Benjam and Zylot - Tie-Dye Supernova (Sunspots Mix) - stargayzer
+Supernova/Radiate/SUDE3D~1
+Supernova/Shimmer/EoS - starburst 04 double charge
+Waveform/Spectrum/suksma - ed geining hateops - flx i want you, i'm sick with you roams
+Waveform/Wire Circular/LuxXx - ShakeGen I
+Waveform/Wire Flat Double/suksma - demonizer - a shot
+Waveform/Wire Mirror/q
+Waveform/Wire Tangle/$$$ Royal - Mashup (35)
+Waveform/Wire Tangle/shifter + Aderrasi - Airhandler (Sadako)

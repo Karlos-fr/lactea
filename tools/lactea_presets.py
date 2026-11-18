@@ -3,11 +3,11 @@
 They sample `sampler_rand00`: Lactea replaces it with the current album cover (see
 CoverPresets.kt); without a cover, projectM picks a random image from the texture pack.
 
-Usage:  python -I tools/lactea_presets.py   → app/src/main/assets/presets/Lactea/*.milk
+Usage:  python -I tools/lactea_presets.py   → packs-src/Lactea/*.milk (then tools/make_packs.py)
 """
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parent.parent / "app" / "src" / "main" / "assets" / "presets" / "Lactea"
+OUT = Path(__file__).resolve().parent.parent / "packs-src" / "Lactea"
 
 HEADER = """MILKDROP_PRESET_VERSION=201
 PSVERSION=2

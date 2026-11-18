@@ -3,7 +3,7 @@
 <resources>
 
     <!-- On-screen messages -->
-    <string name="osd_no_presets">Kein Preset gefunden</string>
+    <string name="osd_no_presets">Noch keine Presets installiert: OK lange drücken › Preset-Verwaltung › Preset-Pakete herunterladen</string>
     <string name="osd_locked">🔒 Preset gesperrt</string>
     <string name="osd_unlocked">🔓 Preset entsperrt</string>
     <string name="osd_shuffle_on">🔀 Zufall</string>
@@ -271,4 +271,15 @@
     <string name="opt_language">Sprache</string>
     <string name="lang_system">System</string>
     <string name="osd_pack_updates">Updates für Preset-Pakete verfügbar: %1$d\n(Optionen › Preset-Verwaltung › Preset-Pakete herunterladen)</string>
+
+    <!-- Welcome (no pack installed) -->
+    <string name="welcome_title">Willkommen bei Lactea</string>
+    <string name="welcome_subtitle">Wählen Sie die Presets zum Herunterladen. Pakete lassen sich später in den Optionen hinzufügen oder entfernen.</string>
+    <string name="welcome_download">Herunterladen</string>
+    <string name="welcome_download_value">%1$d Presets — %2$.1f MB</string>
+    <string name="welcome_nothing">mindestens ein Paket wählen</string>
+    <string name="welcome_recommended">%1$s — empfohlen</string>
+    <string name="welcome_selected">✓ ausgewählt — %1$.1f MB</string>
+    <string name="welcome_not_selected">%1$.1f MB</string>
+    <string name="welcome_retry">Erneut versuchen</string>
 </resources>

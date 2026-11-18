@@ -55,6 +55,9 @@ class Settings(context: Context) {
     var autoLaunchMusicAppsOnly by bool("auto_launch_music_only", true)
     var autoCloseWhenMusicStops by bool("auto_close", true)
 
+    /** Keys of the 1.0 built-in presets moved to their pack keys (see VisualizerActivity). */
+    var keysOfVersion1Migrated by bool("keys_v1_migrated", false)
+
     // --- Audio ---
     var beatSensitivity by float("beat_sensitivity", 1f)
     /** 0 = normalised (constant level), 1 = as played (follows the volume). */

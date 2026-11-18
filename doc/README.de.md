@@ -35,8 +35,8 @@ Aktuelle Version: **1.0.0** — [APK herunterladen](https://github.com/Karlos-fr
 
 - **Reagiert auf alle Musik, die auf dem Fernseher läuft**, egal aus welcher App, auch wenn der Ton
   über HDMI (ARC / eARC) an eine Soundbar geht.
-- **9.857 Presets**: 66 sind enthalten, der Rest steckt in 10 Themenpaketen, die Sie in den Optionen
-  herunterladen können. Jedes Preset der Sammlung lädt, dank Korrekturen an projectM (siehe weiter
+- **9.797 Presets** in 11 Paketen, die Sie in der App auswählen und herunterladen; keines ist
+  fest eingebaut. Jedes Preset der Sammlung lädt, dank Korrekturen an projectM (siehe weiter
   unten).
 - **Songtitel und Albumcover** auf dem Bildschirm, wenn der Song wechselt; das Cover kann auch in
   manchen Visualisierungen erscheinen.
@@ -127,11 +127,13 @@ Halten Sie **OK** gedrückt, um die Optionen zu öffnen. Sie sind nach Themen gr
 
 ## Preset-Pakete
 
-Lactea enthält 66 Presets. Der Rest der Sammlung ist auf 10 Pakete verteilt (Dancer, Drawing,
-Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Sie finden sie
-unter **Optionen › Preset-Verwaltung › Preset-Pakete herunterladen**. Installieren Sie nur die
-Themen, die Ihnen gefallen, und entfernen Sie sie
-jederzeit wieder.
+Die APK enthält keine Presets: Beim ersten Start schlägt Lactea die Pakete zum Herunterladen
+vor. Empfohlen wird **Essentials** (66 Presets: das Beste der Sammlung und Lacteas eigene
+Presets); der Rest der Sammlung ist auf 10 Themenpakete verteilt (Dancer, Drawing, Fractal,
+Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Die Bilder, die die
+Presets verwenden, bilden ein Paket **Textures**, das mit dem ersten Paket automatisch installiert
+wird. Pakete fügen Sie jederzeit unter **Optionen › Preset-Verwaltung › Preset-Pakete
+herunterladen** hinzu oder entfernen sie dort.
 
 ## Langsame Presets
 
@@ -164,7 +166,7 @@ weiterlaufen; jede Taste beendet den Test, und er kann dort weitermachen, wo er 
 ## Wie Lactea entstanden ist
 
 - **projectM, korrigiert.** Lactea verwendet eine eigene Version von projectM 4.1.8:
-  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). Der Test der 9.857 Presets auf einem
+  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). Der Test der ganzen Sammlung auf einem
   Fernseher hat gezeigt, dass 67 davon überhaupt nicht luden, weil projectM ihre Gleichungen anders
   las als MilkDrop. Die Korrektur folgt dem Quellcode von MilkDrop und wurde an den 144.906
   Gleichungsblöcken der Sammlung geprüft, ohne jede Regression. Sie wurde dem projectM-Team

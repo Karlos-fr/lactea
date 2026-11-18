@@ -29,12 +29,11 @@ import fr.lactea.input.RemoteInput
 import fr.lactea.input.Trigger
 import android.graphics.Bitmap
 import fr.lactea.cover.CoverManager
-import fr.lactea.cover.CoverPresets
 import fr.lactea.nowplaying.AutoLaunch
 import fr.lactea.nowplaying.NowPlaying
 import fr.lactea.packs.PackManager
 import fr.lactea.presets.Playlist
-import fr.lactea.presets.PresetLibrary
+import fr.lactea.presets.PresetCatalog
 import fr.lactea.presets.PresetStats
 import fr.lactea.render.LacteaRenderer
 import fr.lactea.settings.Settings
@@ -61,7 +60,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private lateinit var bindings: KeyBindings
     private lateinit var stats: PresetStats
     private lateinit var playlist: Playlist
-    private lateinit var library: PresetLibrary
+    /** Presets and textures of the installed packs; replaced in the background when they change. */
+    @Volatile private var catalog = PresetCatalog.EMPTY
     private lateinit var packs: PackManager
     private lateinit var renderer: LacteaRenderer
     private lateinit var input: RemoteInput
@@ -112,22 +112,15 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         settings = Settings(this)
         bindings = KeyBindings(settings)
         stats = PresetStats(settings)
-        PresetStats.loadReferenceAsync(this, stats)
         playlist = Playlist(settings, stats)
-        library = PresetLibrary(this)
         packs = PackManager(this, settings)
         input = RemoteInput(bindings, ::onAction)
         nowPlaying = NowPlaying(this, this)
         covers = CoverManager(this, settings)
         applyIntent(intent)
 
-        library.prepareBundled()
-        playlist.setLibrary(library.scan(packs.presetRoots()))
-        Log.i(TAG, "${playlist.all().size} presets, ${packs.installedIds().size} packs")
-
         renderer = LacteaRenderer(settings, playlist, stats, audio, this)
         renderer.texturePaths = texturePaths()
-        indexCoverPresets()
 
         glView = GLSurfaceView(this).apply {
             setEGLContextClientVersion(3)
@@ -138,7 +131,10 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
         buildViews()
         applyResolution()
-        if (playlist.all().isEmpty()) osd.show(getString(R.string.osd_no_presets), 5000)
+        io.execute(::removeFilesOfVersion1)
+        // The screen shows at once; the presets arrive a moment later. Without any, Lactea
+        // offers to download packs.
+        loadCatalog { if (it.entries.isEmpty()) openWelcome() }
         refreshCatalog(notify = true) // the pack list follows the repository by itself
         // Extras of the launching intent (bench, preset…): onNewIntent only sees later ones.
         applyDevExtras(intent)
@@ -579,12 +575,13 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Info(getString(R.string.info_catalog)) { packs.catalogStatus },
             MenuItem.Info(getString(R.string.info_state)) { packStateText() },
             MenuItem.Button(getString(R.string.btn_refresh)) { refreshCatalog() },
-            MenuItem.Info(getString(R.string.info_disk)) { getString(R.string.size_mb, packs.diskUsageBytes() / 1e6) },
+            MenuItem.Info(getString(R.string.info_disk)) { getString(R.string.size_mb, packs.diskUsageBytes / 1e6) },
             MenuItem.Header(getString(R.string.h_packs)),
         )
         val catalogIds = packs.catalog.map { it.id }.toSet()
         packs.catalog.forEach { p ->
-            items += MenuItem.Button(getString(R.string.pack_label, p.name, p.presets), {
+            val label = if (p.isTextures) p.name else getString(R.string.pack_label, p.name, p.presets)
+            items += MenuItem.Button(label, {
                 val installed = packs.installedVersion(p.id)
                 when {
                     installed == null -> getString(R.string.pack_install, p.size / 1e6)
@@ -592,8 +589,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                     else -> confirmLabel("pack-${p.id}", getString(R.string.pack_installed))
                 }
             }) {
-                val installed = packs.installedVersion(p.id)
-                if (installed == null || installed != p.version) installPack(p)
+                if (!packs.isUpToDate(p)) installPacks(listOf(p))
                 else confirm("pack-${p.id}") { removePack(p.id) }
             }
         }
@@ -619,7 +615,11 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
      * installed on this TV have a newer version.
      */
     private fun refreshCatalog(notify: Boolean = false) = packs.refreshCatalog {
+        packs.refreshDiskUsage()
         ui.post {
+            welcomeSelection = welcomeSelection ?: packs.catalog.filter { it.recommended }.mapTo(HashSet()) { it.id }
+            // A pack needs packs it does not hold itself (the textures): install them too.
+            packs.missingRequirements().takeIf { it.isNotEmpty() }?.let(::installPacks)
             menu?.rebuild()
             val updates = packs.updatesAvailable()
             if (notify && updates.isNotEmpty() && panel == null) {
@@ -628,45 +628,128 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
     }
 
-    private fun installPack(p: PackManager.Pack) {
-        osd.show(getString(R.string.osd_downloading, p.name))
-        packs.install(p) { ok ->
-            if (ok) reloadLibrary(getString(R.string.osd_installed, p.name))
-            else ui.post { osd.show(getString(R.string.osd_failed, packStateText()), 4000) }
+    /** Installs [list] and the packs they require, then reloads the catalogue once. */
+    private fun installPacks(list: List<PackManager.Pack>) {
+        val todo = packs.withRequirements(list)
+        if (todo.isEmpty()) return
+        osd.show(getString(R.string.osd_downloading, todo.joinToString(", ") { it.name }))
+        packs.install(todo) { installed, ok ->
+            if (installed.isNotEmpty()) loadCatalog(getString(R.string.osd_installed, installed.joinToString(", ") { it.name }))
+            if (!ok) ui.post { osd.show(getString(R.string.osd_failed, packStateText()), 4000) }
         }
     }
 
-    private fun removePack(id: String) = packs.remove(id) { reloadLibrary(getString(R.string.osd_pack_removed, id)) }
+    private fun removePack(id: String) = packs.remove(id) { loadCatalog(getString(R.string.osd_pack_removed, id)) }
 
-    /** Rescans presets after a pack change (background), then updates playlist and textures. */
-    private fun reloadLibrary(message: String) {
-        io.execute {
-            val entries = library.scan(packs.presetRoots())
-            playlist.setLibrary(entries)
-            val paths = texturePaths()
-            renderer.post { renderer.updateTexturePaths(paths) }
-            Log.i(TAG, "Library reloaded: ${entries.size} presets")
-            indexCoverPresets()
-            ui.post {
-                osd.show(getString(R.string.osd_library, message, entries.size))
-                menu?.rebuild()
-            }
+    /** Reloads the catalogue after a pack change and says so with [message]. */
+    private fun loadCatalog(message: String) = loadCatalog { c ->
+        osd.show(getString(R.string.osd_library, message, c.entries.size))
+        menu?.rebuild()
+    }
+
+    /**
+     * Reads the index of every installed pack (in the background: one small file per pack), then
+     * hands the presets, textures and reference frame rates to the playlist and the renderer.
+     * [onLoaded] runs on the UI thread.
+     */
+    private fun loadCatalog(onLoaded: (PresetCatalog) -> Unit) = io.execute {
+        val start = SystemClock.elapsedRealtime()
+        val c = PresetCatalog.load(packs.installedDirs())
+        catalog = c
+        playlist.setLibrary(c.entries)
+        stats.setReference(c.referenceFps, c.referenceHeight, c.referenceDevice)
+        renderer.coverCompatible = c.imageKeys
+        renderer.randomTextures = c.textureNames
+        val paths = texturePaths()
+        renderer.post {
+            renderer.updateTexturePaths(paths)
+            renderer.startIfIdle()
         }
+        migrateKeysOfVersion1(c)
+        Log.i(TAG, "Catalogue: ${c.entries.size} presets, ${c.imageKeys.size} with image, " +
+            "${c.textureNames.size} textures (${SystemClock.elapsedRealtime() - start} ms)")
+        ui.post { onLoaded(c) }
     }
 
     private fun texturePaths(): List<String> =
-        (listOf(library.bundledTextureDir) + packs.textureDirs() +
-            (if (settings.coverInPresets) listOf(covers.dir) else emptyList())).map { it.absolutePath }
+        (catalog.textureDirs + (if (settings.coverInPresets) listOf(covers.dir) else emptyList())).map { it.absolutePath }
 
-    /** Finds, in the background, the presets able to show the cover. */
-    private fun indexCoverPresets() {
-        io.execute {
-            val start = SystemClock.elapsedRealtime()
-            renderer.randomTextures = CoverPresets.textureNames(listOf(library.bundledTextureDir) + packs.textureDirs())
-            val keys = playlist.all().filter { CoverPresets.isCompatible(it.file) }.mapTo(HashSet()) { it.key }
-            renderer.coverCompatible = keys
-            Log.i(TAG, "Cover-compatible presets: ${keys.size} (${SystemClock.elapsedRealtime() - start} ms)")
+    // ------------------------------------------------------------------ Welcome (no pack installed)
+
+    /** Packs ticked on the welcome screen; the recommended ones until the user changes it. */
+    private var welcomeSelection: MutableSet<String>? = null
+
+    private fun openWelcome() {
+        openPanel(MenuPanel(this, welcomeScreen()) {
+            closePanel()
+            if (playlist.all().isEmpty()) osd.show(getString(R.string.osd_no_presets), 8000)
+        }, Gravity.CENTER, 0.56f)
+    }
+
+    private fun welcomeScreen(): MenuScreen = MenuScreen(getString(R.string.welcome_title), getString(R.string.welcome_subtitle)) {
+        val choices = packs.catalog.filter { !it.isTextures }
+        val selected = welcomeSelection ?: HashSet()
+        if (choices.isEmpty()) {
+            return@MenuScreen listOf(
+                MenuItem.Info(getString(R.string.info_catalog)) { packs.catalogStatus },
+                MenuItem.Button(getString(R.string.welcome_retry)) { refreshCatalog() },
+            )
         }
+        val todo = packs.withRequirements(choices.filter { it.id in selected })
+        val items = mutableListOf<MenuItem>(
+            MenuItem.Button(getString(R.string.welcome_download), {
+                if (todo.isEmpty()) getString(R.string.welcome_nothing)
+                else getString(R.string.welcome_download_value, todo.sumOf { it.presets }, todo.sumOf { it.size } / 1e6)
+            }) {
+                if (todo.isNotEmpty()) {
+                    closePanel()
+                    installPacks(todo)
+                }
+            },
+            MenuItem.Header(getString(R.string.h_packs)),
+        )
+        choices.forEach { p ->
+            val name = getString(R.string.pack_label, p.name, p.presets)
+            items += MenuItem.Button(if (p.recommended) getString(R.string.welcome_recommended, name) else name, {
+                getString(if (p.id in selected) R.string.welcome_selected else R.string.welcome_not_selected, p.size / 1e6)
+            }) {
+                if (!selected.remove(p.id)) selected += p.id
+                welcomeSelection = selected
+                menu?.rebuild()
+            }
+        }
+        items
+    }
+
+    // ------------------------------------------------------------------ Upgrade from 1.0
+
+    /** 1.0 copied 66 presets and the textures out of the APK; they now come from packs. */
+    private fun removeFilesOfVersion1() {
+        listOf("presets", "textures", ".assets-version").map { java.io.File(filesDir, it) }
+            .filter { it.exists() }
+            .forEach { it.deleteRecursively(); Log.i(TAG, "Removed ${it.name} (Lactea 1.0)") }
+    }
+
+    /**
+     * In 1.0 the 60 built-in presets of the collection had a shorter key than in the packs
+     * ("Waveform/x" for "Waveform/Sub/x"). Their favourites, exclusions and measures follow them
+     * to the pack key, once, as soon as packs are installed.
+     */
+    private fun migrateKeysOfVersion1(c: PresetCatalog) {
+        if (settings.keysOfVersion1Migrated || c.entries.isEmpty()) return
+        val known = c.entries.mapTo(HashSet()) { it.key }
+        val byCategoryAndName = c.entries.groupBy { it.category + "/" + it.name }
+        val renames = (settings.favorites + settings.blacklist + stats.measuredKeys())
+            .filter { it !in known }
+            .mapNotNull { old -> byCategoryAndName[old]?.singleOrNull()?.let { old to it.key } }
+            .toMap()
+        if (renames.isNotEmpty()) {
+            settings.favorites = settings.favorites.map { renames[it] ?: it }.toSet()
+            settings.blacklist = settings.blacklist.map { renames[it] ?: it }.toSet()
+            stats.renameKeys(renames)
+            Log.i(TAG, "Keys of Lactea 1.0 moved to the packs: ${renames.size}")
+        }
+        settings.keysOfVersion1Migrated = true
     }
 
     private var benchRunning = false

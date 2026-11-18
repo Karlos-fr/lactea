@@ -35,7 +35,7 @@ Aktuell version: **1.0.0** — [ladda ner APK:n](https://github.com/Karlos-fr/la
 
 - **Reagerar på all musik som spelas på tv:n**, oavsett app. Även när ljudet går till en soundbar
   via HDMI (ARC / eARC).
-- **9 857 presets**: 66 ingår, resten finns i 10 tematiska paket att ladda ner från menyn Alternativ.
+- **9 797 presets** i 11 paket som du väljer och laddar ner i appen; inget är inbyggt.
   Alla presets i samlingen laddas, tack vare rättningar i projectM (se längre ned).
 - **Låttitel och skivomslag** på skärmen när låten byts. Omslaget kan också synas inuti vissa
   visualiseringar.
@@ -121,9 +121,12 @@ Håll in **OK** för att öppna **Alternativ**. De är grupperade efter tema:
 
 ## Preset-paket
 
-Lactea levereras med 66 presets. Resten av samlingen är uppdelad i 10 paket (Dancer, Drawing,
-Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Ladda ner dem från
-**Alternativ › Hantera presets › Preset-paket att ladda ner**. Installera bara de teman du gillar, och ta bort dem när du vill.
+APK:n innehåller inga presets: vid första starten föreslår Lactea paket att ladda ner.
+**Essentials** (66 presets: det bästa ur samlingen och Lacteas egna presets) rekommenderas; resten
+av samlingen är uppdelad i 10 tematiska paket (Dancer, Drawing, Fractal, Geometric, Hypnotic,
+Particles, Reaction, Sparkle, Supernova, Waveform). Bilderna som presetsen använder finns i ett
+paket **Textures**, som installeras automatiskt med det första paketet. Lägg till eller ta bort
+paket när du vill under **Alternativ › Hantera presets › Preset-paket att ladda ner**.
 
 ## Långsamma presets
 
@@ -155,7 +158,7 @@ testet, och det kan fortsätta där det slutade.
 ## Hur Lactea gjordes
 
 - **projectM, rättat.** Lactea använder en egen version av projectM 4.1.8:
-  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). När de 9 857 presetsen testades på en
+  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). När hela samlingen testades på en
   tv visade det sig att 67 av dem inte laddades alls. projectM läste deras ekvationer på ett annat
   sätt än MilkDrop. Rättningen följer MilkDrops källkod och har kontrollerats på samlingens
   144 906 ekvationsblock, utan någon regression. Den har föreslagits till projectM-teamet

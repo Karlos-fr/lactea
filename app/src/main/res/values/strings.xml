@@ -8,7 +8,7 @@
     <string name="app_name" translatable="false">Lactea</string>
 
     <!-- On-screen messages -->
-    <string name="osd_no_presets">No preset found</string>
+    <string name="osd_no_presets">No presets installed yet: hold OK › Preset management › Preset packs to download</string>
     <string name="osd_locked">🔒 Preset locked</string>
     <string name="osd_unlocked">🔓 Preset unlocked</string>
     <string name="osd_shuffle_on">🔀 Shuffle</string>
@@ -276,4 +276,15 @@
     <string name="opt_language">Language</string>
     <string name="lang_system">System</string>
     <string name="osd_pack_updates">Preset pack updates available: %1$d\n(Options › Preset management › Preset packs to download)</string>
+
+    <!-- Welcome (no pack installed) -->
+    <string name="welcome_title">Welcome to Lactea</string>
+    <string name="welcome_subtitle">Choose the presets to download. You can add or remove packs later in the options.</string>
+    <string name="welcome_download">Download</string>
+    <string name="welcome_download_value">%1$d presets — %2$.1f MB</string>
+    <string name="welcome_nothing">select at least one pack</string>
+    <string name="welcome_recommended">%1$s — recommended</string>
+    <string name="welcome_selected">✓ selected — %1$.1f MB</string>
+    <string name="welcome_not_selected">%1$.1f MB</string>
+    <string name="welcome_retry">Try again</string>
 </resources>

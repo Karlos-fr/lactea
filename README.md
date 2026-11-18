@@ -34,7 +34,7 @@ Current version: **1.0.0** — [download the APK](https://github.com/Karlos-fr/l
 
 - **Reacts to all the music played on the TV**, whatever the app, including when the sound goes to
   a soundbar over HDMI (ARC / eARC).
-- **9,857 presets**: 66 built in, the rest in 10 themed packs to download from the options.
+- **9,797 presets** in 11 packs you choose and download from the app; nothing is built in.
   Every preset of the collection loads, thanks to [fixes made to projectM](#how-lactea-was-made).
 - **Track title and album cover** on screen when the song changes; the cover can also appear
   inside some visualizations.
@@ -117,10 +117,12 @@ Hold **OK** to open the options. They are grouped by theme:
 
 ## Preset packs
 
-Lactea comes with 66 presets. The rest of the collection is split into 10 packs (Dancer, Drawing,
-Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform), to download from
-**Options › Preset management › Preset packs to download**. Install only the themes you like, and remove them
-at any time.
+The APK holds no preset: on first launch, Lactea offers the packs to download. **Essentials**
+(66 presets: the best of the collection and Lactea's own presets) is recommended; the rest of the
+collection is split into 10 themed packs (Dancer, Drawing, Fractal, Geometric, Hypnotic, Particles,
+Reaction, Sparkle, Supernova, Waveform). The images the presets use come in a **Textures** pack,
+installed automatically with the first pack. Add or remove packs at any time in
+**Options › Preset management › Preset packs to download**.
 
 ## Slow presets
 
@@ -149,7 +151,7 @@ collection). Leave the music playing; any key stops the test, and it can resume 
 ## How Lactea was made
 
 - **projectM, corrected.** Lactea uses its own version of projectM 4.1.8:
-  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). Testing the 9,857 presets on a TV
+  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). Testing the whole collection on a TV
   showed that 67 of them did not load at all, because projectM read their equations differently
   from MilkDrop. The fix follows MilkDrop's source code and was checked on the 144,906 equation
   blocks of the collection, without any regression. It has been proposed to the projectM team

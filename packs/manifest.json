@@ -1,106 +1,184 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "projectM-visualizer/presets-cream-of-the-crop",
   "packs": [
     {
+      "id": "essentials",
+      "name": "Essentials",
+      "kind": "presets",
+      "version": "1",
+      "url": "lactea-pack-essentials.zip",
+      "size": 200463,
+      "presets": 66,
+      "sha256": "1e441586e589eb159ee9f82e1afe5eed3c96362c7d2428c56457da2b5f25e45e",
+      "sha256_content": "64d1437624db9655782aa18708e6d07a8a5715fb81dcba24226c6d77240be5d5",
+      "description": "The best of the collection and Lactea's own presets",
+      "recommended": true,
+      "requires": [
+        "textures"
+      ]
+    },
+    {
       "id": "dancer",
       "name": "Dancer",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-dancer.zip",
-      "size": 5021630,
+      "size": 5040943,
       "presets": 1351,
-      "sha256": "614f8335299744ac43deccaebb8d8073bb14e0b7af5db5934b13275cb7e9b61b",
-      "description": "Formes qui dansent sur le rythme"
+      "sha256": "09bb9e8c44a134c3e134ee9cc32aee04311402b1feb219fe1d55e322661680b5",
+      "sha256_content": "20d6f8c4149649b8676820097d5666138d4ecb06c7287df0dc8fc4f4a196a27e",
+      "description": "Shapes dancing to the beat",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "drawing",
       "name": "Drawing",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-drawing.zip",
-      "size": 4025059,
+      "size": 4047821,
       "presets": 1143,
-      "sha256": "83e8fb9c72f5e7e8e26c142ca70f1be068da2aae2bd8e6991fe2ae0bb2c0c498",
-      "description": "Tracés et dessins animés"
+      "sha256": "c77f79c55c3c299481c3114094a8a02d02c0baa84f95f12500c576a39c14b937",
+      "sha256_content": "bcba42b4e05f85ab318b950e0d6e8c8df0cb4d0836c48a2d8c57c04ca740997f",
+      "description": "Animated lines and drawings",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "fractal",
       "name": "Fractal",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-fractal.zip",
-      "size": 3728913,
+      "size": 3751318,
       "presets": 1354,
-      "sha256": "2050a8ab37882e4deeed33f6e4fb3b3d2d1cc6e76b62527013f854c4d9a9433d",
-      "description": "Fractales et zooms infinis"
+      "sha256": "d1234b89f061b0dd1ce6d52f5caf2017051089da0063fa7e0bc7ef5fec51c7ae",
+      "sha256_content": "0f672b51383ffef9234b3d2b5dc620cff734372f03c7c017dca7d418045fdc1d",
+      "description": "Fractals and endless zooms",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "geometric",
       "name": "Geometric",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-geometric.zip",
-      "size": 3497105,
+      "size": 3513864,
       "presets": 1027,
-      "sha256": "89d15b3b5c17fa899767e3f9e421b5cdbb1f99d5cab4d2f0dbc198e5fb8075ff",
-      "description": "Formes géométriques"
+      "sha256": "6a387abf990948a826d1df889292a799c9677f6a105b5e7e668d6dcddc1ee2dc",
+      "sha256_content": "fedba33c89f1ea4227c3e587c82c9dc76d2bade54d0391d30c18e2c3ad21ab41",
+      "description": "Geometric shapes",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "hypnotic",
       "name": "Hypnotic",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-hypnotic.zip",
-      "size": 1045074,
+      "size": 1048827,
       "presets": 280,
-      "sha256": "2db79495251ce9f9af7844f498f4477c7e62b032bb59dff3cabbdfb5c0e11411",
-      "description": "Motifs hypnotiques"
+      "sha256": "33eba4d70b14b5b6127c320370008aaa32d6fadf0a4043daf2bc3c474238bd0b",
+      "sha256_content": "7f661bf54ef047418248a8d43fd4a7aef1477183230d30ea0d004b2e369266a8",
+      "description": "Hypnotic patterns",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "particles",
       "name": "Particles",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-particles.zip",
-      "size": 1441801,
+      "size": 1447944,
       "presets": 389,
-      "sha256": "cd22fa066b67ec5e900ad3a1e2b09161a0d7c796ce31bb034f3601a5866dc82e",
-      "description": "Particules et nuées"
+      "sha256": "a6bb2f665b59bf9132f4a4a2904b1ca76403a6cf9b3f44a8a88a8dea6cab193c",
+      "sha256_content": "1315d124f09f81010f4653c4385e42278b40d610161c29b10dd18df8987fd404",
+      "description": "Particles and swarms",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "reaction",
       "name": "Reaction",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-reaction.zip",
-      "size": 5426090,
+      "size": 5458019,
       "presets": 1791,
-      "sha256": "7a8de2baf062fa8704603d4d118be7a6b778fd48b5d78c881da0c8006d3863fa",
-      "description": "Réactions chimiques et automates"
+      "sha256": "81631d6ba1bce780dc618c30586376e8414aa679e6bb07506649051102c4e66e",
+      "sha256_content": "51663e6420aae963b1db0c0997c3c4207a362b25ed40f928d0527ed4b1959d3d",
+      "description": "Chemical reactions and automata",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "sparkle",
       "name": "Sparkle",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-sparkle.zip",
-      "size": 2497733,
+      "size": 2510122,
       "presets": 797,
-      "sha256": "9ad946c5431c590bb1b515599050f7830c3eedb041e7aeaa2ef4da23d6061ac4",
-      "description": "Étincelles et explosions"
+      "sha256": "e85901000e4fa0502dda12929cf74352ad71029505890d4160571735efc1347a",
+      "sha256_content": "814e5a36aee08cef180b5888cd56be8d4aa9c934bde6f1d2176364e1b2c4f07d",
+      "description": "Sparks and explosions",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "supernova",
       "name": "Supernova",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-supernova.zip",
-      "size": 994172,
+      "size": 1000629,
       "presets": 380,
-      "sha256": "ed59f7b52b357914ca64bab1c4db673d283798c849c8d25c65143ff2a2fc8680",
-      "description": "Explosions cosmiques"
+      "sha256": "95d64dddfb04e28115cfec19f67ec6f1fbb08e51fbddd7c12e972abf9096fed3",
+      "sha256_content": "076927cf3a03ca928446d070b565e9273ed92330c178e5fc7fc4414ba3ceb182",
+      "description": "Cosmic explosions",
+      "requires": [
+        "textures"
+      ]
     },
     {
       "id": "waveform",
       "name": "Waveform",
-      "version": "1",
+      "kind": "presets",
+      "version": "2",
       "url": "lactea-pack-waveform.zip",
-      "size": 3565016,
+      "size": 3583840,
       "presets": 1279,
-      "sha256": "48c93ab01d5dc127d5f91553e7aa6998a03970b86d00ac7a37a66357998609ca",
-      "description": "Formes d'onde et spectres"
+      "sha256": "5f3fee44bb5802d59e0d2e9216e1aa493d93788a0165539a6c37c22f508104b9",
+      "sha256_content": "9af3501018808eb25ceec5911e4fe044a97f95a6288794e0ed53d66bb3e27f42",
+      "description": "Waveforms and spectrums",
+      "requires": [
+        "textures"
+      ]
+    },
+    {
+      "id": "textures",
+      "name": "Textures",
+      "kind": "textures",
+      "version": "1",
+      "url": "lactea-pack-textures.zip",
+      "size": 3478705,
+      "presets": 0,
+      "sha256": "7c31ea318d3fdd5274b9ce9c8833e92e01ab19ca88a72c5847a9dd001e1a6b9f",
+      "sha256_content": "606839ee507a3bdee0df2b982344ac7be051beb6cfa2f61b730e669b31ed36be",
+      "description": "Images used by the presets"
     }
   ]
 }

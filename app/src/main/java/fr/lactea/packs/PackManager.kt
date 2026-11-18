@@ -3,6 +3,7 @@ package fr.lactea.packs
 import fr.lactea.R
 import android.content.Context
 import android.util.Log
+import fr.lactea.presets.PackIndex
 import fr.lactea.settings.Settings
 import org.json.JSONObject
 import java.io.File
@@ -14,14 +15,17 @@ import java.util.concurrent.Executors
 import java.util.zip.ZipInputStream
 
 /**
- * Preset packs published on GitHub (or any HTTP server): a manifest.json lists zip packs,
- * which are downloaded, checked (SHA-256) and extracted into filesDir/packs/<id>/.
+ * Packs published on GitHub (or any HTTP server): a manifest.json lists zip packs, which are
+ * downloaded, checked (SHA-256) and extracted into filesDir/packs/<id>/. Each pack holds an
+ * index.json describing its content (see [PackIndex]); it is written at install time for a pack
+ * that has none.
  *
- * manifest.json:
- * { "version": 1, "packs": [ { "id": "fractal", "name": "Fractal", "version": "1",
- *   "url": "lactea-pack-fractal.zip", "size": 123, "presets": 1354, "sha256": "…",
- *   "description": "…" } ] }
- * "url" may be relative to the manifest URL.
+ * manifest.json (built by tools/make_packs.py):
+ * { "version": 2, "packs": [ { "id": "fractal", "name": "Fractal", "kind": "presets",
+ *   "version": "2", "url": "lactea-pack-fractal.zip", "size": 123, "presets": 1354,
+ *   "sha256": "…", "description": "…", "recommended": false, "requires": [ "textures" ] } ] }
+ * "url" may be relative to the manifest URL. "kind" is "presets" or "textures"; a pack is
+ * installed after the packs it requires.
  */
 class PackManager(private val context: Context, private val settings: Settings) {
 
@@ -34,6 +38,9 @@ class PackManager(private val context: Context, private val settings: Settings) 
         val presets: Int,
         val sha256: String,
         val description: String,
+        val isTextures: Boolean,
+        val recommended: Boolean,
+        val requires: List<String>,
     )
 
     sealed class State {
@@ -58,17 +65,47 @@ class PackManager(private val context: Context, private val settings: Settings) 
         File(packsDir, "$id/.version").takeIf { it.exists() }?.readText()?.trim()
 
     fun installedIds(): List<String> =
-        packsDir.listFiles()?.filter { File(it, ".version").exists() }?.map { it.name } ?: emptyList()
+        packsDir.listFiles()?.filter { SAFE_ID.matches(it.name) && File(it, ".version").exists() }?.map { it.name }
+            ?: emptyList()
 
-    /** Directories scanned for presets. */
-    fun presetRoots(): List<File> = installedIds().map { File(packsDir, it) }
+    /** Folders of the installed packs. */
+    fun installedDirs(): List<File> = installedIds().sorted().map { File(packsDir, it) }
 
-    /** "textures" folders shipped inside packs, added to projectM's search paths. */
-    fun textureDirs(): List<File> = presetRoots().mapNotNull { root ->
-        root.walkTopDown().maxDepth(2).firstOrNull { it.isDirectory && it.name.equals("textures", true) }
+    /** Space used by the packs, computed in the background after each change. */
+    @Volatile var diskUsageBytes: Long = 0
+        private set
+
+    fun refreshDiskUsage() = executor.execute { updateDiskUsage() }
+
+    private fun updateDiskUsage() {
+        diskUsageBytes = packsDir.walkTopDown().filter { it.isFile }.sumOf { it.length() }
     }
 
-    fun diskUsageBytes(): Long = packsDir.walkTopDown().filter { it.isFile }.sumOf { it.length() }
+    /** True when [pack] is installed in its catalogue version. */
+    fun isUpToDate(pack: Pack): Boolean = installedVersion(pack.id) == pack.version
+
+    /** Packs required by installed packs but not installed (e.g. textures, after an upgrade from 1.0). */
+    fun missingRequirements(): List<Pack> {
+        val installed = installedIds().toSet()
+        val byId = catalog.associateBy { it.id }
+        return catalog.filter { it.id in installed }.flatMap { it.requires }.distinct()
+            .filter { it !in installed }.mapNotNull { byId[it] }
+    }
+
+    /**
+     * [packs] plus the packs they require that are missing or outdated, required ones first,
+     * without the packs already up to date.
+     */
+    fun withRequirements(packs: List<Pack>): List<Pack> {
+        val byId = catalog.associateBy { it.id }
+        val out = LinkedHashSet<Pack>()
+        fun add(p: Pack) {
+            p.requires.mapNotNull { byId[it] }.forEach(::add)
+            if (!isUpToDate(p)) out += p
+        }
+        packs.forEach(::add)
+        return out.toList()
+    }
 
     /** Installed packs whose catalogue version differs from the installed one. */
     fun updatesAvailable(): List<Pack> = catalog.filter { p -> installedVersion(p.id)?.let { it != p.version } ?: false }
@@ -91,6 +128,10 @@ class PackManager(private val context: Context, private val settings: Settings) 
                         presets = o.optInt("presets"),
                         sha256 = o.getString("sha256").lowercase(),
                         description = o.optString("description"),
+                        isTextures = o.optString("kind") == "textures",
+                        recommended = o.optBoolean("recommended"),
+                        requires = o.optJSONArray("requires")?.let { a -> (0 until a.length()).map { a.getString(it) } }
+                            ?: emptyList(),
                     )
                 }
                 catalogStatus = context.getString(R.string.catalog_count, catalog.size)
@@ -102,24 +143,36 @@ class PackManager(private val context: Context, private val settings: Settings) 
         }
     }
 
-    fun install(pack: Pack, onDone: (Boolean) -> Unit) {
+    /**
+     * Installs [packs] one after the other, with the packs they require (see [withRequirements]).
+     * Stops at the first failure. [onDone] receives the packs installed.
+     */
+    fun install(packs: List<Pack>, onDone: (installed: List<Pack>, ok: Boolean) -> Unit) {
+        val todo = withRequirements(packs)
         executor.execute {
-            val ok = try {
-                doInstall(pack)
-                true
-            } catch (t: Throwable) {
-                Log.w(TAG, "Install ${pack.id} failed", t)
-                state = State.Error(context.getString(R.string.pack_error, pack.name, t.message ?: "?"))
-                false
+            val installed = ArrayList<Pack>()
+            var ok = true
+            for (pack in todo) {
+                try {
+                    doInstall(pack)
+                    installed += pack
+                } catch (t: Throwable) {
+                    Log.w(TAG, "Install ${pack.id} failed", t)
+                    state = State.Error(context.getString(R.string.pack_error, pack.name, t.message ?: "?"))
+                    ok = false
+                    break
+                }
             }
             if (ok) state = State.Idle
-            onDone(ok)
+            updateDiskUsage()
+            onDone(installed, ok)
         }
     }
 
     fun remove(id: String, onDone: () -> Unit) {
         executor.execute {
             File(packsDir, id).deleteRecursively()
+            updateDiskUsage()
             onDone()
         }
     }
@@ -166,6 +219,7 @@ class PackManager(private val context: Context, private val settings: Settings) 
                 }
             }
         }
+        PackIndex.read(staging) // a pack without index.json is analysed now, once
         File(staging, ".version").writeText(pack.version)
         val target = File(packsDir, pack.id)
         target.deleteRecursively()

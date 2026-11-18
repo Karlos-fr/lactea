@@ -246,6 +246,11 @@ class LacteaRenderer(
 
     fun next() = advance(smoothRequested = true)
 
+    /** Starts the first preset once presets are available (the catalogue loads in the background). */
+    fun startIfIdle() {
+        if (handle != 0L && current == null) advance(smoothRequested = false)
+    }
+
     fun previous() {
         playlist.previous()?.let { switchTo(it, smoothRequested = true) }
     }
@@ -303,7 +308,7 @@ class LacteaRenderer(
         // Presets sampling random textures are rewritten on the fly: album cover + textures picked
         // by Lactea (projectM's own random pick fails on Android).
         val cover = coverTexture
-        val rewritten = if (entry.key in coverCompatible || CoverPresets.isCompatible(entry.file)) {
+        val rewritten = if (entry.key in coverCompatible) {
             CoverPresets.read(entry.file)?.let { CoverPresets.rewrite(it, cover, randomTextures) }
         } else null
         val withCover = if (rewritten != null && cover != null) rewritten else null

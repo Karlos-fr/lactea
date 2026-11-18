@@ -2,6 +2,36 @@
 
 All notable changes to Lactea are listed here, newest first.
 
+## [Unreleased]
+
+Faster start-up and an APK without presets: every preset now comes from a pack the user chooses.
+
+### Added
+
+- Welcome screen on first launch: Lactea lists the packs to download, with **Essentials**
+  (66 presets: the best of the collection and Lactea's own presets) ticked as recommended.
+- **Essentials** and **Textures** packs. Textures holds the images the presets use; it is
+  installed automatically with the first pack, and for users upgrading from 1.0.
+- Each pack holds an `index.json` listing its presets, those able to show the album cover and the
+  frame rates measured on the reference TV.
+
+### Changed
+
+- Start-up: Lactea no longer scans nor reads the presets. It reads the index of each installed
+  pack in the background (about 0.2 s for the whole collection), and the screen shows at once. On
+  the test TV, the screen now appears in 1.4 s instead of about 5 s.
+- The APK no longer holds presets, textures nor reference frame rates (5.3 MB instead of 9.4 MB).
+- Packs are versioned from their content: an unchanged pack keeps its version, a changed one is
+  offered as an update.
+
+### Upgrading from 1.0
+
+- The 66 built-in presets and the textures copied by 1.0 are removed; install Essentials to get
+  them back. Favourites, exclusions and measures of the 60 built-in presets of the collection move
+  to their key in the packs.
+- Packs installed by 1.0 have no index yet: Lactea analyses each of them once (about 30 s for the
+  whole collection, in the background), until they are updated.
+
 ## [1.0.0] — 2026-11-17
 
 First release: MilkDrop-style music visuals for Android TV and Google TV, built on a corrected

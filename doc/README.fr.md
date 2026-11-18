@@ -35,7 +35,7 @@ Version actuelle : **1.0.0** — [télécharger l'APK](https://github.com/Karlos
 
 - **Réagit à toute la musique jouée sur la TV**, quelle que soit l'appli, y compris quand le son
   part vers une barre de son en HDMI (ARC / eARC).
-- **9 857 presets** : 66 inclus, les autres en 10 packs thématiques à télécharger depuis les options.
+- **9 797 presets** en 11 packs à choisir et télécharger depuis l'appli ; aucun n'est intégré.
   Tous les presets de la collection se chargent, grâce aux corrections apportées à projectM (voir
   plus bas).
 - **Titre et pochette d'album** à l'écran à chaque changement de morceau ; la pochette peut aussi
@@ -120,10 +120,13 @@ Faites un appui long sur **OK** pour ouvrir les options. Elles sont regroupées 
 
 ## Packs de presets
 
-Lactea est livré avec 66 presets. Le reste de la collection est réparti en 10 packs (Dancer,
-Drawing, Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform), à
-télécharger depuis **Options › Gestion des presets › Packs de presets à télécharger**. N'installez que les thèmes
-qui vous plaisent, et retirez-les quand vous voulez.
+L'APK ne contient aucun preset : au premier lancement, Lactea propose les packs à télécharger.
+**Essentials** (66 presets : le meilleur de la collection et les presets propres à Lactea) est
+recommandé ; le reste de la collection est réparti en 10 packs thématiques (Dancer, Drawing,
+Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Les images
+utilisées par les presets forment un pack **Textures**, installé automatiquement avec le premier
+pack. Ajoutez ou retirez des packs quand vous voulez dans
+**Options › Gestion des presets › Packs de presets à télécharger**.
 
 ## Presets lents
 
@@ -154,7 +157,7 @@ qui pourra reprendre là où il s'est arrêté.
 ## Comment Lactea a été fait
 
 - **projectM, corrigé.** Lactea utilise sa propre version de projectM 4.1.8 :
-  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). Le test des 9 857 presets sur une TV a
+  [Karlos-fr/projectm](https://github.com/Karlos-fr/projectm). Le test de toute la collection sur une TV a
   montré que 67 d'entre eux ne se chargeaient pas du tout, parce que projectM lisait leurs équations
   autrement que MilkDrop. La correction suit le code source de MilkDrop et a été vérifiée sur les
   144 906 blocs d'équations de la collection, sans aucune régression. Elle a été proposée à l'équipe

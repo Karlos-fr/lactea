@@ -7,8 +7,8 @@ import org.json.JSONObject
  * Measured steady-state FPS per preset and render height, learned while presets play.
  * Used to pick a resolution (Auto), choose fade vs hard cut, and exclude slow presets.
  *
- * Presets this TV has not measured yet fall back to the reference table shipped with the app
- * (assets/bench/reference.json, one benchmark of the whole collection on a reference TV).
+ * Presets this TV has not measured yet fall back to the reference frame rates that come with the
+ * packs (one benchmark of the whole collection on a reference TV, see [PresetCatalog]).
  */
 class PresetStats(private val settings: Settings) {
     // key -> (height -> fps)
@@ -38,18 +38,19 @@ class PresetStats(private val settings: Settings) {
         dirty = true
     }
 
-    /** Loads the shipped reference table (call off the main thread: ~10 000 entries). */
-    fun loadReference(json: String) {
-        runCatching {
-            val root = JSONObject(json)
-            val fps = root.getJSONObject("fps")
-            val m = HashMap<String, Float>(fps.length() * 2)
-            for (k in fps.keys()) m[k] = fps.getDouble(k).toFloat()
-            synchronized(this) {
-                reference = m
-                referenceHeight = root.optInt("height", 720)
-                referenceDevice = root.optString("device")
-            }
+    /** Reference frame rates of the installed packs, replaced whenever the packs change. */
+    @Synchronized fun setReference(fps: Map<String, Float>, height: Int, device: String) {
+        reference = fps
+        referenceHeight = height
+        referenceDevice = device
+    }
+
+    /** Moves the measures of presets whose key changed ([renames]: old key -> new key). */
+    @Synchronized fun renameKeys(renames: Map<String, String>) {
+        renames.forEach { (old, new) -> data.remove(old)?.let { if (new !in data) data[new] = it } }
+        if (renames.isNotEmpty()) {
+            dirty = true
+            save()
         }
     }
 
@@ -58,6 +59,8 @@ class PresetStats(private val settings: Settings) {
     @Synchronized fun measured(key: String): Map<Int, Float> = data[key]?.toMap() ?: emptyMap()
 
     @Synchronized fun count(): Int = data.size
+
+    @Synchronized fun measuredKeys(): Set<String> = data.keys.toSet()
 
     /**
      * Estimated FPS at [height], scaling by pixel count from the nearest measurement.
@@ -105,16 +108,6 @@ class PresetStats(private val settings: Settings) {
     }
 
     companion object {
-        const val REFERENCE_ASSET = "bench/reference.json"
-
-        /** Loads the reference table from the app assets, in the background. */
-        fun loadReferenceAsync(context: android.content.Context, stats: PresetStats) = Thread {
-            runCatching {
-                stats.loadReference(context.assets.open(REFERENCE_ASSET).bufferedReader().use { it.readText() })
-                android.util.Log.i("LACTEA", "Reference FPS: ${stats.referenceCount()} presets (${stats.referenceDevice})")
-            }
-        }.start()
-
         fun pixels(height: Int): Float = height.toFloat() * height * 16f / 9f
     }
 }
