@@ -18,6 +18,15 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   play, by category and minimum frame rate. The preset browser lists the presets of the ambiance
   in use; a remote action (no key by default) switches to the next ambiance.
 - Change preset: "on each song only", and every 3 or 5 minutes.
+- Flash and chill tags: every preset of the packs was rendered and analysed on a PC
+  (tools/flashscan) for flashes (ITU-R BT.1702 / WCAG thresholds, general and red flashes) and
+  for how much the image moves. Presets are tagged ⚡ flash, 🌙 chill or OK; the thresholds were
+  calibrated on clips judged by eye. Ambiances can leave out flashing presets ("No flash") or keep
+  only the calm ones ("Chill only"), and the green key of the preset browser sets a tag by hand.
+- Previews: each pack holds a picture of every preset (4 moments in a 2 x 2 mosaic, about 9 KB),
+  shown beside the list in the preset browser.
+- The test of the presets on the TV keeps running behind the options: Options › Preset
+  management › Test the presets on this TV shows its progress and can stop it.
 
 ### Changed
 

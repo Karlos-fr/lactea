@@ -18,6 +18,10 @@
 //                      red value = clamp((R - G - B) x 320, 0, 320) x 255 / 320
 // Presets already in index.jsonl are skipped, so an interrupted run resumes.
 
+#define NOMINMAX
+#include <windows.h>
+#include <timeapi.h>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <projectM-4/projectM.h>
@@ -127,6 +131,15 @@ int main(int argc, char** argv) {
         else if (a == "--height") o.height = std::stoi(v);
         else { std::cerr << "unknown option " << a << "\n"; return 2; }
     }
+    // A long batch without a visible window: ask Windows not to slow it down to save energy.
+    PROCESS_POWER_THROTTLING_STATE throttling{};
+    throttling.Version = PROCESS_POWER_THROTTLING_CURRENT_VERSION;
+    throttling.ControlMask = PROCESS_POWER_THROTTLING_EXECUTION_SPEED | PROCESS_POWER_THROTTLING_IGNORE_TIMER_RESOLUTION;
+    throttling.StateMask = 0;
+    SetProcessInformation(GetCurrentProcess(), ProcessPowerThrottling, &throttling, sizeof throttling);
+    SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED);
+    timeBeginPeriod(1);
+
     if (o.root.empty() || o.list.empty() || o.audio.empty() || o.out.empty()) {
         std::cerr << "usage: flashscan --root DIR --list FILE --audio FILE --out DIR [options]\n";
         return 2;

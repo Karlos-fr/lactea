@@ -31,7 +31,7 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_executable(flashscan main.cpp)
-target_link_libraries(flashscan PRIVATE libprojectM::projectM glfw GLEW::glew OpenGL::GL)
+target_link_libraries(flashscan PRIVATE libprojectM::projectM glfw GLEW::glew OpenGL::GL winmm)
 if(MSVC)
     target_compile_options(flashscan PRIVATE /utf-8)
 endif()
