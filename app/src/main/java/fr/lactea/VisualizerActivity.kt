@@ -36,6 +36,7 @@ import fr.lactea.presets.Playlist
 import fr.lactea.presets.Ambiance
 import fr.lactea.presets.PresetCatalog
 import fr.lactea.presets.PresetStats
+import fr.lactea.presets.PresetTags
 import fr.lactea.render.LacteaRenderer
 import fr.lactea.settings.Settings
 import fr.lactea.ui.BrowserPanel
@@ -60,6 +61,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private lateinit var settings: Settings
     private lateinit var bindings: KeyBindings
     private lateinit var stats: PresetStats
+    private lateinit var tags: PresetTags
     private lateinit var playlist: Playlist
     /** Presets and textures of the installed packs; replaced in the background when they change. */
     @Volatile private var catalog = PresetCatalog.EMPTY
@@ -113,7 +115,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         settings = Settings(this)
         bindings = KeyBindings(settings)
         stats = PresetStats(settings)
-        playlist = Playlist(settings, stats)
+        tags = PresetTags(settings)
+        playlist = Playlist(settings, stats, tags)
         packs = PackManager(this, settings)
         input = RemoteInput(bindings, ::onAction)
         nowPlaying = NowPlaying(this, this)
@@ -257,11 +260,6 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
         if (captureAction != null) return handleCapture(e)
         if (e.keyCode in VOLUME_KEYS) return super.dispatchKeyEvent(e)
-        if (benchRunning && e.action == KeyEvent.ACTION_DOWN && e.keyCode !in MEDIA_KEYS) {
-            swallowUpKey = e.keyCode
-            interruptBench()
-            return true
-        }
         // Remember the event so a panel opened by it ignores the release of the same key.
         currentEvent = e
         try {
@@ -275,6 +273,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     private fun onAction(a: Action) {
         Log.i(TAG, "ACTION $a")
+        // During the preset test, only what does not change the preset is allowed: the test keeps
+        // running under the options, where its progress shows and where it can be stopped.
+        if (benchRunning && a !in ACTIONS_DURING_BENCH) {
+            osd.show(getString(R.string.osd_bench_running), 4000)
+            return
+        }
         when (a) {
             Action.NEXT_PRESET -> renderer.post { renderer.next() }
             Action.PREVIOUS_PRESET -> renderer.post { renderer.previous() }
@@ -352,7 +356,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     private fun openBrowser() {
-        openPanel(BrowserPanel(this, settings, stats, playlist,
+        openPanel(BrowserPanel(this, settings, stats, tags, catalog.previews, playlist,
             onPlay = { e -> renderer.post { renderer.jumpTo(e) }; closePanel() },
             onClose = ::closePanel,
             ambianceName = settings.activeAmbiance?.let(::ambianceName)), Gravity.CENTER, 0.9f)
@@ -543,6 +547,18 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     /** Test of the presets on this TV: everything, or one category at a time. */
     private fun benchScreen(): MenuScreen = MenuScreen(getString(R.string.bench_title), getString(R.string.bench_subtitle)) {
+        if (benchRunning) {
+            return@MenuScreen listOf(
+                MenuItem.Info(getString(R.string.bench_progress)) {
+                    val doneNow = renderer.benchProgress.substringBefore('/').toIntOrNull() ?: 0
+                    getString(R.string.bench_progress_value, doneNow, benchTotal, durationText(benchTotal - doneNow))
+                },
+                MenuItem.Button(getString(R.string.btn_bench_stop)) {
+                    interruptBench()
+                    menu?.rebuild()
+                },
+            )
+        }
         val done = runCatching { benchFile.readLines().mapTo(HashSet()) { it.substringBefore('\t') } }.getOrDefault(HashSet())
         val all = playlist.all()
         val left = all.count { it.key !in done }
@@ -550,7 +566,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Info(getString(R.string.bench_done_count)) { "${all.size - left} / ${all.size}" },
             MenuItem.Button(getString(if (left == all.size) R.string.bench_all else R.string.bench_continue),
                 { if (left == 0) getString(R.string.bench_nothing) else getString(R.string.bench_left, left, durationText(left)) }) {
-                if (left > 0) { closePanel(); startBench("all") }
+                if (left > 0) startBench("all")
             },
             MenuItem.Button(getString(R.string.bench_restart), { confirmLabel("bench-reset", getString(R.string.bench_restart_hint)) }) {
                 confirm("bench-reset") { benchFile.delete(); osd.show(getString(R.string.osd_bench_cleared)); menu?.rebuild() }
@@ -560,7 +576,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         all.groupBy { it.key.substringBefore('/') }.toSortedMap().forEach { (cat, entries) ->
             val n = entries.count { it.key !in done }
             items += MenuItem.Button(cat, { if (n == 0) getString(R.string.bench_cat_done) else getString(R.string.bench_left, n, durationText(n)) }) {
-                if (n > 0) { closePanel(); startBench("$cat/") }
+                if (n > 0) startBench("$cat/")
             }
         }
         items
@@ -585,10 +601,14 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             cats.size <= 3 -> cats.joinToString(", ")
             else -> cats.take(3).joinToString(", ") + " " + getString(R.string.ambiance_more, cats.size - 3)
         }
-        return if (a.minFps > 0) catText + " · " + getString(R.string.ambiance_min_fps, a.minFps) else catText
+        return listOfNotNull(
+            catText,
+            if (a.minFps > 0) getString(R.string.ambiance_min_fps, a.minFps) else null,
+            if (a.chillOnly) getString(R.string.ambiance_chill) else if (a.noFlash) getString(R.string.ambiance_no_flash) else null,
+        ).joinToString(" · ")
     }
 
-    private fun ambianceCount(a: Ambiance): Int = playlist.all().count { a.accepts(it, stats, settings.fpsCap) }
+    private fun ambianceCount(a: Ambiance): Int = playlist.all().count { a.accepts(it, stats, settings.fpsCap, tags) }
 
     private fun ambiancesScreen(): MenuScreen = MenuScreen(getString(R.string.btn_ambiances), getString(R.string.ambiances_subtitle)) {
         val list = settings.ambiances
@@ -628,6 +648,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 fpsChoices.map { if (it == 0) getString(R.string.min_fps_any) else getString(R.string.ambiance_min_fps, it) },
                 { fpsChoices.indexOf(a.minFps).coerceAtLeast(0) },
                 { settings.saveAmbiance(a.copy(minFps = fpsChoices[it])) }),
+            MenuItem.Toggle(getString(R.string.opt_no_flash), { a.noFlash }, { settings.saveAmbiance(a.copy(noFlash = it)) }),
+            MenuItem.Toggle(getString(R.string.opt_chill_only), { a.chillOnly }, { settings.saveAmbiance(a.copy(chillOnly = it)) }),
             MenuItem.Header(getString(R.string.h_categories)),
         ) + categories.map { c ->
             MenuItem.Toggle(c, { c in a.categories }, { on ->
@@ -752,6 +774,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         catalog = c
         playlist.setLibrary(c.entries)
         stats.setReference(c.referenceFps, c.referenceHeight, c.referenceDevice)
+        tags.measured = c.tags
         renderer.coverCompatible = c.imageKeys
         renderer.randomTextures = c.textureNames
         val paths = texturePaths()
@@ -841,6 +864,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             settings.favorites = settings.favorites.map { renames[it] ?: it }.toSet()
             settings.blacklist = settings.blacklist.map { renames[it] ?: it }.toSet()
             stats.renameKeys(renames)
+            tags.renameKeys(renames)
             Log.i(TAG, "Keys of Lactea 1.0 moved to the packs: ${renames.size}")
         }
         settings.keysOfVersion1Migrated = true
@@ -883,6 +907,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 titleOverlay.hide()
                 glView.holder.setFixedSize(1280, 720)
                 benchTotal = entries.size
+                menu?.rebuild()
                 if (entries.isNotEmpty()) {
                     osd.show(getString(R.string.osd_bench_start, entries.size, durationText(entries.size)), 8000)
                 }
@@ -1082,7 +1107,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                     (if (locked) "  🔒" else "") +
                     "\n" + getString(R.string.hud_line2, s.avgMs, s.maxMs, audio.level)
             }
-            if (packs.state !is PackManager.State.Idle) menu?.rebuild()
+            if (packs.state !is PackManager.State.Idle || benchRunning) menu?.rebuild()
             ui.postDelayed(this, 500)
         }
     }
@@ -1147,6 +1172,9 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     companion object {
+        /** Actions that leave the preset test running (they do not change the preset). */
+        private val ACTIONS_DURING_BENCH = setOf(Action.OPEN_OPTIONS, Action.SHOW_HELP, Action.TOGGLE_HUD,
+            Action.PLAY_PAUSE, Action.NEXT_TRACK, Action.PREVIOUS_TRACK, Action.SENSITIVITY_UP, Action.SENSITIVITY_DOWN)
         private const val TAG = "LACTEA"
         private const val REQ_AUDIO = 1
         private const val AUTO_CLOSE_MS = 30_000L

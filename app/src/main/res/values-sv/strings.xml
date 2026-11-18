@@ -147,7 +147,7 @@
 
     <!-- Preset test -->
     <string name="bench_title">Testa presets</string>
-    <string name="bench_subtitle">Mäter hur jämnt varje preset körs på den här tv:n (cirka 3 s per preset, i 720p). Låt musiken spela. Valfri knapp stoppar testet, och det kan fortsätta där det slutade.</string>
+    <string name="bench_subtitle">Mäter hur jämnt varje preset går på den här tv:n (cirka 3 s per preset, i 720p). Låt musiken spela. Testet fortsätter medan du använder alternativen och kan fortsätta där det slutade.</string>
     <string name="bench_done_count">Redan testade</string>
     <string name="bench_all">Testa allt</string>
     <string name="bench_continue">Fortsätt testet</string>
@@ -161,9 +161,9 @@
     <string name="duration_min">%1$d min</string>
     <string name="duration_h">%1$d h %2$02d</string>
     <string name="osd_bench_interrupted">Testet stoppat — det som mätts sparas.\nFortsätt: Alternativ › Hantera presets › Testa presets på den här tv:n</string>
-    <string name="osd_bench_start">Test av %1$d presets — cirka %2$s\nLåt musiken spela. Valfri knapp stoppar testet.</string>
+    <string name="osd_bench_start">Test av %1$d presets — cirka %2$s\nLåt musiken spela. Förlopp och stopp: Alternativ › Hantera presets › Testa presets på den här tv:n</string>
     <string name="osd_bench_done">Testet klart: %1$d presets mätta</string>
-    <string name="hud_bench">"Testar presets: %1$d / %2$d  ·  cirka %3$s kvar\nValfri knapp stoppar (kan fortsätta från alternativen)"</string>
+    <string name="hud_bench">"Testar presets: %1$d / %2$d  ·  cirka %3$s kvar\nStoppa: Alternativ › Hantera presets › Testa presets på den här tv:n"</string>
     <string name="hud_auto">" auto"</string>
     <string name="hud_fade">"  tona"</string>
     <string name="hud_line2">medel %1$.1f ms · max %2$.0f ms · ljud %3$.2f</string>
@@ -254,9 +254,9 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Preset-bläddrare</string>
-    <string name="browser_footer">"◀▶ kategori   OK spela   🟡 favorit   🔴 undanta   Tillbaka stäng"</string>
-    <string name="browser_subtitle">"Kategori: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam"</string>
-    <string name="browser_subtitle_ambiance">"Stämning: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam"</string>
+    <string name="browser_footer">"◀▶ kategori   OK spela   🟡 favorit   🔴 undanta   🟢 märkning   Tillbaka stäng"</string>
+    <string name="browser_subtitle">"Kategori: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam   🌙 chill   ⚡ blixtar"</string>
+    <string name="browser_subtitle_ambiance">"Stämning: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam   🌙 chill   ⚡ blixtar"</string>
     <string name="browser_all">Alla</string>
 
     <!-- Key help -->
@@ -309,4 +309,23 @@
     <string name="ambiance_min_fps">≥ %1$d FPS</string>
     <string name="osd_ambiance">Stämning: %1$s</string>
     <string name="action_next_ambiance">Nästa stämning</string>
+
+    <!-- Preset test running under the options -->
+    <string name="bench_progress">Pågår</string>
+    <string name="bench_progress_value">%1$d / %2$d · cirka %3$s kvar</string>
+    <string name="btn_bench_stop">Stoppa testet</string>
+    <string name="osd_bench_running">Test av presets pågår.\nFör att stoppa: Alternativ › Hantera presets › Testa presets på den här tv:n</string>
+
+    <!-- Flash / chill tags and previews -->
+    <string name="opt_no_flash">Utan blixtar</string>
+    <string name="opt_chill_only">Bara chill</string>
+    <string name="ambiance_no_flash">utan blixtar</string>
+    <string name="ambiance_chill">chill</string>
+    <string name="tag_chill">🌙 Chill</string>
+    <string name="tag_ok">OK</string>
+    <string name="tag_flash">⚡ Blixtar</string>
+    <string name="tag_unknown">Inte uppmätt</string>
+    <string name="tag_by_you">vald av dig</string>
+    <string name="tag_measured">uppmätt</string>
+    <string name="preview_none">Ingen förhandsvisning</string>
 </resources>

@@ -7,7 +7,7 @@ import java.io.File
  * Preset order with history (so "previous" really goes back), shuffle or sequential,
  * and filtering: blacklist, favourites-only, slow presets. Thread-safe.
  */
-class Playlist(private val settings: Settings, private val stats: PresetStats) {
+class Playlist(private val settings: Settings, private val stats: PresetStats, private val tags: PresetTags) {
 
     data class Entry(val key: String, val file: File) {
         val category: String get() = key.substringBefore('/')
@@ -65,7 +65,7 @@ class Playlist(private val settings: Settings, private val stats: PresetStats) {
         var list = base
         if (settings.favoritesOnly) list = list.filter { it.key in favorites }
         if (settings.excludeSlow) list = list.filter { !stats.isSlow(it.key, cap) }
-        settings.activeAmbiance?.let { a -> list = list.filter { a.accepts(it, stats, cap) } }
+        settings.activeAmbiance?.let { a -> list = list.filter { a.accepts(it, stats, cap, tags) } }
         return list.ifEmpty { base.ifEmpty { all } }
     }
 

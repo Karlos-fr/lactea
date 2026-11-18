@@ -152,7 +152,7 @@
 
     <!-- Preset test -->
     <string name="bench_title">Test the presets</string>
-    <string name="bench_subtitle">Measures how smoothly each preset runs on this TV (about 3 s per preset, in 720p). Leave the music playing; any key stops the test, which can resume where it stopped.</string>
+    <string name="bench_subtitle">Measures how smoothly each preset runs on this TV (about 3 s per preset, in 720p). Leave the music playing. The test goes on while you use the options and can resume where it stopped.</string>
     <string name="bench_done_count">Already tested</string>
     <string name="bench_all">Test everything</string>
     <string name="bench_continue">Continue the test</string>
@@ -166,9 +166,9 @@
     <string name="duration_min">%1$d min</string>
     <string name="duration_h">%1$d h %2$02d</string>
     <string name="osd_bench_interrupted">Test stopped — what was measured is kept.\nTo continue: Options › Preset management › Test the presets on this TV</string>
-    <string name="osd_bench_start">Test of %1$d presets — about %2$s\nLeave the music playing. Any key stops the test.</string>
+    <string name="osd_bench_start">Testing %1$d presets — about %2$s\nLeave the music playing. Progress and stop: Options › Preset management › Test the presets on this TV</string>
     <string name="osd_bench_done">Test finished: %1$d presets measured</string>
-    <string name="hud_bench">"Testing presets: %1$d / %2$d  ·  about %3$s left\nAny key stops it (it can resume from the options)"</string>
+    <string name="hud_bench">"Testing presets: %1$d / %2$d  ·  about %3$s left\nStop: Options › Preset management › Test the presets on this TV"</string>
     <string name="hud_auto">" auto"</string>
     <string name="hud_fade">"  fade"</string>
     <string name="hud_line2">avg %1$.1f ms · max %2$.0f ms · audio %3$.2f</string>
@@ -259,9 +259,9 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Preset browser</string>
-    <string name="browser_footer">"◀▶ category   OK play   🟡 favourite   🔴 exclude   Back close"</string>
-    <string name="browser_subtitle">"Category: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow"</string>
-    <string name="browser_subtitle_ambiance">"Ambiance: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow"</string>
+    <string name="browser_footer">"◀▶ category   OK play   🟡 favourite   🔴 exclude   🟢 tag   Back close"</string>
+    <string name="browser_subtitle">"Category: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow   🌙 chill   ⚡ flash"</string>
+    <string name="browser_subtitle_ambiance">"Ambiance: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow   🌙 chill   ⚡ flash"</string>
     <string name="browser_all">All</string>
 
     <!-- Key help -->
@@ -314,4 +314,23 @@
     <string name="ambiance_min_fps">≥ %1$d FPS</string>
     <string name="osd_ambiance">Ambiance: %1$s</string>
     <string name="action_next_ambiance">Next ambiance</string>
+
+    <!-- Preset test running under the options -->
+    <string name="bench_progress">In progress</string>
+    <string name="bench_progress_value">%1$d / %2$d · about %3$s left</string>
+    <string name="btn_bench_stop">Stop the test</string>
+    <string name="osd_bench_running">Preset test in progress.\nTo stop it: Options › Preset management › Test the presets on this TV</string>
+
+    <!-- Flash / chill tags and previews -->
+    <string name="opt_no_flash">No flash</string>
+    <string name="opt_chill_only">Chill only</string>
+    <string name="ambiance_no_flash">no flash</string>
+    <string name="ambiance_chill">chill</string>
+    <string name="tag_chill">🌙 Chill</string>
+    <string name="tag_ok">OK</string>
+    <string name="tag_flash">⚡ Flash</string>
+    <string name="tag_unknown">Not measured</string>
+    <string name="tag_by_you">set by you</string>
+    <string name="tag_measured">measured</string>
+    <string name="preview_none">No preview</string>
 </resources>

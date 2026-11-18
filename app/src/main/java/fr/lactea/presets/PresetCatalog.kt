@@ -18,9 +18,13 @@ class PresetCatalog private constructor(
     val referenceFps: Map<String, Float>,
     val referenceHeight: Int,
     val referenceDevice: String,
+    /** key -> tag measured on a PC. */
+    val tags: Map<String, PresetTags.Tag>,
+    /** key -> preview image (2 x 2 mosaic). */
+    val previews: Map<String, File>,
 ) {
     companion object {
-        val EMPTY = PresetCatalog(emptyList(), emptySet(), emptyList(), emptyList(), emptyMap(), 720, "")
+        val EMPTY = PresetCatalog(emptyList(), emptySet(), emptyList(), emptyList(), emptyMap(), 720, "", emptyMap(), emptyMap())
 
         /**
          * @param packDirs installed packs; a preset found in several packs keeps the first one.
@@ -33,6 +37,8 @@ class PresetCatalog private constructor(
             val textureDirs = ArrayList<File>()
             val textureNames = LinkedHashSet<String>()
             val fps = HashMap<String, Float>()
+            val tags = HashMap<String, PresetTags.Tag>()
+            val previews = HashMap<String, File>()
             var refHeight = 720
             var refDevice = ""
             for (dir in packDirs) {
@@ -46,9 +52,11 @@ class PresetCatalog private constructor(
                     entries += Playlist.Entry(key, File(dir, p.file))
                     if (p.image) images += key
                     p.fps?.let { fps[key] = it }
+                    PresetTags.Tag.of(p.tag)?.let { tags[key] = it }
+                    if (p.preview) previews[key] = File(dir, "$key.webp")
                 }
             }
-            return PresetCatalog(entries, images, textureDirs, textureNames.toList(), fps, refHeight, refDevice)
+            return PresetCatalog(entries, images, textureDirs, textureNames.toList(), fps, refHeight, refDevice, tags, previews)
         }
     }
 }

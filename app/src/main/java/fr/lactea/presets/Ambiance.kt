@@ -10,14 +10,23 @@ import org.json.JSONObject
  * @param categories categories to play (first folder of the preset key); empty = all
  * @param minFps minimum frame rate expected at [FPS_HEIGHT] on this TV; 0 = no minimum.
  *               Presets never measured are kept.
+ * @param noFlash leave out the presets tagged "flash" (presets without a tag are kept)
+ * @param chillOnly only the presets tagged "chill"
  */
 data class Ambiance(
     val id: String,
     val categories: Set<String> = emptySet(),
     val minFps: Int = 0,
+    val noFlash: Boolean = false,
+    val chillOnly: Boolean = false,
 ) {
-    fun accepts(entry: Playlist.Entry, stats: PresetStats, fpsCap: Int): Boolean {
+    fun accepts(entry: Playlist.Entry, stats: PresetStats, fpsCap: Int, tags: PresetTags): Boolean {
         if (categories.isNotEmpty() && entry.category !in categories) return false
+        if (chillOnly || noFlash) {
+            val tag = tags.effective(entry.key)
+            if (chillOnly && tag != PresetTags.Tag.CHILL) return false
+            if (noFlash && tag == PresetTags.Tag.FLASH) return false
+        }
         if (minFps > 0) {
             val fps = stats.predict(entry.key, FPS_HEIGHT, fpsCap)
             if (fps != null && fps < minFps) return false
@@ -29,6 +38,8 @@ data class Ambiance(
         .put("id", id)
         .put("categories", JSONArray(categories.sorted()))
         .put("minFps", minFps)
+        .put("noFlash", noFlash)
+        .put("chillOnly", chillOnly)
 
     companion object {
         /** Render height of the "minimum FPS" criterion (the reference measures are at 720p). */
@@ -39,6 +50,8 @@ data class Ambiance(
             categories = o.optJSONArray("categories")?.let { a -> (0 until a.length()).mapTo(HashSet()) { a.getString(it) } }
                 ?: emptySet(),
             minFps = o.optInt("minFps"),
+            noFlash = o.optBoolean("noFlash"),
+            chillOnly = o.optBoolean("chillOnly"),
         )
 
         fun listToJson(list: List<Ambiance>): String = JSONArray(list.map { it.toJson() }).toString()

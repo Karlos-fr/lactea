@@ -14,7 +14,7 @@ import java.io.File
  * is analysed once, when it is first seen, and its index is written next to it.
  *
  * { "format": 1, "id": "dancer", "version": "2",
- *   "presets": [ { "file": "Dancer/x.milk", "image": true, "fps": 50 } ],
+ *   "presets": [ { "file": "Dancer/x.milk", "image": true, "fps": 50, "tag": "chill", "preview": true } ],
  *   "textures": { "dir": "textures", "names": [ "clouds", … ] },
  *   "reference": { "device": "…", "gpu": "…", "height": 720, "cap": 60, "date": "…" } }
  */
@@ -27,8 +27,16 @@ class PackIndex(
     /**
      * @param image the preset samples a random texture: Lactea can show the album cover in it
      * @param fps frame rate measured on the reference TV, or null
+     * @param tag "chill", "ok" or "flash", measured on a PC (see PresetTags), or null
+     * @param preview the pack holds a preview image of it: the same path with .webp
      */
-    data class Preset(val file: String, val image: Boolean, val fps: Float?)
+    data class Preset(
+        val file: String,
+        val image: Boolean,
+        val fps: Float?,
+        val tag: String? = null,
+        val preview: Boolean = false,
+    )
 
     data class Reference(val device: String, val height: Int)
 
@@ -76,15 +84,19 @@ class PackIndex(
                             var path = ""
                             var image = false
                             var fps: Float? = null
+                            var tag: String? = null
+                            var preview = false
                             r.beginObject()
                             while (r.hasNext()) when (r.nextName()) {
                                 "file" -> path = r.nextString()
                                 "image" -> image = r.nextBoolean()
                                 "fps" -> fps = r.nextDouble().toFloat()
+                                "tag" -> tag = r.nextString()
+                                "preview" -> preview = r.nextBoolean()
                                 else -> r.skipValue()
                             }
                             r.endObject()
-                            presets += Preset(path, image, fps)
+                            presets += Preset(path, image, fps, tag, preview)
                         }
                         r.endArray()
                     }

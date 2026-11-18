@@ -13,3 +13,4 @@ logos/codex-log.txt
 dist/
 keystore.properties
 *.jks
+__pycache__/

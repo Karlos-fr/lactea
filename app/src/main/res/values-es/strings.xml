@@ -145,7 +145,7 @@
 
     <!-- Prueba de presets -->
     <string name="bench_title">Probar los presets</string>
-    <string name="bench_subtitle">Mide con qué fluidez funciona cada preset en esta TV (unos 3 s por preset, en 720p). Deja la música sonando; cualquier tecla detiene la prueba, que puede continuar donde se quedó.</string>
+    <string name="bench_subtitle">Mide la fluidez de cada preset en esta TV (unos 3 s por preset, en 720p). Deja la música sonando. La prueba sigue mientras usas las opciones y podrá continuar donde se detuvo.</string>
     <string name="bench_done_count">Ya probados</string>
     <string name="bench_all">Probar todo</string>
     <string name="bench_continue">Continuar la prueba</string>
@@ -159,9 +159,9 @@
     <string name="duration_min">%1$d min</string>
     <string name="duration_h">%1$d h %2$02d</string>
     <string name="osd_bench_interrupted">Prueba detenida — lo medido se conserva.\nPara continuar: Opciones › Gestión de presets › Probar los presets en esta TV</string>
-    <string name="osd_bench_start">Prueba de %1$d presets — unos %2$s\nDeja la música sonando. Cualquier tecla detiene la prueba.</string>
+    <string name="osd_bench_start">Prueba de %1$d presets — unos %2$s\nDeja la música sonando. Progreso y parada: Opciones › Gestión de presets › Probar los presets en esta TV</string>
     <string name="osd_bench_done">Prueba terminada: %1$d presets medidos</string>
-    <string name="hud_bench">"Probando presets: %1$d / %2$d  ·  quedan unos %3$s\nCualquier tecla la detiene (se puede continuar desde las opciones)"</string>
+    <string name="hud_bench">"Probando presets: %1$d / %2$d  ·  quedan unos %3$s\nDetener: Opciones › Gestión de presets › Probar los presets en esta TV"</string>
     <string name="hud_auto">" auto"</string>
     <string name="hud_fade">"  fundido"</string>
     <string name="hud_line2">med %1$.1f ms · máx %2$.0f ms · audio %3$.2f</string>
@@ -252,9 +252,9 @@
 
     <!-- Navegador de presets -->
     <string name="browser_title">Navegador de presets</string>
-    <string name="browser_footer">"◀▶ categoría   OK reproducir   🟡 favorito   🔴 excluir   Atrás cerrar"</string>
-    <string name="browser_subtitle">"Categoría: %1$s  (%2$d presets)   ★ favorito   ✕ excluido   🐢 lento"</string>
-    <string name="browser_subtitle_ambiance">"Ambiente: %1$s  (%2$d presets)   ★ favorito   ✕ excluido   🐢 lento"</string>
+    <string name="browser_footer">"◀▶ categoría   OK reproducir   🟡 favorito   🔴 excluir   🟢 etiqueta   Atrás cerrar"</string>
+    <string name="browser_subtitle">"Categoría: %1$s  (%2$d presets)   ★ favorito   ✕ excluido   🐢 lento   🌙 chill   ⚡ destellos"</string>
+    <string name="browser_subtitle_ambiance">"Ambiente: %1$s  (%2$d presets)   ★ favorito   ✕ excluido   🐢 lento   🌙 chill   ⚡ destellos"</string>
     <string name="browser_all">Todas</string>
 
     <!-- Ayuda de teclas -->
@@ -307,4 +307,23 @@
     <string name="ambiance_min_fps">≥ %1$d FPS</string>
     <string name="osd_ambiance">Ambiente: %1$s</string>
     <string name="action_next_ambiance">Ambiente siguiente</string>
+
+    <!-- Preset test running under the options -->
+    <string name="bench_progress">En curso</string>
+    <string name="bench_progress_value">%1$d / %2$d · quedan unos %3$s</string>
+    <string name="btn_bench_stop">Detener la prueba</string>
+    <string name="osd_bench_running">Prueba de presets en curso.\nPara detenerla: Opciones › Gestión de presets › Probar los presets en esta TV</string>
+
+    <!-- Flash / chill tags and previews -->
+    <string name="opt_no_flash">Sin destellos</string>
+    <string name="opt_chill_only">Solo chill</string>
+    <string name="ambiance_no_flash">sin destellos</string>
+    <string name="ambiance_chill">chill</string>
+    <string name="tag_chill">🌙 Chill</string>
+    <string name="tag_ok">OK</string>
+    <string name="tag_flash">⚡ Destellos</string>
+    <string name="tag_unknown">No medido</string>
+    <string name="tag_by_you">elegido por ti</string>
+    <string name="tag_measured">medido</string>
+    <string name="preview_none">Sin vista previa</string>
 </resources>

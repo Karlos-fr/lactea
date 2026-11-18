@@ -147,7 +147,7 @@
 
     <!-- Preset test -->
     <string name="bench_title">Testa i preset</string>
-    <string name="bench_subtitle">Misura la fluidità di ogni preset su questa TV (circa 3 s per preset, in 720p). Lascia la musica in riproduzione; qualsiasi tasto ferma il test, che può riprendere da dove si è fermato.</string>
+    <string name="bench_subtitle">Misura la fluidità di ogni preset su questa TV (circa 3 s per preset, in 720p). Lascia la musica in riproduzione. Il test continua mentre usi le opzioni e potrà riprendere da dove si è fermato.</string>
     <string name="bench_done_count">Già testati</string>
     <string name="bench_all">Testa tutto</string>
     <string name="bench_continue">Continua il test</string>
@@ -161,9 +161,9 @@
     <string name="duration_min">%1$d min</string>
     <string name="duration_h">%1$d h %2$02d</string>
     <string name="osd_bench_interrupted">Test fermato — le misure fatte sono conservate.\nPer continuare: Opzioni › Gestione preset › Testa i preset su questa TV</string>
-    <string name="osd_bench_start">Test di %1$d preset — circa %2$s\nLascia la musica in riproduzione. Qualsiasi tasto ferma il test.</string>
+    <string name="osd_bench_start">Test di %1$d preset — circa %2$s\nLascia la musica in riproduzione. Avanzamento e arresto: Opzioni › Gestione preset › Testa i preset su questa TV</string>
     <string name="osd_bench_done">Test finito: %1$d preset misurati</string>
-    <string name="hud_bench">"Test dei preset: %1$d / %2$d  ·  circa %3$s rimanenti\nQualsiasi tasto lo ferma (può riprendere dalle opzioni)"</string>
+    <string name="hud_bench">"Test dei preset: %1$d / %2$d  ·  circa %3$s rimanenti\nFermare: Opzioni › Gestione preset › Testa i preset su questa TV"</string>
     <string name="hud_auto">" auto"</string>
     <string name="hud_fade">"  dissolv."</string>
     <string name="hud_line2">media %1$.1f ms · max %2$.0f ms · audio %3$.2f</string>
@@ -254,9 +254,9 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Browser dei preset</string>
-    <string name="browser_footer">"◀▶ categoria   OK riproduci   🟡 preferito   🔴 escludi   Indietro chiudi"</string>
-    <string name="browser_subtitle">"Categoria: %1$s  (%2$d preset)   ★ preferito   ✕ escluso   🐢 lento"</string>
-    <string name="browser_subtitle_ambiance">"Atmosfera: %1$s  (%2$d preset)   ★ preferito   ✕ escluso   🐢 lento"</string>
+    <string name="browser_footer">"◀▶ categoria   OK riproduci   🟡 preferito   🔴 escludi   🟢 etichetta   Indietro chiudi"</string>
+    <string name="browser_subtitle">"Categoria: %1$s  (%2$d preset)   ★ preferito   ✕ escluso   🐢 lento   🌙 chill   ⚡ flash"</string>
+    <string name="browser_subtitle_ambiance">"Atmosfera: %1$s  (%2$d preset)   ★ preferito   ✕ escluso   🐢 lento   🌙 chill   ⚡ flash"</string>
     <string name="browser_all">Tutti</string>
 
     <!-- Key help -->
@@ -309,4 +309,23 @@
     <string name="ambiance_min_fps">≥ %1$d FPS</string>
     <string name="osd_ambiance">Atmosfera: %1$s</string>
     <string name="action_next_ambiance">Atmosfera successiva</string>
+
+    <!-- Preset test running under the options -->
+    <string name="bench_progress">In corso</string>
+    <string name="bench_progress_value">%1$d / %2$d · circa %3$s rimanenti</string>
+    <string name="btn_bench_stop">Ferma il test</string>
+    <string name="osd_bench_running">Test dei preset in corso.\nPer fermarlo: Opzioni › Gestione preset › Testa i preset su questa TV</string>
+
+    <!-- Flash / chill tags and previews -->
+    <string name="opt_no_flash">Senza flash</string>
+    <string name="opt_chill_only">Solo chill</string>
+    <string name="ambiance_no_flash">senza flash</string>
+    <string name="ambiance_chill">chill</string>
+    <string name="tag_chill">🌙 Chill</string>
+    <string name="tag_ok">OK</string>
+    <string name="tag_flash">⚡ Flash</string>
+    <string name="tag_unknown">Non misurato</string>
+    <string name="tag_by_you">scelto da te</string>
+    <string name="tag_measured">misurato</string>
+    <string name="preview_none">Nessuna anteprima</string>
 </resources>

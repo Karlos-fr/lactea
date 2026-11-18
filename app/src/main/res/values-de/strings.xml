@@ -147,7 +147,7 @@
 
     <!-- Preset test -->
     <string name="bench_title">Presets testen</string>
-    <string name="bench_subtitle">Misst, wie flüssig jedes Preset auf diesem TV läuft (etwa 3 s pro Preset, in 720p). Lassen Sie die Musik laufen; jede Taste stoppt den Test, er kann später dort weitermachen.</string>
+    <string name="bench_subtitle">Misst, wie flüssig jedes Preset auf diesem Fernseher läuft (etwa 3 s pro Preset, in 720p). Lassen Sie die Musik laufen. Der Test läuft weiter, während Sie die Optionen benutzen, und kann dort fortgesetzt werden, wo er aufgehört hat.</string>
     <string name="bench_done_count">Bereits getestet</string>
     <string name="bench_all">Alles testen</string>
     <string name="bench_continue">Test fortsetzen</string>
@@ -161,9 +161,9 @@
     <string name="duration_min">%1$d min</string>
     <string name="duration_h">%1$d h %2$02d</string>
     <string name="osd_bench_interrupted">Test gestoppt — die Messwerte bleiben erhalten.\nFortsetzen: Optionen › Preset-Verwaltung › Presets auf diesem TV testen</string>
-    <string name="osd_bench_start">Test von %1$d Presets — etwa %2$s\nLassen Sie die Musik laufen. Jede Taste stoppt den Test.</string>
+    <string name="osd_bench_start">Test von %1$d Presets — etwa %2$s\nLassen Sie die Musik laufen. Fortschritt und Abbruch: Optionen › Preset-Verwaltung › Presets auf diesem TV testen</string>
     <string name="osd_bench_done">Test beendet: %1$d Presets gemessen</string>
-    <string name="hud_bench">"Presets im Test: %1$d / %2$d  ·  noch etwa %3$s\nJede Taste stoppt (Fortsetzen in den Optionen)"</string>
+    <string name="hud_bench">"Presets im Test: %1$d / %2$d  ·  noch etwa %3$s\nStoppen: Optionen › Preset-Verwaltung › Presets auf diesem TV testen"</string>
     <string name="hud_auto">" auto"</string>
     <string name="hud_fade">"  Blende"</string>
     <string name="hud_line2">Ø %1$.1f ms · max %2$.0f ms · Audio %3$.2f</string>
@@ -254,9 +254,9 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Preset-Browser</string>
-    <string name="browser_footer">"◀▶ Kategorie   OK abspielen   🟡 Favorit   🔴 ausschließen   Zurück schließen"</string>
-    <string name="browser_subtitle">"Kategorie: %1$s  (%2$d Presets)   ★ Favorit   ✕ ausgeschlossen   🐢 langsam"</string>
-    <string name="browser_subtitle_ambiance">"Stimmung: %1$s  (%2$d Presets)   ★ Favorit   ✕ ausgeschlossen   🐢 langsam"</string>
+    <string name="browser_footer">"◀▶ Kategorie   OK abspielen   🟡 Favorit   🔴 ausschließen   🟢 Markierung   Zurück schließen"</string>
+    <string name="browser_subtitle">"Kategorie: %1$s  (%2$d Presets)   ★ Favorit   ✕ ausgeschlossen   🐢 langsam   🌙 Chill   ⚡ Blitze"</string>
+    <string name="browser_subtitle_ambiance">"Stimmung: %1$s  (%2$d Presets)   ★ Favorit   ✕ ausgeschlossen   🐢 langsam   🌙 Chill   ⚡ Blitze"</string>
     <string name="browser_all">Alle</string>
 
     <!-- Key help -->
@@ -309,4 +309,23 @@
     <string name="ambiance_min_fps">≥ %1$d FPS</string>
     <string name="osd_ambiance">Stimmung: %1$s</string>
     <string name="action_next_ambiance">Nächste Stimmung</string>
+
+    <!-- Preset test running under the options -->
+    <string name="bench_progress">Läuft</string>
+    <string name="bench_progress_value">%1$d / %2$d · noch etwa %3$s</string>
+    <string name="btn_bench_stop">Test abbrechen</string>
+    <string name="osd_bench_running">Preset-Test läuft.\nZum Abbrechen: Optionen › Preset-Verwaltung › Presets auf diesem TV testen</string>
+
+    <!-- Flash / chill tags and previews -->
+    <string name="opt_no_flash">Ohne Blitze</string>
+    <string name="opt_chill_only">Nur Chill</string>
+    <string name="ambiance_no_flash">ohne Blitze</string>
+    <string name="ambiance_chill">Chill</string>
+    <string name="tag_chill">🌙 Chill</string>
+    <string name="tag_ok">OK</string>
+    <string name="tag_flash">⚡ Blitze</string>
+    <string name="tag_unknown">Nicht gemessen</string>
+    <string name="tag_by_you">von Ihnen gewählt</string>
+    <string name="tag_measured">gemessen</string>
+    <string name="preview_none">Keine Vorschau</string>
 </resources>

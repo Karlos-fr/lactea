@@ -29,6 +29,14 @@ abstract class ListPanel(context: Context, maxRows: Int) : LinearLayout(context)
     private val rowViews = List(visibleRows) { Row(context) }
     protected val footerView = text(13f, 0xFF9AA0C8.toInt())
 
+    private val body = LinearLayout(context)
+    private val rows = LinearLayout(context)
+
+    /** A view shown on the right of the rows (e.g. a preview), [widthDp] wide. */
+    protected fun setSideView(v: android.view.View, widthDp: Int) {
+        body.addView(v, LayoutParams(dp(widthDp), LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(20); topMargin = dp(4) })
+    }
+
     var count = 0
         private set
     var selected = 0
@@ -45,7 +53,11 @@ abstract class ListPanel(context: Context, maxRows: Int) : LinearLayout(context)
         }
         addView(titleView)
         addView(subtitleView)
-        rowViews.forEach { addView(it, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)) }
+        body.orientation = HORIZONTAL
+        rows.orientation = VERTICAL
+        rowViews.forEach { rows.addView(it, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)) }
+        body.addView(rows, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
+        addView(body, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
         addView(footerView)
         (footerView.layoutParams as LayoutParams).topMargin = dp(10)
     }
