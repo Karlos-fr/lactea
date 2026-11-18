@@ -35,6 +35,8 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   (classic skin, default settings): same FFT equalisation, 19 bands over 75 columns, bars falling
   12/16 px per frame, peaks falling faster and faster, the 76 x 16 pixel grid with its dotted
   background and the skin's colours.
+- New preset "Lactea - Spectre neon" (Lactea pack): 48 mirrored neon bars (bass in the centre)
+  growing from a glowing middle line, with trails, bloom and chromatic aberration on the bass.
 - The test of the presets on the TV keeps running behind the options: Options › Preset
   management › Test the presets on this TV shows its progress and can stop it.
 

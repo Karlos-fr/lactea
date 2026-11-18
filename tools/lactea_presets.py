@@ -364,6 +364,114 @@ shader_body
     float pk = inBar * step(abs(r - peakR), 0.25) * step(0.0, peakR);
     ret = lerp(lerp(bg, col, bar), float3(0.5882, 0.5882, 0.5882), pk);
 }"""),
+
+    # Neon spectrum, Lactea's own: 48 mirrored bars (bass in the centre, treble towards the
+    # edges) growing up and down from the middle line, with glowing trails (the image zooms and
+    # turns slowly), bloom, chromatic aberration and a pulse on the bass.
+    # Same data path as "Spectre": the custom wave writes the 512 bins, in decibels with a slope
+    # towards the treble, in a hidden row of pixels (row A); the warp shader keeps the 24 band
+    # heights in row B (fast rise, slow fall) and draws the bars over the zoomed previous image,
+    # in the part of the screen above the hidden rows; the comp shader stretches that part to the
+    # whole screen and adds the glow.
+    "Lactea - Spectre neon": dict(
+        extra="""
+per_frame_1=q2 = min(max((time - tprev) * 60, 0.25), 4);
+per_frame_2=tprev = time;
+wavecode_0_enabled=1
+wavecode_0_samples=512
+wavecode_0_sep=0
+wavecode_0_bSpectrum=1
+wavecode_0_bUseDots=0
+wavecode_0_bDrawThick=1
+wavecode_0_bAdditive=0
+wavecode_0_scaling=1.000000
+wavecode_0_smoothing=0.000000
+wavecode_0_r=1.000000
+wavecode_0_g=1.000000
+wavecode_0_b=1.000000
+wavecode_0_a=1.000000
+wave_0_per_point1=bin = sample * 511;
+wave_0_per_point2=eqpm = 0.02 * log(512 / (512 - min(bin, 511.5)));
+wave_0_per_point3=db = if(above(bin, 0.5), 20 * log10(max(value1 / eqpm, 0.000001)), -200);
+wave_0_per_point4=k = 32 * log(1 + bin / 80) / log(6);
+wave_0_per_point5=v = min(max((db + 1.8 * k - 16) / 67, 0), 1);
+wave_0_per_point6=x = (bin + 0.5) / 512;
+wave_0_per_point7=y = 0.23;
+wave_0_per_point8=r = v;
+wave_0_per_point9=g = v;
+wave_0_per_point10=b = v;
+""",
+        warp="""
+shader_body
+{
+    float rowA = 0.5 + 0.27 * aspect.w;
+    float rowB = rowA - 0.015;
+    float H = rowB - 0.012;
+    float k = q2;
+    ret = float3(0.0, 0.0, 0.0);
+    if (uv.y > H)
+    {
+        if (abs(uv.y - rowB) < 0.006)
+        {
+            float i = floor(uv.x * 24.0);
+            float lo = pow(400.0, i / 24.0);
+            float hi = pow(400.0, (i + 1.0) / 24.0);
+            float m = 0.0;
+            m = max(m, max(tex2D(sampler_main, float2((lerp(lo, hi, 0.000) + 0.5) / 512.0, rowA)).x, tex2D(sampler_main, float2((lerp(lo, hi, 0.000) + 0.5) / 512.0, rowA - texsize.w)).x));
+            m = max(m, max(tex2D(sampler_main, float2((lerp(lo, hi, 0.200) + 0.5) / 512.0, rowA)).x, tex2D(sampler_main, float2((lerp(lo, hi, 0.200) + 0.5) / 512.0, rowA - texsize.w)).x));
+            m = max(m, max(tex2D(sampler_main, float2((lerp(lo, hi, 0.400) + 0.5) / 512.0, rowA)).x, tex2D(sampler_main, float2((lerp(lo, hi, 0.400) + 0.5) / 512.0, rowA - texsize.w)).x));
+            m = max(m, max(tex2D(sampler_main, float2((lerp(lo, hi, 0.600) + 0.5) / 512.0, rowA)).x, tex2D(sampler_main, float2((lerp(lo, hi, 0.600) + 0.5) / 512.0, rowA - texsize.w)).x));
+            m = max(m, max(tex2D(sampler_main, float2((lerp(lo, hi, 0.800) + 0.5) / 512.0, rowA)).x, tex2D(sampler_main, float2((lerp(lo, hi, 0.800) + 0.5) / 512.0, rowA - texsize.w)).x));
+            m = max(m, max(tex2D(sampler_main, float2((lerp(lo, hi, 1.000) + 0.5) / 512.0, rowA)).x, tex2D(sampler_main, float2((lerp(lo, hi, 1.000) + 0.5) / 512.0, rowA - texsize.w)).x));
+            float prev = tex2D(sampler_main, float2((i + 0.5) / 24.0, rowB)).y;
+            float rise = lerp(prev, m, saturate(0.65 * k));
+            float fall = prev - 0.022 * k;
+            ret = float3(0.0, max(max(rise, fall), 0.0) * step(0.001, m + prev), 0.0);
+        }
+    }
+    else
+    {
+        float2 p = float2(uv.x, uv.y / H);
+        float2 d = p - 0.5;
+        float a = 0.006 * sin(time * 0.37);
+        float2 dr = float2(d.x * cos(a) - d.y * sin(a), d.x * sin(a) + d.y * cos(a));
+        float2 src = 0.5 + dr * (0.975 - 0.015 * saturate(bass_att - 1.0));
+        float3 fb = tex2D(sampler_main, float2(src.x, src.y * H)).xyz;
+        fb = fb * 0.8 + (fb.yzx - fb) * 0.05;
+        float ax = abs(p.x - 0.5) * 2.0;
+        float bi = floor(ax * 24.0);
+        float f = frac(ax * 24.0);
+        float hv = tex2D(sampler_main, float2((bi + 0.5) / 24.0, rowB)).y;
+        float hh = hv * 0.9;
+        float ay = abs(p.y - 0.5) * 2.0;
+        float wx = abs(f - 0.5) * 2.0;
+        float body = (1.0 - smoothstep(0.5, 0.62, wx)) * (1.0 - smoothstep(hh - 0.01, hh + 0.01, ay)) * step(0.02, hv);
+        float halo = exp(-max(ay - hh, 0.0) * 30.0) * exp(-max(wx - 0.55, 0.0) * 8.0) * step(0.02, hv);
+        float t = bi / 23.0;
+        float3 hue = 0.5 + 0.5 * cos(6.2831853 * (float3(0.0, 0.33, 0.67) + t * 0.75 + time * 0.035));
+        float tip = saturate(ay / max(hh, 0.001));
+        float3 neon = lerp(hue, float3(1.0, 1.0, 1.0), tip * tip * 0.55) * (0.45 + 0.55 * hv);
+        float3 bars = neon * body + hue * halo * 0.15;
+        float3 line = hue * exp(-ay * 80.0) * 0.2;
+        ret = max(fb, bars + line);
+    }
+}""",
+        comp="""
+shader_body
+{
+    float rowB = 0.5 + 0.27 * aspect.w - 0.015;
+    float H = rowB - 0.012;
+    float2 q = float2(uv.x, uv.y * (H - 0.004));
+    float2 d = uv - 0.5;
+    float ca = 0.006 + 0.012 * saturate(bass_att - 1.0);
+    float2 off = float2(d.x, d.y * H) * ca;
+    float3 c = float3(tex2D(sampler_main, q + off).x, tex2D(sampler_main, q).y, tex2D(sampler_main, q - off).z);
+    float3 glow = GetBlur1(q) * 0.55 + GetBlur2(q) * 0.45;
+    float3 col = c + glow;
+    col *= 1.0 + 0.15 * saturate(bass_att - 1.1);
+    col *= 1.2 - dot(d, d) * 1.1;
+    ret = col;
+}"""),
 }
 
 
