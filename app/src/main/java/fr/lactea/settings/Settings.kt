@@ -1,5 +1,6 @@
 package fr.lactea.settings
 
+import fr.lactea.presets.Ambiance
 import android.content.Context
 import android.content.SharedPreferences
 import kotlin.properties.ReadWriteProperty
@@ -22,6 +23,10 @@ class Settings(context: Context) {
     var showHud by bool("show_hud", false)
 
     // --- Presets & transitions ---
+    /**
+     * Seconds before the next preset, or [PRESET_ON_TRACK_ONLY]. A new song always brings a new
+     * preset (when Lactea sees the song change).
+     */
     var presetDuration by int("preset_duration", 25)
     var transitionMode by string("transition_mode", TRANSITION_AUTO)
     var fadeSeconds by float("fade_seconds", 2f)
@@ -40,7 +45,6 @@ class Settings(context: Context) {
     var titlePosition by int("title_position", 0)
     /** 0 = small, 1 = medium, 2 = large */
     var titleSize by int("title_size", 1)
-    var newPresetOnTrack by bool("new_preset_on_track", false)
 
     // --- Pochette ---
     var coverWithTitle by bool("cover_with_title", true)
@@ -77,6 +81,26 @@ class Settings(context: Context) {
     var blacklist: Set<String>
         get() = prefs.getStringSet("blacklist", emptySet())!!.toSet()
         set(v) = prefs.edit().putStringSet("blacklist", HashSet(v)).apply()
+
+    // --- Ambiances ---
+    var ambiances: List<Ambiance>
+        get() = Ambiance.listFromJson(prefs.getString("ambiances", "[]")!!)
+        set(v) = prefs.edit().putString("ambiances", Ambiance.listToJson(v)).apply()
+    /** Id of the ambiance in use, "" = every preset. */
+    var activeAmbianceId by string("active_ambiance", "")
+    val activeAmbiance: Ambiance? get() = activeAmbianceId.takeIf { it.isNotEmpty() }?.let { id -> ambiances.firstOrNull { it.id == id } }
+
+    fun saveAmbiance(a: Ambiance) {
+        val list = ambiances.toMutableList()
+        val i = list.indexOfFirst { it.id == a.id }
+        if (i >= 0) list[i] = a else list += a
+        ambiances = list
+    }
+
+    fun deleteAmbiance(id: String) {
+        ambiances = ambiances.filter { it.id != id }
+        if (activeAmbianceId == id) activeAmbianceId = ""
+    }
 
     fun toggleFavorite(key: String): Boolean {
         val fav = favorites.toMutableSet()
@@ -115,6 +139,9 @@ class Settings(context: Context) {
     }
 
     companion object {
+        /** [presetDuration]: change preset only when the song changes. */
+        const val PRESET_ON_TRACK_ONLY = 0
+        val PRESET_DURATIONS = listOf(PRESET_ON_TRACK_ONLY, 10, 15, 20, 25, 30, 45, 60, 90, 120, 180, 300)
         const val TRANSITION_AUTO = "auto"
         const val TRANSITION_FADE = "fade"
         const val TRANSITION_CUT = "cut"

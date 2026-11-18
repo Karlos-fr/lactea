@@ -58,7 +58,6 @@
 
     <!-- Options: Presets and transitions -->
     <string name="h_presets">Presets och övergångar</string>
-    <string name="opt_duration">Presetets längd</string>
     <string name="opt_transition">Övergång</string>
     <string name="tr_auto">Auto (övertoning eller klipp)</string>
     <string name="tr_fade">Alltid övertoning</string>
@@ -81,7 +80,6 @@
     <string name="size_small">Liten</string>
     <string name="size_medium">Mellan</string>
     <string name="size_large">Stor</string>
-    <string name="opt_new_preset_track">Nytt preset vid varje låt</string>
     <string name="info_now_playing">Spelas nu</string>
     <string name="np_none">ingen musik hittades</string>
     <string name="np_no_permission">behörighet saknas</string>
@@ -258,6 +256,7 @@
     <string name="browser_title">Preset-bläddrare</string>
     <string name="browser_footer">"◀▶ kategori   OK spela   🟡 favorit   🔴 undanta   Tillbaka stäng"</string>
     <string name="browser_subtitle">"Kategori: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam"</string>
+    <string name="browser_subtitle_ambiance">"Stämning: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam"</string>
     <string name="browser_all">Alla</string>
 
     <!-- Key help -->
@@ -282,4 +281,32 @@
     <string name="welcome_selected">✓ vald — %1$.1f MB</string>
     <string name="welcome_not_selected">%1$.1f MB</string>
     <string name="welcome_retry">Försök igen</string>
+
+    <!-- Preset change and ambiances -->
+    <string name="opt_preset_change">Byt preset</string>
+    <string name="change_track_only">bara låtbyte</string>
+    <string name="change_track_every">låt + var %1$s</string>
+    <string name="dur_s">%1$d s</string>
+    <string name="dur_min">%1$d min</string>
+    <string name="dur_min_s">%1$d min %2$d s</string>
+    <string name="btn_ambiances">Stämningar</string>
+    <string name="ambiances_subtitle">Välj vilka presets som spelas</string>
+    <string name="ambiance_active">Aktiv stämning</string>
+    <string name="ambiance_all">Alla presets</string>
+    <string name="btn_ambiance_new">Skapa en stämning</string>
+    <string name="ambiance_count">%1$d presets</string>
+    <string name="ambiance_edit_title">Stämning</string>
+    <string name="ambiance_edit_subtitle">Bara presets som uppfyller alla kriterier spelas. Ingen kategori vald = alla.</string>
+    <string name="ambiance_presets">Presets</string>
+    <string name="btn_ambiance_use">Använd den här stämningen</string>
+    <string name="ambiance_in_use">aktiv ✓</string>
+    <string name="opt_min_fps">Minsta FPS (720p)</string>
+    <string name="min_fps_any">ingen</string>
+    <string name="h_categories">Kategorier</string>
+    <string name="btn_ambiance_delete">Ta bort den här stämningen</string>
+    <string name="ambiance_all_categories">Alla kategorier</string>
+    <string name="ambiance_more">+%1$d</string>
+    <string name="ambiance_min_fps">≥ %1$d FPS</string>
+    <string name="osd_ambiance">Stämning: %1$s</string>
+    <string name="action_next_ambiance">Nästa stämning</string>
 </resources>

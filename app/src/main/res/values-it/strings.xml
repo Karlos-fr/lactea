@@ -58,7 +58,6 @@
 
     <!-- Options: Presets and transitions -->
     <string name="h_presets">Preset e transizioni</string>
-    <string name="opt_duration">Durata del preset</string>
     <string name="opt_transition">Transizione</string>
     <string name="tr_auto">Auto (dissolvenza o stacco)</string>
     <string name="tr_fade">Sempre dissolvenza</string>
@@ -81,7 +80,6 @@
     <string name="size_small">Piccola</string>
     <string name="size_medium">Media</string>
     <string name="size_large">Grande</string>
-    <string name="opt_new_preset_track">Nuovo preset a ogni brano</string>
     <string name="info_now_playing">In riproduzione</string>
     <string name="np_none">nessuna musica rilevata</string>
     <string name="np_no_permission">autorizzazione mancante</string>
@@ -258,6 +256,7 @@
     <string name="browser_title">Browser dei preset</string>
     <string name="browser_footer">"◀▶ categoria   OK riproduci   🟡 preferito   🔴 escludi   Indietro chiudi"</string>
     <string name="browser_subtitle">"Categoria: %1$s  (%2$d preset)   ★ preferito   ✕ escluso   🐢 lento"</string>
+    <string name="browser_subtitle_ambiance">"Atmosfera: %1$s  (%2$d preset)   ★ preferito   ✕ escluso   🐢 lento"</string>
     <string name="browser_all">Tutti</string>
 
     <!-- Key help -->
@@ -282,4 +281,32 @@
     <string name="welcome_selected">✓ scelto — %1$.1f MB</string>
     <string name="welcome_not_selected">%1$.1f MB</string>
     <string name="welcome_retry">Riprova</string>
+
+    <!-- Preset change and ambiances -->
+    <string name="opt_preset_change">Cambia preset</string>
+    <string name="change_track_only">solo cambio brano</string>
+    <string name="change_track_every">brano + ogni %1$s</string>
+    <string name="dur_s">%1$d s</string>
+    <string name="dur_min">%1$d min</string>
+    <string name="dur_min_s">%1$d min %2$d s</string>
+    <string name="btn_ambiances">Atmosfere</string>
+    <string name="ambiances_subtitle">Scegli quali preset vengono riprodotti</string>
+    <string name="ambiance_active">Atmosfera in uso</string>
+    <string name="ambiance_all">Tutti i preset</string>
+    <string name="btn_ambiance_new">Crea un\'atmosfera</string>
+    <string name="ambiance_count">%1$d preset</string>
+    <string name="ambiance_edit_title">Atmosfera</string>
+    <string name="ambiance_edit_subtitle">Vengono riprodotti solo i preset che soddisfano tutti i criteri. Nessuna categoria scelta = tutte.</string>
+    <string name="ambiance_presets">Preset</string>
+    <string name="btn_ambiance_use">Usa questa atmosfera</string>
+    <string name="ambiance_in_use">in uso ✓</string>
+    <string name="opt_min_fps">FPS minimi (720p)</string>
+    <string name="min_fps_any">nessuno</string>
+    <string name="h_categories">Categorie</string>
+    <string name="btn_ambiance_delete">Elimina questa atmosfera</string>
+    <string name="ambiance_all_categories">Tutte le categorie</string>
+    <string name="ambiance_more">+%1$d</string>
+    <string name="ambiance_min_fps">≥ %1$d FPS</string>
+    <string name="osd_ambiance">Atmosfera: %1$s</string>
+    <string name="action_next_ambiance">Atmosfera successiva</string>
 </resources>

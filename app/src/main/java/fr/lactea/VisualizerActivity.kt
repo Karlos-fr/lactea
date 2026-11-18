@@ -33,6 +33,7 @@ import fr.lactea.nowplaying.AutoLaunch
 import fr.lactea.nowplaying.NowPlaying
 import fr.lactea.packs.PackManager
 import fr.lactea.presets.Playlist
+import fr.lactea.presets.Ambiance
 import fr.lactea.presets.PresetCatalog
 import fr.lactea.presets.PresetStats
 import fr.lactea.render.LacteaRenderer
@@ -308,6 +309,13 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             Action.PLAY_PAUSE -> { nowPlaying.playPause(); osd.show(getString(if (nowPlaying.playing) R.string.osd_pause else R.string.osd_play), 1200) }
             Action.NEXT_TRACK -> { nowPlaying.nextTrack(); osd.show(getString(R.string.osd_next_track), 1200) }
             Action.PREVIOUS_TRACK -> { nowPlaying.previousTrack(); osd.show(getString(R.string.osd_prev_track), 1200) }
+            Action.NEXT_AMBIANCE -> {
+                // Every preset, then each ambiance in turn.
+                val ids = listOf("") + settings.ambiances.map { it.id }
+                settings.activeAmbianceId = ids[(ids.indexOf(settings.activeAmbianceId) + 1) % ids.size]
+                osd.show(getString(R.string.osd_ambiance, settings.activeAmbiance?.let(::ambianceName) ?: getString(R.string.ambiance_all)))
+                renderer.post { renderer.next() }
+            }
             Action.SENSITIVITY_UP, Action.SENSITIVITY_DOWN -> {
                 val delta = if (a == Action.SENSITIVITY_UP) 0.1f else -0.1f
                 settings.beatSensitivity = (Math.round((settings.beatSensitivity + delta) * 10) / 10f).coerceIn(0.1f, 5f)
@@ -346,7 +354,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private fun openBrowser() {
         openPanel(BrowserPanel(this, settings, stats, playlist,
             onPlay = { e -> renderer.post { renderer.jumpTo(e) }; closePanel() },
-            onClose = ::closePanel), Gravity.START or Gravity.CENTER_VERTICAL, 0.62f)
+            onClose = ::closePanel,
+            ambianceName = settings.activeAmbiance?.let(::ambianceName)), Gravity.CENTER, 0.9f)
     }
 
     private fun openOptions() {
@@ -372,7 +381,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private fun rootScreen(): MenuScreen = MenuScreen(getString(R.string.menu_options), getString(R.string.menu_version, version)) {
         val resLabels = listOf(getString(R.string.res_auto)) + Settings.RESOLUTIONS.map { if (it == 2160) getString(R.string.res_4k) else "${it}p" }
         val autoMaxChoices = listOf(720, 1080, 1440, 2160)
-        val durations = listOf(10, 15, 20, 25, 30, 45, 60, 90, 120)
+        val durations = Settings.PRESET_DURATIONS
         val fades = listOf(0.5f, 1f, 1.5f, 2f, 3f, 5f)
         val cutSens = listOf(0.5f, 1f, 1.5f, 2f, 3f, 4f, 5f)
         val thresholds = listOf(15, 20, 25, 30, 40)
@@ -404,9 +413,21 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             }),
 
             MenuItem.Header(getString(R.string.h_presets)),
-            MenuItem.Choice(getString(R.string.opt_duration), durations.map { "$it s" },
-                { durations.indexOf(settings.presetDuration).coerceAtLeast(0) },
-                { settings.presetDuration = durations[it]; applyRender() }),
+            MenuItem.Choice(getString(R.string.opt_preset_change), durations.map {
+                if (it == Settings.PRESET_ON_TRACK_ONLY) getString(R.string.change_track_only)
+                else getString(R.string.change_track_every, durationLabel(it))
+            }, { durations.indexOf(settings.presetDuration).coerceAtLeast(0) },
+                {
+                    settings.presetDuration = durations[it]
+                    applyRender()
+                    // projectM fixes a preset's duration when it starts: start a new one, once
+                    // the user stops scrolling through the values.
+                    ui.removeCallbacks(restartPreset)
+                    ui.postDelayed(restartPreset, 1500)
+                }),
+            MenuItem.Button(getString(R.string.btn_ambiances), { settings.activeAmbiance?.let(::ambianceName) ?: getString(R.string.ambiance_all) }) {
+                menu?.push(ambiancesScreen())
+            },
             MenuItem.Choice(getString(R.string.opt_transition), listOf(getString(R.string.tr_auto), getString(R.string.tr_fade), getString(R.string.tr_cut)),
                 { modes.indexOf(settings.transitionMode).coerceAtLeast(0) },
                 { settings.transitionMode = modes[it] }),
@@ -433,8 +454,6 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 { settings.titlePosition }, { settings.titlePosition = it; previewTitle() }),
             MenuItem.Choice(getString(R.string.opt_size), listOf(getString(R.string.size_small), getString(R.string.size_medium), getString(R.string.size_large)),
                 { settings.titleSize }, { settings.titleSize = it; previewTitle() }),
-            MenuItem.Toggle(getString(R.string.opt_new_preset_track), { settings.newPresetOnTrack },
-                { settings.newPresetOnTrack = it }),
             MenuItem.Info(getString(R.string.info_now_playing)) {
                 nowPlaying.track?.let { "${it.title} — ${it.source}" }
                     ?: getString(if (nowPlaying.permissionGranted) R.string.np_none else R.string.np_no_permission)
@@ -545,6 +564,81 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             }
         }
         items
+    }
+
+    private val restartPreset = Runnable { renderer.post { renderer.next() } }
+
+    /** "45 s", "2 min", "1 min 30 s". */
+    private fun durationLabel(seconds: Int): String = when {
+        seconds < 60 -> getString(R.string.dur_s, seconds)
+        seconds % 60 == 0 -> getString(R.string.dur_min, seconds / 60)
+        else -> getString(R.string.dur_min_s, seconds / 60, seconds % 60)
+    }
+
+    // ------------------------------------------------------------------ Ambiances
+
+    /** Name built from the criteria (no text to type with a remote): "Supernova, Waveform · ≥ 30 FPS". */
+    private fun ambianceName(a: Ambiance): String {
+        val cats = a.categories.sorted()
+        val catText = when {
+            cats.isEmpty() -> getString(R.string.ambiance_all_categories)
+            cats.size <= 3 -> cats.joinToString(", ")
+            else -> cats.take(3).joinToString(", ") + " " + getString(R.string.ambiance_more, cats.size - 3)
+        }
+        return if (a.minFps > 0) catText + " · " + getString(R.string.ambiance_min_fps, a.minFps) else catText
+    }
+
+    private fun ambianceCount(a: Ambiance): Int = playlist.all().count { a.accepts(it, stats, settings.fpsCap) }
+
+    private fun ambiancesScreen(): MenuScreen = MenuScreen(getString(R.string.btn_ambiances), getString(R.string.ambiances_subtitle)) {
+        val list = settings.ambiances
+        val ids = listOf("") + list.map { it.id }
+        listOf<MenuItem>(
+            MenuItem.Choice(getString(R.string.ambiance_active),
+                listOf(getString(R.string.ambiance_all)) + list.map(::ambianceName),
+                { ids.indexOf(settings.activeAmbianceId).coerceAtLeast(0) },
+                { settings.activeAmbianceId = ids[it]; renderer.post { renderer.next() } }),
+            MenuItem.Button(getString(R.string.btn_ambiance_new)) {
+                val a = Ambiance(id = System.currentTimeMillis().toString(36))
+                settings.saveAmbiance(a)
+                menu?.push(ambianceScreen(a.id))
+            },
+            MenuItem.Header(getString(R.string.btn_ambiances)),
+        ) + list.map { a ->
+            MenuItem.Button(ambianceName(a), { getString(R.string.ambiance_count, ambianceCount(a)) }) {
+                menu?.push(ambianceScreen(a.id))
+            }
+        }
+    }
+
+    private fun ambianceScreen(id: String): MenuScreen = MenuScreen(getString(R.string.ambiance_edit_title), getString(R.string.ambiance_edit_subtitle)) {
+        val a = settings.ambiances.firstOrNull { it.id == id } ?: return@MenuScreen emptyList()
+        val fpsChoices = listOf(0, 20, 25, 30, 40, 50)
+        val categories = playlist.all().map { it.category }.distinct()
+        listOf<MenuItem>(
+            MenuItem.Info(getString(R.string.ambiance_presets)) { getString(R.string.ambiance_count, ambianceCount(a)) },
+            MenuItem.Button(getString(R.string.btn_ambiance_use), {
+                if (settings.activeAmbianceId == id) getString(R.string.ambiance_in_use) else ""
+            }) {
+                settings.activeAmbianceId = id
+                renderer.post { renderer.next() }
+                osd.show(getString(R.string.osd_ambiance, ambianceName(a)))
+            },
+            MenuItem.Choice(getString(R.string.opt_min_fps),
+                fpsChoices.map { if (it == 0) getString(R.string.min_fps_any) else getString(R.string.ambiance_min_fps, it) },
+                { fpsChoices.indexOf(a.minFps).coerceAtLeast(0) },
+                { settings.saveAmbiance(a.copy(minFps = fpsChoices[it])) }),
+            MenuItem.Header(getString(R.string.h_categories)),
+        ) + categories.map { c ->
+            MenuItem.Toggle(c, { c in a.categories }, { on ->
+                settings.saveAmbiance(a.copy(categories = if (on) a.categories + c else a.categories - c))
+            })
+        } + MenuItem.Button(getString(R.string.btn_ambiance_delete), { confirmLabel("ambiance-$id", "") }) {
+            confirm("ambiance-$id") {
+                settings.deleteAmbiance(id)
+                menu?.back()
+            }
+        }
     }
 
     private fun remoteScreen(): MenuScreen = MenuScreen(getString(R.string.h_remote), getString(R.string.remote_subtitle)) {
@@ -915,7 +1009,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     override fun onTrackChanged(track: NowPlaying.Track) {
         // With "cover preset on each track", the switch happens once the cover is ready.
-        if (settings.newPresetOnTrack && !settings.coverPresetOnTrack) renderer.post { renderer.next() }
+        if (!settings.coverPresetOnTrack) renderer.post { renderer.next() }
         if (settings.showTitleOnTrackChange && panel == null && !benchRunning) showTitle(track)
     }
 

@@ -14,6 +14,10 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   installed automatically with the first pack, and for users upgrading from 1.0.
 - Each pack holds an `index.json` listing its presets, those able to show the album cover and the
   frame rates measured on the reference TV.
+- Ambiances (Options › Presets and transitions › Ambiances): saved selections of the presets to
+  play, by category and minimum frame rate. The preset browser lists the presets of the ambiance
+  in use; a remote action (no key by default) switches to the next ambiance.
+- Change preset: "on each song only", and every 3 or 5 minutes.
 
 ### Changed
 
@@ -23,6 +27,10 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
 - The APK no longer holds presets, textures nor reference frame rates (5.3 MB instead of 9.4 MB).
 - Packs are versioned from their content: an unchanged pack keeps its version, a changed one is
   offered as an update.
+- "Preset duration" and "New preset on each song" are one setting, "Change preset": a new song
+  always brings a new preset, plus every 10 s to 5 min, or never. A change applies at once. Cuts
+  on the beat stay a setting of their own.
+- The preset browser is wider (90 % of the screen), so long names show in full.
 
 ### Upgrading from 1.0
 

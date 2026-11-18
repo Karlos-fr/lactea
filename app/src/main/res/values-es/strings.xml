@@ -56,7 +56,6 @@
 
     <!-- Opciones: Presets y transiciones -->
     <string name="h_presets">Presets y transiciones</string>
-    <string name="opt_duration">Duración del preset</string>
     <string name="opt_transition">Transición</string>
     <string name="tr_auto">Auto (fundido o corte)</string>
     <string name="tr_fade">Siempre fundido</string>
@@ -79,7 +78,6 @@
     <string name="size_small">Pequeño</string>
     <string name="size_medium">Mediano</string>
     <string name="size_large">Grande</string>
-    <string name="opt_new_preset_track">Nuevo preset en cada canción</string>
     <string name="info_now_playing">Sonando ahora</string>
     <string name="np_none">no se detecta música</string>
     <string name="np_no_permission">falta el permiso</string>
@@ -256,6 +254,7 @@
     <string name="browser_title">Navegador de presets</string>
     <string name="browser_footer">"◀▶ categoría   OK reproducir   🟡 favorito   🔴 excluir   Atrás cerrar"</string>
     <string name="browser_subtitle">"Categoría: %1$s  (%2$d presets)   ★ favorito   ✕ excluido   🐢 lento"</string>
+    <string name="browser_subtitle_ambiance">"Ambiente: %1$s  (%2$d presets)   ★ favorito   ✕ excluido   🐢 lento"</string>
     <string name="browser_all">Todas</string>
 
     <!-- Ayuda de teclas -->
@@ -280,4 +279,32 @@
     <string name="welcome_selected">✓ elegido — %1$.1f MB</string>
     <string name="welcome_not_selected">%1$.1f MB</string>
     <string name="welcome_retry">Reintentar</string>
+
+    <!-- Preset change and ambiances -->
+    <string name="opt_preset_change">Cambiar de preset</string>
+    <string name="change_track_only">solo cambio de canción</string>
+    <string name="change_track_every">canción + cada %1$s</string>
+    <string name="dur_s">%1$d s</string>
+    <string name="dur_min">%1$d min</string>
+    <string name="dur_min_s">%1$d min %2$d s</string>
+    <string name="btn_ambiances">Ambientes</string>
+    <string name="ambiances_subtitle">Elige qué presets se reproducen</string>
+    <string name="ambiance_active">Ambiente en uso</string>
+    <string name="ambiance_all">Todos los presets</string>
+    <string name="btn_ambiance_new">Crear un ambiente</string>
+    <string name="ambiance_count">%1$d presets</string>
+    <string name="ambiance_edit_title">Ambiente</string>
+    <string name="ambiance_edit_subtitle">Solo se reproducen los presets que cumplen todos los criterios. Ninguna categoría marcada = todas.</string>
+    <string name="ambiance_presets">Presets</string>
+    <string name="btn_ambiance_use">Usar este ambiente</string>
+    <string name="ambiance_in_use">en uso ✓</string>
+    <string name="opt_min_fps">FPS mínimos (720p)</string>
+    <string name="min_fps_any">ninguno</string>
+    <string name="h_categories">Categorías</string>
+    <string name="btn_ambiance_delete">Eliminar este ambiente</string>
+    <string name="ambiance_all_categories">Todas las categorías</string>
+    <string name="ambiance_more">+%1$d</string>
+    <string name="ambiance_min_fps">≥ %1$d FPS</string>
+    <string name="osd_ambiance">Ambiente: %1$s</string>
+    <string name="action_next_ambiance">Ambiente siguiente</string>
 </resources>

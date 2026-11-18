@@ -58,7 +58,6 @@
 
     <!-- Options: Presets and transitions -->
     <string name="h_presets">Presets und Übergänge</string>
-    <string name="opt_duration">Preset-Dauer</string>
     <string name="opt_transition">Übergang</string>
     <string name="tr_auto">Auto (Blende oder Schnitt)</string>
     <string name="tr_fade">Immer Blende</string>
@@ -81,7 +80,6 @@
     <string name="size_small">Klein</string>
     <string name="size_medium">Mittel</string>
     <string name="size_large">Groß</string>
-    <string name="opt_new_preset_track">Neues Preset bei jedem Song</string>
     <string name="info_now_playing">Läuft gerade</string>
     <string name="np_none">keine Musik erkannt</string>
     <string name="np_no_permission">Berechtigung fehlt</string>
@@ -258,6 +256,7 @@
     <string name="browser_title">Preset-Browser</string>
     <string name="browser_footer">"◀▶ Kategorie   OK abspielen   🟡 Favorit   🔴 ausschließen   Zurück schließen"</string>
     <string name="browser_subtitle">"Kategorie: %1$s  (%2$d Presets)   ★ Favorit   ✕ ausgeschlossen   🐢 langsam"</string>
+    <string name="browser_subtitle_ambiance">"Stimmung: %1$s  (%2$d Presets)   ★ Favorit   ✕ ausgeschlossen   🐢 langsam"</string>
     <string name="browser_all">Alle</string>
 
     <!-- Key help -->
@@ -282,4 +281,32 @@
     <string name="welcome_selected">✓ ausgewählt — %1$.1f MB</string>
     <string name="welcome_not_selected">%1$.1f MB</string>
     <string name="welcome_retry">Erneut versuchen</string>
+
+    <!-- Preset change and ambiances -->
+    <string name="opt_preset_change">Preset wechseln</string>
+    <string name="change_track_only">nur Titelwechsel</string>
+    <string name="change_track_every">Titel + alle %1$s</string>
+    <string name="dur_s">%1$d s</string>
+    <string name="dur_min">%1$d min</string>
+    <string name="dur_min_s">%1$d min %2$d s</string>
+    <string name="btn_ambiances">Stimmungen</string>
+    <string name="ambiances_subtitle">Wählen Sie, welche Presets laufen</string>
+    <string name="ambiance_active">Aktive Stimmung</string>
+    <string name="ambiance_all">Alle Presets</string>
+    <string name="btn_ambiance_new">Stimmung erstellen</string>
+    <string name="ambiance_count">%1$d Presets</string>
+    <string name="ambiance_edit_title">Stimmung</string>
+    <string name="ambiance_edit_subtitle">Nur Presets, die alle Kriterien erfüllen, laufen. Keine Kategorie gewählt = alle.</string>
+    <string name="ambiance_presets">Presets</string>
+    <string name="btn_ambiance_use">Diese Stimmung verwenden</string>
+    <string name="ambiance_in_use">aktiv ✓</string>
+    <string name="opt_min_fps">Mindest-FPS (720p)</string>
+    <string name="min_fps_any">keine</string>
+    <string name="h_categories">Kategorien</string>
+    <string name="btn_ambiance_delete">Diese Stimmung löschen</string>
+    <string name="ambiance_all_categories">Alle Kategorien</string>
+    <string name="ambiance_more">+%1$d</string>
+    <string name="ambiance_min_fps">≥ %1$d FPS</string>
+    <string name="osd_ambiance">Stimmung: %1$s</string>
+    <string name="action_next_ambiance">Nächste Stimmung</string>
 </resources>

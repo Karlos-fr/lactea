@@ -106,10 +106,11 @@ Mantén pulsado **OK** para abrir las opciones. Están agrupadas por tema:
 
 - **Imagen**: resolución de renderizado (de 540p a 4K, o Auto), resolución máxima en modo Auto,
   imágenes por segundo (30 o 60), detalle de la malla, contador de imágenes por segundo.
-- **Presets y transiciones**: cuánto dura cada preset, fundido o corte (Auto elige para cada
-  preset), cortes al ritmo, modo aleatorio, solo favoritos, nombre del preset al cambiar.
-- **Título de la canción**: se muestra al cambiar de canción, cuánto tiempo, dónde, de qué tamaño;
-  nuevo preset con cada canción.
+- **Presets y transiciones**: cuándo cambiar de preset (solo en cada canción, o también cada
+  10 s a 5 min), ambientes (qué presets se reproducen: categorías, FPS mínimos), fundido o corte
+  (Auto elige para cada preset), cortes al ritmo, modo aleatorio, solo favoritos, nombre del preset
+  al cambiar.
+- **Título de la canción**: se muestra al cambiar de canción, cuánto tiempo, dónde, de qué tamaño.
 - **Portada del álbum**: con el título, latiendo al ritmo, dentro de las visualizaciones, búsqueda
   en internet cuando la app de música no da portada.
 - **Inicio automático**: abrir cuando suena música (tras cuánto tiempo, solo apps

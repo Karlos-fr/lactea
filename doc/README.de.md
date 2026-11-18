@@ -110,11 +110,11 @@ Halten Sie **OK** gedrückt, um die Optionen zu öffnen. Sie sind nach Themen gr
 
 - **Darstellung**: Render-Auflösung (von 540p bis 4K, oder Auto), höchste Auflösung im
   Auto-Modus, Bilder pro Sekunde (30 oder 60), Detailgrad des Gitters, FPS-Anzeige.
-- **Presets und Übergänge**: wie lange jedes Preset bleibt, Überblendung
-  oder Schnitt (Auto wählt für jedes Preset), Schnitte im Takt, Zufallsmodus, nur Favoriten,
+- **Presets und Übergänge**: wann das Preset wechselt (nur bei jedem Song oder zusätzlich alle
+  10 s bis 5 min), Stimmungen (welche Presets laufen: Kategorien, Mindest-FPS), Überblendung oder
+  Schnitt (Auto wählt für jedes Preset), Schnitte im Takt, Zufallsmodus, nur Favoriten,
   Preset-Name beim Wechsel.
-- **Songtitel**: Anzeige beim Songwechsel, wie lange, wo, wie groß; neues Preset
-  bei jedem Song.
+- **Songtitel**: Anzeige beim Songwechsel, wie lange, wo, wie groß.
 - **Albumcover**: mit dem Titel, im Takt pulsierend, in den Visualisierungen,
   Online-Suche, wenn die Musik-App kein Cover liefert.
 - **Autostart**: öffnen, wenn

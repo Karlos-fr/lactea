@@ -106,11 +106,11 @@ Tieni premuto **OK** per aprire le opzioni. Sono raggruppate per tema:
 - **Aspetto**: risoluzione di rendering (da 540p a 4K, oppure Auto), risoluzione
   massima in modalità Auto, fotogrammi al secondo (30 o 60), dettaglio della griglia, contatore di
   FPS.
-- **Preset e transizioni**: durata di ogni preset, dissolvenza o stacco
-  netto (Auto sceglie per ogni preset), stacchi a tempo di musica, modalità casuale, solo preferiti,
-  nome del preset al cambio.
-- **Titolo del brano**: mostrato al cambio di brano, per quanto tempo, dove,
-  quanto grande; nuovo preset a ogni brano.
+- **Preset e transizioni**: quando cambiare preset (solo a ogni brano, o anche ogni 10 s - 5 min),
+  atmosfere (quali preset vengono riprodotti: categorie, FPS minimi), dissolvenza o stacco netto
+  (Auto sceglie per ogni preset), stacchi a tempo di musica, modalità casuale, solo preferiti, nome
+  del preset al cambio.
+- **Titolo del brano**: mostrato al cambio di brano, per quanto tempo, dove, quanto grande.
 - **Copertina**: con il titolo, che pulsa a tempo, dentro le visualizzazioni, ricerca
   online quando l'app musicale non fornisce la copertina.
 - **Avvio automatico**: apertura quando suona

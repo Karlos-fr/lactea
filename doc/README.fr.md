@@ -105,10 +105,11 @@ Faites un appui long sur **OK** pour ouvrir les options. Elles sont regroupées 
 
 - **Visuel** : résolution de rendu (de 540p à 4K, ou Auto), résolution maximale en mode Auto, images
   par seconde (30 ou 60), finesse de la déformation, compteur d'images par seconde.
-- **Presets et transitions** : durée de chaque preset, fondu ou coupe (Auto choisit pour chaque
-  preset), coupes sur le rythme, mode aléatoire, favoris seulement, nom du preset au changement.
-- **Titre du morceau** : affiché au changement de morceau, durée, position, taille ; nouveau preset à
-  chaque morceau.
+- **Presets et transitions** : quand changer de preset (à chaque morceau seulement, ou aussi
+  toutes les 10 s à 5 min), ambiances (quels presets sont joués : catégories, FPS minimum), fondu
+  ou coupe (Auto choisit pour chaque preset), coupes sur le rythme, mode aléatoire, favoris
+  seulement, nom du preset au changement.
+- **Titre du morceau** : affiché au changement de morceau, durée, position, taille.
 - **Pochette** : avec le titre, pulsation au rythme, dans les visualisations, recherche en ligne
   quand l'appli de musique ne fournit pas de pochette.
 - **Lancement automatique** : ouverture quand la musique joue (après combien de

@@ -232,7 +232,10 @@ class LacteaRenderer(
         val (mw, mh) = settings.meshSize
         NativeEngine.setFps(handle, settings.fpsCap)
         NativeEngine.setMeshSize(handle, mw, mh)
-        NativeEngine.setPresetDuration(handle, settings.presetDuration.toDouble())
+        // projectM has no "no timer": a duration longer than any session stands for it, and keeps
+        // the cuts on the beat working (locking the preset would stop them too).
+        val duration = settings.presetDuration
+        NativeEngine.setPresetDuration(handle, if (duration == Settings.PRESET_ON_TRACK_ONLY) NO_TIMER_SECONDS else duration.toDouble())
         NativeEngine.setSoftCutDuration(handle, settings.fadeSeconds.toDouble())
         NativeEngine.setHardCut(handle, settings.hardCutsOnBeat, settings.hardCutSensitivity)
         NativeEngine.setBeatSensitivity(handle, settings.beatSensitivity)
@@ -416,6 +419,8 @@ class LacteaRenderer(
     companion object {
         private const val TAG = "LACTEA"
         private const val SETTLE_MS = 700L
+        /** A week: "no timer" for projectM (see applySettings). */
+        private const val NO_TIMER_SECONDS = 7 * 24 * 3600.0
         private const val MIN_MEASURE_MS = 2000L
         private const val FLUSH_EVERY_MS = 10_000L
         private const val HEAVY_FPS = 45f

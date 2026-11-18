@@ -25,7 +25,8 @@ enum class Action(private val labelRes: Int) {
     TOGGLE_HUD(R.string.action_hud),
     PLAY_PAUSE(R.string.action_play_pause),
     NEXT_TRACK(R.string.action_next_track),
-    PREVIOUS_TRACK(R.string.action_prev_track);
+    PREVIOUS_TRACK(R.string.action_prev_track),
+    NEXT_AMBIANCE(R.string.action_next_ambiance);
 
     val label: String get() = L.s(labelRes)
 }

@@ -65,6 +65,7 @@ class Playlist(private val settings: Settings, private val stats: PresetStats) {
         var list = base
         if (settings.favoritesOnly) list = list.filter { it.key in favorites }
         if (settings.excludeSlow) list = list.filter { !stats.isSlow(it.key, cap) }
+        settings.activeAmbiance?.let { a -> list = list.filter { a.accepts(it, stats, cap) } }
         return list.ifEmpty { base.ifEmpty { all } }
     }
 

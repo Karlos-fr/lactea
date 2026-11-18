@@ -103,9 +103,10 @@ Hold **OK** to open the options. They are grouped by theme:
 
 - **Visual**: render resolution (from 540p to 4K, or Auto), highest resolution in Auto mode,
   frames per second (30 or 60), mesh detail, FPS counter.
-- **Presets and transitions**: how long each preset stays, fade or cut (Auto chooses for each
-  preset), cuts on the beat, shuffle, favourites only, preset name on change.
-- **Track title**: shown on song change, how long, where, how big; new preset on each song.
+- **Presets and transitions**: when to change preset (on each song only, or also every 10 s to
+  5 min), ambiances (which presets play: categories, minimum FPS), fade or cut (Auto chooses for
+  each preset), cuts on the beat, shuffle, favourites only, preset name on change.
+- **Track title**: shown on song change, how long, where, how big.
 - **Album cover**: with the title, pulsing with the beat, inside the visualizations, online search
   when the music app gives no cover.
 - **Automatic launch**: open when music plays (after how long, music apps only),

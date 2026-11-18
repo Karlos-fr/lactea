@@ -5,12 +5,14 @@ import fr.lactea.R
 import fr.lactea.i18n.L
 import android.view.KeyEvent
 import android.widget.TextView
+import fr.lactea.presets.Ambiance
 import fr.lactea.presets.Playlist
 import fr.lactea.presets.PresetStats
 import fr.lactea.settings.Settings
 
 /**
- * Preset browser: ◀▶ change category, ▲▼ browse, OK play, 🟡 favourite, 🔴 exclude.
+ * Preset browser: ◀▶ change list (all, the ambiance in use, each category), ▲▼ browse, OK play,
+ * 🟡 favourite, 🔴 exclude.
  */
 class BrowserPanel(
     context: Context,
@@ -19,9 +21,19 @@ class BrowserPanel(
     private val playlist: Playlist,
     private val onPlay: (Playlist.Entry) -> Unit,
     private val onClose: () -> Unit,
+    /** Name of the ambiance in use, shown as a list of its own; null when none. */
+    private val ambianceName: String?,
 ) : ListPanel(context, 16) {
 
-    private var categories: List<String> = emptyList()
+    /** A list the browser can show: its name and which presets it holds. */
+    private class Source(
+        val name: String,
+        val category: String?,
+        val subtitleRes: Int = R.string.browser_subtitle,
+        val accepts: (Playlist.Entry) -> Boolean,
+    )
+
+    private var sources: List<Source> = emptyList()
     private var categoryIndex = 0
     private var entries: List<Playlist.Entry> = emptyList()
 
@@ -33,17 +45,20 @@ class BrowserPanel(
 
     fun reload(focus: Playlist.Entry? = null) {
         val all = playlist.all()
-        categories = listOf(ALL) + all.map { it.category }.distinct()
+        val ambiance: Ambiance? = settings.activeAmbiance
+        sources = listOf(Source(ALL, null) { true }) +
+            listOfNotNull(ambiance?.let { a -> Source(ambianceName ?: "", null, R.string.browser_subtitle_ambiance) { a.accepts(it, stats, settings.fpsCap) } }) +
+            all.map { it.category }.distinct().map { c -> Source(c, c) { it.category == c } }
         focus?.let { f -> categoryIndex = 0; filter(); selected = entries.indexOfFirst { it.key == f.key }.coerceAtLeast(0) }
             ?: filter()
         setCount(entries.size)
     }
 
     private fun filter() {
-        val cat = categories.getOrElse(categoryIndex) { ALL }
+        val source = sources.getOrElse(categoryIndex) { sources.first() }
         val all = playlist.all()
-        entries = if (categoryIndex == 0) all else all.filter { it.category == cat }
-        subtitleView.text = context.getString(R.string.browser_subtitle, cat, entries.size)
+        entries = if (categoryIndex == 0) all else all.filter(source.accepts)
+        subtitleView.text = context.getString(source.subtitleRes, source.name, entries.size)
     }
 
     override fun bindRow(index: Int, label: TextView, value: TextView, isSelected: Boolean) {
@@ -53,7 +68,8 @@ class BrowserPanel(
             if (e.key in settings.blacklist) append("✕ ")
             if (stats.isSlow(e.key, settings.fpsCap)) append("🐢 ")
         }
-        label.text = marks + e.key.removePrefix("${e.category}/").let { if (categoryIndex == 0) e.key else it }
+        val inCategory = sources.getOrNull(categoryIndex)?.category != null
+        label.text = marks + if (inCategory) e.key.removePrefix("${e.category}/") else e.key
         val m = stats.measured(e.key)
         value.text = m.entries.sortedBy { it.key }.joinToString("  ") { "${it.key}p ${it.value.toInt()}" }
     }
@@ -67,7 +83,7 @@ class BrowserPanel(
         val entry = entries.getOrNull(selected)
         when (e.keyCode) {
             KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                val n = categories.size
+                val n = sources.size
                 categoryIndex = ((categoryIndex + if (e.keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) 1 else -1) % n + n) % n
                 filter()
                 setCount(entries.size, keepSelection = false)
