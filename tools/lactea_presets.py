@@ -611,6 +611,278 @@ shader_body
     lens += float3(1.0, 0.45, 0.6) * smoothstep(0.07, 0.05, d3) * 0.12;
     ret = (c + glow + float3(0.5, 0.75, 1.0) * flare + lens * fvis) * (1.1 - dot(d, d) * 0.9);
 }"""),
+
+    # Water: the bottom of a lagoon seen through clear water (computed by the warp shader, once
+    # per pixel: rippled sand under turquoise water absorbing with depth, and moving caustics, the
+    # classic iterated formula, 5 steps), under a pane of glass with the glass physics of
+    # Proscenium's dock (after Codex Glass, GpuGlass.java): refractive
+    # edges with a rippling surface, 7-point diffusion, chromatic aberration, light grain, and a
+    # sky reflection on the slopes; and its three water animations with their formulas: calm water
+    # (crossed sine swell), liquid (slower, larger) and rain (drops with expanding rings).
+    # Lengths are in Proscenium's units (unit = screen density: 2 at 1080p).
+    # The music acts like nature would, never shaking the whole surface:
+    # - each beat of the bass drops a drop somewhere (8 at a time, in q9..q32: x, y + strength,
+    #   birth time), bigger on a strong beat; a few light drops keep falling in quiet passages;
+    # - the swell follows the sound level over several seconds, like a tide;
+    # - the mids set the speed of the liquid's flow and of the caustics;
+    # - the treble makes the wave crests glint.
+    "Lactea - Eau": dict(
+        extra="""
+per_frame_1=dt = min(max(time - tprev, 0), 0.1);
+per_frame_2=tprev = time;
+per_frame_3=tide = tide * 0.992 + 0.008 * min(max(vol_att, 0.3), 1.6);
+per_frame_4=mids = mids * 0.97 + 0.03 * min(max(mid_att - 0.7, 0), 1.5);
+per_frame_5=treb = treb * 0.9 + 0.1 * min(max(treb_att - 0.8, 0), 1.5);
+per_frame_6=flow = flow + dt * (0.6 + 0.9 * mids);
+per_frame_7=rain = rain + dt * 0.6;
+per_frame_8=rise = bass - bprev;
+per_frame_9=bprev = bass;
+per_frame_10=beat = above(rise, 0.1) * above(bass, bass_att) * above(time - lastbeat, 0.25);
+per_frame_11=lastbeat = if(beat, time, lastbeat);
+per_frame_12=force = min(max(floor(rise * 12), 0), 4);
+per_frame_13=slot = if(beat, (slot + 1) % 8, slot);
+per_frame_14=s0 = beat * equal(slot, 0);
+per_frame_15=x0 = if(s0, 0.08 + rand(1000) * 0.00084, x0);
+per_frame_16=y0 = if(s0, 0.1 + rand(1000) * 0.0008 + force, y0);
+per_frame_17=t0 = if(s0, time, t0);
+per_frame_18=s1 = beat * equal(slot, 1);
+per_frame_19=x1 = if(s1, 0.08 + rand(1000) * 0.00084, x1);
+per_frame_20=y1 = if(s1, 0.1 + rand(1000) * 0.0008 + force, y1);
+per_frame_21=t1 = if(s1, time, t1);
+per_frame_22=s2 = beat * equal(slot, 2);
+per_frame_23=x2 = if(s2, 0.08 + rand(1000) * 0.00084, x2);
+per_frame_24=y2 = if(s2, 0.1 + rand(1000) * 0.0008 + force, y2);
+per_frame_25=t2 = if(s2, time, t2);
+per_frame_26=s3 = beat * equal(slot, 3);
+per_frame_27=x3 = if(s3, 0.08 + rand(1000) * 0.00084, x3);
+per_frame_28=y3 = if(s3, 0.1 + rand(1000) * 0.0008 + force, y3);
+per_frame_29=t3 = if(s3, time, t3);
+per_frame_30=s4 = beat * equal(slot, 4);
+per_frame_31=x4 = if(s4, 0.08 + rand(1000) * 0.00084, x4);
+per_frame_32=y4 = if(s4, 0.1 + rand(1000) * 0.0008 + force, y4);
+per_frame_33=t4 = if(s4, time, t4);
+per_frame_34=s5 = beat * equal(slot, 5);
+per_frame_35=x5 = if(s5, 0.08 + rand(1000) * 0.00084, x5);
+per_frame_36=y5 = if(s5, 0.1 + rand(1000) * 0.0008 + force, y5);
+per_frame_37=t5 = if(s5, time, t5);
+per_frame_38=s6 = beat * equal(slot, 6);
+per_frame_39=x6 = if(s6, 0.08 + rand(1000) * 0.00084, x6);
+per_frame_40=y6 = if(s6, 0.1 + rand(1000) * 0.0008 + force, y6);
+per_frame_41=t6 = if(s6, time, t6);
+per_frame_42=s7 = beat * equal(slot, 7);
+per_frame_43=x7 = if(s7, 0.08 + rand(1000) * 0.00084, x7);
+per_frame_44=y7 = if(s7, 0.1 + rand(1000) * 0.0008 + force, y7);
+per_frame_45=t7 = if(s7, time, t7);
+per_frame_46=q1 = tide;
+per_frame_47=q2 = treb;
+per_frame_48=q3 = rain;
+per_frame_49=q4 = flow;
+per_frame_50=q9 = x0;
+per_frame_51=q10 = y0;
+per_frame_52=q11 = t0;
+per_frame_53=q12 = x1;
+per_frame_54=q13 = y1;
+per_frame_55=q14 = t1;
+per_frame_56=q15 = x2;
+per_frame_57=q16 = y2;
+per_frame_58=q17 = t2;
+per_frame_59=q18 = x3;
+per_frame_60=q19 = y3;
+per_frame_61=q20 = t3;
+per_frame_62=q21 = x4;
+per_frame_63=q22 = y4;
+per_frame_64=q23 = t4;
+per_frame_65=q24 = x5;
+per_frame_66=q25 = y5;
+per_frame_67=q26 = t5;
+per_frame_68=q27 = x6;
+per_frame_69=q28 = y6;
+per_frame_70=q29 = t6;
+per_frame_71=q30 = x7;
+per_frame_72=q31 = y7;
+per_frame_73=q32 = t7;
+""",
+        warp="""
+shader_body
+{
+    float2 bu = float2(uv.x * texsize.x / texsize.y, uv.y);
+    float ct = q4 * 0.45 + 23.0;
+    float2 cu = bu * 2.1 + float2(0.031, 0.017) * time;
+    cu += (float2(tex2D(sampler_noise_hq, bu * 0.11 + 0.13).x, tex2D(sampler_noise_hq, bu * 0.11 + 0.61).x) - 0.5) * 0.45;
+    float2 pc = fmod(cu * 6.2831853, 6.2831853) - 250.0;
+    float2 ii = pc;
+    float c = 1.0;
+    float t;
+    t = ct * (1.0 - 3.5 / 1.0);
+    ii = pc + float2(cos(t - ii.x) + sin(t + ii.y), sin(t - ii.y) + cos(t + ii.x));
+    c += 1.0 / length(float2(pc.x / (sin(ii.x + t) / 0.005), pc.y / (cos(ii.y + t) / 0.005)));
+    t = ct * (1.0 - 3.5 / 2.0);
+    ii = pc + float2(cos(t - ii.x) + sin(t + ii.y), sin(t - ii.y) + cos(t + ii.x));
+    c += 1.0 / length(float2(pc.x / (sin(ii.x + t) / 0.005), pc.y / (cos(ii.y + t) / 0.005)));
+    t = ct * (1.0 - 3.5 / 3.0);
+    ii = pc + float2(cos(t - ii.x) + sin(t + ii.y), sin(t - ii.y) + cos(t + ii.x));
+    c += 1.0 / length(float2(pc.x / (sin(ii.x + t) / 0.005), pc.y / (cos(ii.y + t) / 0.005)));
+    t = ct * (1.0 - 3.5 / 4.0);
+    ii = pc + float2(cos(t - ii.x) + sin(t + ii.y), sin(t - ii.y) + cos(t + ii.x));
+    c += 1.0 / length(float2(pc.x / (sin(ii.x + t) / 0.005), pc.y / (cos(ii.y + t) / 0.005)));
+    t = ct * (1.0 - 3.5 / 5.0);
+    ii = pc + float2(cos(t - ii.x) + sin(t + ii.y), sin(t - ii.y) + cos(t + ii.x));
+    c += 1.0 / length(float2(pc.x / (sin(ii.x + t) / 0.005), pc.y / (cos(ii.y + t) / 0.005)));
+    c /= 5.0;
+    c = 1.17 - pow(abs(c), 1.4);
+    float caus = pow(abs(c), 8.0);
+    float n1 = tex2D(sampler_noise_hq, bu * 0.35).x;
+    float n2 = tex2D(sampler_noise_hq, bu * 1.7 + 0.31).x;
+    float n3 = tex2D(sampler_noise_hq, bu * 7.0 + 0.77).x;
+    float rip = 0.5 + 0.5 * sin(bu.y * 38.0 + bu.x * 9.0 + n1 * 9.0);
+    float sand = 0.78 + 0.1 * (n1 - 0.5) + 0.08 * (n2 - 0.5) + 0.1 * (n3 - 0.5) + 0.08 * rip;
+    float3 bottom = float3(0.93, 0.84, 0.66) * sand;
+    float depth = saturate(0.1 + 0.3 * n1 + 0.25 * (1.0 - uv.y));
+    float3 water = lerp(float3(0.62, 0.93, 0.9), float3(0.12, 0.5, 0.62), depth);
+    float3 col = bottom * water + float3(0.0, 0.05, 0.08) * depth;
+    col += float3(0.9, 1.0, 0.97) * caus * (0.9 - 0.4 * depth);
+    float2 d = uv - 0.5;
+    col *= 1.05 - dot(d, d) * 0.6;
+    ret = col;
+}""",
+        comp="""
+float hsh(float x)
+{
+    return frac(sin(x * 12.9898) * 43758.5453);
+}
+float sdbox(float2 q, float2 hs, float r)
+{
+    float2 e = abs(q) - hs + r;
+    return length(max(e, 0.0)) + min(max(e.x, e.y), 0.0) - r;
+}
+float3 cover(float2 s)
+{
+    return tex2D(sampler_main, s / texsize.xy).xyz;
+}
+float2 ripple(float2 px, float2 dp, float age, float amp, float ringR, float unit)
+{
+    float2 dd = px - dp;
+    float dist = max(length(dd), 0.001);
+    float rr = 10.0 * unit + age * ringR;
+    float band = 5.5 * unit + age * max(3.0 * unit, ringR * 0.086);
+    float rd = abs(dist - rr);
+    float amt = (1.0 - smoothstep(0.0, band, rd)) * (1.0 - age) * (1.0 - age) * sin((dist - rr) * 0.62 / unit) * amp * 2.1;
+    float2 o = dd / dist * amt;
+    o.y += (1.0 - smoothstep(0.0, 5.5 * unit, dist)) * amp * 1.25 * (1.0 - smoothstep(0.0, 0.16, age));
+    return o;
+}
+shader_body
+{
+    float unit = texsize.y / 540.0;
+    float2 px = uv * texsize.xy;
+    float2 hs = texsize.xy * 0.5;
+    float2 q = px - hs;
+    float cr = 24.0 * unit;
+    float band0 = 58.0 * unit;
+    float strength = 18.0 * unit;
+    float d = sdbox(q, hs, cr);
+    float edge = max(0.0, -d);
+    float amount = (1.0 - smoothstep(0.0, band0, edge)) * strength;
+    amount += sin(px.x * 0.035 / unit + px.y * 0.022 / unit + time * 0.6) * 2.0 * unit * (amount / strength);
+    float gx = sdbox(q + float2(1.0, 0.0), hs, cr) - sdbox(q - float2(1.0, 0.0), hs, cr);
+    float gy = sdbox(q + float2(0.0, 1.0), hs, cr) - sdbox(q - float2(0.0, 1.0), hs, cr);
+    float2 n = float2(gx, gy) / max(length(float2(gx, gy)), 0.0001);
+    float2 off = -n * amount;
+    float2 chroma = n * (amount / strength) * 1.35 * unit;
+    float2 o = float2(0.0, 0.0);
+    float tide = q1;
+    float t = time * 0.72;
+    float sc = 6.2831853 / (118.0 * unit);
+    float ca = 1.8 * unit * (0.7 + 0.8 * tide);
+    float pp = sin(px.x * sc + px.y * sc * 0.35 + t);
+    float s2 = sin(px.y * sc * 1.2 - t * 0.72);
+    float dg = sin((px.x + px.y) * sc * 0.62 + t * 0.48);
+    o.x += (pp * 0.72 + dg * 0.28) * ca;
+    o.y += (s2 * 0.62 - dg * 0.24) * ca;
+    float sh = sin(px.x * 0.113 / unit + px.y * 0.071 / unit + t * 1.37);
+    o += float2(sh, -sh * 0.55) * 0.18 * unit;
+    t = q4 * 0.46;
+    sc = 6.2831853 / (86.0 * unit);
+    float la = 3.4 * unit * 1.35 * (0.6 + 0.8 * tide);
+    pp = sin(px.x * sc + px.y * sc * 0.35 + t);
+    s2 = sin(px.y * sc * 0.83 - t * 0.72);
+    dg = sin((px.x + px.y) * sc * 0.62 + t * 0.31);
+    o.x += (pp * 0.72 + dg * 0.28) * la;
+    o.y += (s2 * 0.62 - dg * 0.24) * la;
+    sh = sin(px.x * 0.113 / unit + px.y * 0.071 / unit + t * 1.37);
+    o += float2(sh, -sh * 0.55) * 0.36 * unit;
+    float rt = q3;
+    float cyc;
+    float idx;
+    float2 dp;
+    float age;
+    cyc = rt * (0.28 + hsh(3.19) * 0.18) + hsh(2.31);
+    idx = floor(cyc);
+    dp = float2((0.08 + hsh(5.47 + idx * 11.17) * 0.84) * texsize.x, (0.10 + hsh(8.91 + idx * 13.31) * 0.80) * texsize.y);
+    o += ripple(px, dp, cyc - idx, 1.4 * unit, 58.0 * unit, unit);
+    cyc = rt * (0.28 + hsh(6.38) * 0.18) + hsh(4.62);
+    idx = floor(cyc);
+    dp = float2((0.08 + hsh(10.94 + idx * 11.17) * 0.84) * texsize.x, (0.10 + hsh(17.82 + idx * 13.31) * 0.80) * texsize.y);
+    o += ripple(px, dp, cyc - idx, 1.4 * unit, 58.0 * unit, unit);
+    cyc = rt * (0.28 + hsh(9.57) * 0.18) + hsh(6.93);
+    idx = floor(cyc);
+    dp = float2((0.08 + hsh(16.41 + idx * 11.17) * 0.84) * texsize.x, (0.10 + hsh(26.73 + idx * 13.31) * 0.80) * texsize.y);
+    o += ripple(px, dp, cyc - idx, 1.4 * unit, 58.0 * unit, unit);
+    cyc = rt * (0.28 + hsh(12.76) * 0.18) + hsh(9.24);
+    idx = floor(cyc);
+    dp = float2((0.08 + hsh(21.88 + idx * 11.17) * 0.84) * texsize.x, (0.10 + hsh(35.64 + idx * 13.31) * 0.80) * texsize.y);
+    o += ripple(px, dp, cyc - idx, 1.4 * unit, 58.0 * unit, unit);
+    age = (time - q11) * 0.4;
+    dp = float2(q9, frac(q10)) * texsize.xy;
+    o += ripple(px, dp, saturate(age), 5.5 * unit * (0.7 + floor(q10) * 0.3) * step(age, 1.0) * step(0.001, q11), 190.0 * unit, unit);
+    age = (time - q14) * 0.4;
+    dp = float2(q12, frac(q13)) * texsize.xy;
+    o += ripple(px, dp, saturate(age), 5.5 * unit * (0.7 + floor(q13) * 0.3) * step(age, 1.0) * step(0.001, q14), 190.0 * unit, unit);
+    age = (time - q17) * 0.4;
+    dp = float2(q15, frac(q16)) * texsize.xy;
+    o += ripple(px, dp, saturate(age), 5.5 * unit * (0.7 + floor(q16) * 0.3) * step(age, 1.0) * step(0.001, q17), 190.0 * unit, unit);
+    age = (time - q20) * 0.4;
+    dp = float2(q18, frac(q19)) * texsize.xy;
+    o += ripple(px, dp, saturate(age), 5.5 * unit * (0.7 + floor(q19) * 0.3) * step(age, 1.0) * step(0.001, q20), 190.0 * unit, unit);
+    age = (time - q23) * 0.4;
+    dp = float2(q21, frac(q22)) * texsize.xy;
+    o += ripple(px, dp, saturate(age), 5.5 * unit * (0.7 + floor(q22) * 0.3) * step(age, 1.0) * step(0.001, q23), 190.0 * unit, unit);
+    age = (time - q26) * 0.4;
+    dp = float2(q24, frac(q25)) * texsize.xy;
+    o += ripple(px, dp, saturate(age), 5.5 * unit * (0.7 + floor(q25) * 0.3) * step(age, 1.0) * step(0.001, q26), 190.0 * unit, unit);
+    age = (time - q29) * 0.4;
+    dp = float2(q27, frac(q28)) * texsize.xy;
+    o += ripple(px, dp, saturate(age), 5.5 * unit * (0.7 + floor(q28) * 0.3) * step(age, 1.0) * step(0.001, q29), 190.0 * unit, unit);
+    age = (time - q32) * 0.4;
+    dp = float2(q30, frac(q31)) * texsize.xy;
+    o += ripple(px, dp, saturate(age), 5.5 * unit * (0.7 + floor(q31) * 0.3) * step(age, 1.0) * step(0.001, q32), 190.0 * unit, unit);
+    sh = sin(px.x * 0.097 / unit + px.y * 0.083 / unit + rt * 3.0);
+    o += float2(sh, -sh * 0.45) * 0.12 * unit;
+    float ol = length(o);
+    o *= min(1.0, 30.0 * unit / max(ol, 0.0001));
+    float e = min(min(px.x, texsize.x - px.x), min(px.y, texsize.y - px.y));
+    float2 ao = o * smoothstep(0.0, 18.0 * unit, e);
+    off += ao;
+    float2 sp = px + off;
+    float r = 1.2 * unit;
+    float2 h1 = float2(r, 0.0);
+    float2 h2 = float2(0.5 * r, 0.866 * r);
+    float2 h3 = float2(-0.5 * r, 0.866 * r);
+    float3 cg = cover(sp) * 0.22 + (cover(sp + h1) + cover(sp - h1) + cover(sp + h2) + cover(sp - h2) + cover(sp + h3) + cover(sp - h3)) * 0.13;
+    float3 col = cg;
+    col.x = lerp(cg.x, cover(sp - chroma).x, saturate(length(chroma) * 4.0));
+    col.z = lerp(cg.z, cover(sp + chroma).z, saturate(length(chroma) * 4.0));
+    float luma = dot(col, float3(0.299, 0.587, 0.114));
+    col = saturate(lerp(float3(luma, luma, luma), col, 1.1));
+    col += (tex2D(sampler_noise_hq, uv * texsize.xy / 256.0).x - 0.5) * 0.02;
+    float2 slope = ao / (30.0 * unit);
+    float glint = pow(saturate(dot(slope, float2(0.6, -0.8)) * 1.6), 6.0);
+    col += float3(0.9, 0.97, 1.0) * glint * (0.12 + 0.6 * q2);
+    col += float3(0.55, 0.75, 0.9) * saturate(length(slope) * 1.2) * 0.12;
+    float2 hl = uv - float2(0.3 + 0.4 * sin(time * 0.07), 0.15);
+    col += float3(1.0, 1.0, 1.0) * 0.06 * exp(-dot(hl, hl) * 6.0);
+    ret = col;
+}"""),
 }
 
 

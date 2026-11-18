@@ -41,6 +41,10 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   through a wormhole, after the classic science-fiction sequences: a winding tunnel of blue and
   white plasma with a dark core, and a tunnel of star streaks slowly flattening into a corridor of
   light, with lens flares. Their reactions to the music are smoothed, so they do not flash.
+- New preset "Lactea - Eau" (Lactea pack): the bottom of a sunny lagoon with moving caustics,
+  under the glass and water animations of Proscenium (calm water, liquid, rain). Each attack of
+  the bass drops a drop with spreading rings, the swell follows the sound level like a tide, the
+  mids speed up the current and the treble makes the crests glint.
 - The test of the presets on the TV keeps running behind the options: Options › Preset
   management › Test the presets on this TV shows its progress and can stop it.
 
