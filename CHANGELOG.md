@@ -45,6 +45,9 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   under the glass and water animations of Proscenium (calm water, liquid, rain). Each attack of
   the bass drops a drop with spreading rings, the swell follows the sound level like a tide, the
   mids speed up the current and the treble makes the crests glint.
+- New preset "Lactea - Feux d'artifice" (Lactea pack): fireworks with the physics and shapes of
+  the Platformer project's fireworks studio (sphere, ring, star, heart); each attack of the bass
+  sets one off, and the treble makes the sparks twinkle.
 - The test of the presets on the TV keeps running behind the options: Options › Preset
   management › Test the presets on this TV shows its progress and can stop it.
 

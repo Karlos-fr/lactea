@@ -883,6 +883,585 @@ shader_body
     col += float3(1.0, 1.0, 1.0) * 0.06 * exp(-dot(hl, hl) * 6.0);
     ret = col;
 }"""),
+
+    # Fireworks, after the fireworks studio of the Platformer project (FireworksSystem.ts, its
+    # "Classique" settings: power 7, gravity 0.05, friction 0.96, decay 0.01, 26-step trails,
+    # size 0.12, in units of 25 px of a 600 px high screen; trails shortened to 10 steps and fading,
+    # each particle drawn with a bright round head), with its shapes: sphere, ring, star,
+    # heart (one at random per firework).
+    # The physics is solved, not simulated: after n frames (60 per second) a particle launched
+    # at v is at v x 0.1 (1 - 0.96^n) / 0.04 plus a gravity drop common to all of them, so every
+    # particle lies on a ray from the (falling) centre; each pixel finds its particles by angle
+    # (240 angular bins, 2 particles each) and draws their trail as the segment between their
+    # positions at n - 10 and n. The warp shader draws them, the comp shader adds the bloom over a
+    # night sky.
+    # Music: each attack of the bass launches a firework (5 at a time, in q9..q28: x, y + power,
+    # birth time, shape + hue), more powerful on a strong attack; one goes off every 1.4 s in
+    # quiet passages; the treble makes the sparks twinkle.
+    "Lactea - Feux d'artifice": dict(
+        extra="""
+per_frame_1=dt = min(max(time - tprev, 0), 0.1);
+per_frame_2=tprev = time;
+per_frame_3=rise = bass - bprev;
+per_frame_4=bprev = bass;
+per_frame_5=beat = above(rise, 0.1) * above(bass, bass_att) * above(time - lastfire, 0.3);
+per_frame_6=auto = above(time - lastfire, 1.4) * above(time - lastbeat, 2.5);
+per_frame_7=lastbeat = if(beat, time, lastbeat);
+per_frame_8=fire = max(beat, auto);
+per_frame_9=lastfire = if(fire, time, lastfire);
+per_frame_10=force = if(beat, min(max(floor(rise * 12), 0), 4), 1);
+per_frame_11=slot = if(fire, (slot + 1) % 5, slot);
+per_frame_12=treb = treb * 0.9 + 0.1 * min(max(treb_att - 0.8, 0), 1.5);
+per_frame_13=s0 = fire * equal(slot, 0);
+per_frame_14=x0 = if(s0, 0.15 + rand(1000) * 0.0007, x0);
+per_frame_15=y0 = if(s0, 0.35 + rand(1000) * 0.00035 + force, y0);
+per_frame_16=t0 = if(s0, time, t0);
+per_frame_17=h0 = if(s0, rand(4) + rand(1000) * 0.001, h0);
+per_frame_18=s1 = fire * equal(slot, 1);
+per_frame_19=x1 = if(s1, 0.15 + rand(1000) * 0.0007, x1);
+per_frame_20=y1 = if(s1, 0.35 + rand(1000) * 0.00035 + force, y1);
+per_frame_21=t1 = if(s1, time, t1);
+per_frame_22=h1 = if(s1, rand(4) + rand(1000) * 0.001, h1);
+per_frame_23=s2 = fire * equal(slot, 2);
+per_frame_24=x2 = if(s2, 0.15 + rand(1000) * 0.0007, x2);
+per_frame_25=y2 = if(s2, 0.35 + rand(1000) * 0.00035 + force, y2);
+per_frame_26=t2 = if(s2, time, t2);
+per_frame_27=h2 = if(s2, rand(4) + rand(1000) * 0.001, h2);
+per_frame_28=s3 = fire * equal(slot, 3);
+per_frame_29=x3 = if(s3, 0.15 + rand(1000) * 0.0007, x3);
+per_frame_30=y3 = if(s3, 0.35 + rand(1000) * 0.00035 + force, y3);
+per_frame_31=t3 = if(s3, time, t3);
+per_frame_32=h3 = if(s3, rand(4) + rand(1000) * 0.001, h3);
+per_frame_33=s4 = fire * equal(slot, 4);
+per_frame_34=x4 = if(s4, 0.15 + rand(1000) * 0.0007, x4);
+per_frame_35=y4 = if(s4, 0.35 + rand(1000) * 0.00035 + force, y4);
+per_frame_36=t4 = if(s4, time, t4);
+per_frame_37=h4 = if(s4, rand(4) + rand(1000) * 0.001, h4);
+per_frame_38=q2 = treb;
+per_frame_39=q9 = x0;
+per_frame_40=q10 = y0;
+per_frame_41=q11 = t0;
+per_frame_42=q12 = h0;
+per_frame_43=q13 = x1;
+per_frame_44=q14 = y1;
+per_frame_45=q15 = t1;
+per_frame_46=q16 = h1;
+per_frame_47=q17 = x2;
+per_frame_48=q18 = y2;
+per_frame_49=q19 = t2;
+per_frame_50=q20 = h2;
+per_frame_51=q21 = x3;
+per_frame_52=q22 = y3;
+per_frame_53=q23 = t3;
+per_frame_54=q24 = h3;
+per_frame_55=q25 = x4;
+per_frame_56=q26 = y4;
+per_frame_57=q27 = t4;
+per_frame_58=q28 = h4;
+""",
+        warp="""
+float hsh(float x)
+{
+    return frac(sin(x * 12.9898) * 43758.5453);
+}
+float3 hcol(float h)
+{
+    float3 c = saturate(abs(frac(h + float3(0.0, 0.6666667, 0.3333333)) * 6.0 - 3.0) - 1.0);
+    return lerp(c, float3(1.0, 1.0, 1.0), 0.2);
+}
+float shapeMag(float sh, float an, float h)
+{
+    float sphere = sqrt(max(1.0 - (2.0 * h - 1.0) * (2.0 * h - 1.0), 0.0)) * (0.4 + 0.6 * frac(h * 7.31));
+    float ring = (0.8 + 0.4 * h) / sqrt(cos(an) * cos(an) + sin(an) * sin(an) / 0.03);
+    float star = lerp(0.4, 1.0, step(0.5, h));
+    float heart = 0.42 * (1.0 - sin(an)) * (0.92 + 0.08 * h);
+    float m = sphere;
+    m = lerp(m, ring, step(0.5, sh) * step(sh, 1.5));
+    m = lerp(m, star, step(1.5, sh) * step(sh, 2.5));
+    m = lerp(m, heart, step(2.5, sh));
+    return m;
+}
+float trailFade(float2 p, float2 a, float2 b)
+{
+    float2 ab = b - a;
+    return saturate(dot(p - a, ab) / max(dot(ab, ab), 0.0000001));
+}
+float segDist(float2 p, float2 a, float2 b)
+{
+    float2 ab = b - a;
+    float t = saturate(dot(p - a, ab) / max(dot(ab, ab), 0.0000001));
+    return length(p - a - ab * t);
+}
+shader_body
+{
+    float SC = 25.0 / 600.0;
+    float2 P = float2(uv.x * texsize.x / texsize.y, 1.0 - uv.y);
+    float3 acc = float3(0.0, 0.0, 0.0);
+    float n;
+    float pw;
+    float2 org;
+    float sh;
+    float hu;
+    float fn;
+    float n2;
+    float fn2;
+    float hS;
+    float tS;
+    float hG;
+    float tG;
+    float life;
+    float pbr;
+    float2 rel;
+    float bin0;
+    float bn;
+    float h1;
+    float h2;
+    float an;
+    float mg;
+    float2 dir;
+    float2 head;
+    float2 tail;
+    float sd;
+    float3 cl;
+    n = (time - q11) * 60.0;
+    if (q11 > 0.001 && n > 0.0 && n < 100.0)
+    {
+        pw = 7.0 + floor(q10) * 0.3;
+        org = float2(q9 * texsize.x / texsize.y, frac(q10));
+        sh = floor(q12);
+        hu = frac(q12);
+        fn = pow(0.96, n);
+        n2 = max(n - 10.0, 0.0);
+        fn2 = pow(0.96, n2);
+        hS = 2.5 * (1.0 - fn) * pw * SC;
+        tS = 2.5 * (1.0 - fn2) * pw * SC;
+        hG = 0.0625 * ((1.0 - fn) / 0.04 - n) * SC;
+        tG = 0.0625 * ((1.0 - fn2) / 0.04 - n2) * SC;
+        life = 1.0 - n * 0.01;
+        pbr = 1.3 + floor(q10) * 0.12;
+        rel = P - org - float2(0.0, hG);
+        bin0 = floor(atan2(rel.y, rel.x) / 6.2831853 * 240.0 + 120.0);
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 0.13);
+        h2 = hsh(bn * 2.71 + 0.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 5.13);
+        h2 = hsh(bn * 2.71 + 7.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 0.13);
+        h2 = hsh(bn * 2.71 + 0.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 5.13);
+        h2 = hsh(bn * 2.71 + 7.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 0.13);
+        h2 = hsh(bn * 2.71 + 0.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 5.13);
+        h2 = hsh(bn * 2.71 + 7.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+    }
+    n = (time - q15) * 60.0;
+    if (q15 > 0.001 && n > 0.0 && n < 100.0)
+    {
+        pw = 7.0 + floor(q14) * 0.3;
+        org = float2(q13 * texsize.x / texsize.y, frac(q14));
+        sh = floor(q16);
+        hu = frac(q16);
+        fn = pow(0.96, n);
+        n2 = max(n - 10.0, 0.0);
+        fn2 = pow(0.96, n2);
+        hS = 2.5 * (1.0 - fn) * pw * SC;
+        tS = 2.5 * (1.0 - fn2) * pw * SC;
+        hG = 0.0625 * ((1.0 - fn) / 0.04 - n) * SC;
+        tG = 0.0625 * ((1.0 - fn2) / 0.04 - n2) * SC;
+        life = 1.0 - n * 0.01;
+        pbr = 1.3 + floor(q14) * 0.12;
+        rel = P - org - float2(0.0, hG);
+        bin0 = floor(atan2(rel.y, rel.x) / 6.2831853 * 240.0 + 120.0);
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 17.13);
+        h2 = hsh(bn * 2.71 + 31.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 22.13);
+        h2 = hsh(bn * 2.71 + 38.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 17.13);
+        h2 = hsh(bn * 2.71 + 31.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 22.13);
+        h2 = hsh(bn * 2.71 + 38.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 17.13);
+        h2 = hsh(bn * 2.71 + 31.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 22.13);
+        h2 = hsh(bn * 2.71 + 38.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+    }
+    n = (time - q19) * 60.0;
+    if (q19 > 0.001 && n > 0.0 && n < 100.0)
+    {
+        pw = 7.0 + floor(q18) * 0.3;
+        org = float2(q17 * texsize.x / texsize.y, frac(q18));
+        sh = floor(q20);
+        hu = frac(q20);
+        fn = pow(0.96, n);
+        n2 = max(n - 10.0, 0.0);
+        fn2 = pow(0.96, n2);
+        hS = 2.5 * (1.0 - fn) * pw * SC;
+        tS = 2.5 * (1.0 - fn2) * pw * SC;
+        hG = 0.0625 * ((1.0 - fn) / 0.04 - n) * SC;
+        tG = 0.0625 * ((1.0 - fn2) / 0.04 - n2) * SC;
+        life = 1.0 - n * 0.01;
+        pbr = 1.3 + floor(q18) * 0.12;
+        rel = P - org - float2(0.0, hG);
+        bin0 = floor(atan2(rel.y, rel.x) / 6.2831853 * 240.0 + 120.0);
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 34.13);
+        h2 = hsh(bn * 2.71 + 62.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 39.13);
+        h2 = hsh(bn * 2.71 + 69.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 34.13);
+        h2 = hsh(bn * 2.71 + 62.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 39.13);
+        h2 = hsh(bn * 2.71 + 69.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 34.13);
+        h2 = hsh(bn * 2.71 + 62.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 39.13);
+        h2 = hsh(bn * 2.71 + 69.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+    }
+    n = (time - q23) * 60.0;
+    if (q23 > 0.001 && n > 0.0 && n < 100.0)
+    {
+        pw = 7.0 + floor(q22) * 0.3;
+        org = float2(q21 * texsize.x / texsize.y, frac(q22));
+        sh = floor(q24);
+        hu = frac(q24);
+        fn = pow(0.96, n);
+        n2 = max(n - 10.0, 0.0);
+        fn2 = pow(0.96, n2);
+        hS = 2.5 * (1.0 - fn) * pw * SC;
+        tS = 2.5 * (1.0 - fn2) * pw * SC;
+        hG = 0.0625 * ((1.0 - fn) / 0.04 - n) * SC;
+        tG = 0.0625 * ((1.0 - fn2) / 0.04 - n2) * SC;
+        life = 1.0 - n * 0.01;
+        pbr = 1.3 + floor(q22) * 0.12;
+        rel = P - org - float2(0.0, hG);
+        bin0 = floor(atan2(rel.y, rel.x) / 6.2831853 * 240.0 + 120.0);
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 51.13);
+        h2 = hsh(bn * 2.71 + 93.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 56.13);
+        h2 = hsh(bn * 2.71 + 100.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 51.13);
+        h2 = hsh(bn * 2.71 + 93.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 56.13);
+        h2 = hsh(bn * 2.71 + 100.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 51.13);
+        h2 = hsh(bn * 2.71 + 93.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 56.13);
+        h2 = hsh(bn * 2.71 + 100.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+    }
+    n = (time - q27) * 60.0;
+    if (q27 > 0.001 && n > 0.0 && n < 100.0)
+    {
+        pw = 7.0 + floor(q26) * 0.3;
+        org = float2(q25 * texsize.x / texsize.y, frac(q26));
+        sh = floor(q28);
+        hu = frac(q28);
+        fn = pow(0.96, n);
+        n2 = max(n - 10.0, 0.0);
+        fn2 = pow(0.96, n2);
+        hS = 2.5 * (1.0 - fn) * pw * SC;
+        tS = 2.5 * (1.0 - fn2) * pw * SC;
+        hG = 0.0625 * ((1.0 - fn) / 0.04 - n) * SC;
+        tG = 0.0625 * ((1.0 - fn2) / 0.04 - n2) * SC;
+        life = 1.0 - n * 0.01;
+        pbr = 1.3 + floor(q26) * 0.12;
+        rel = P - org - float2(0.0, hG);
+        bin0 = floor(atan2(rel.y, rel.x) / 6.2831853 * 240.0 + 120.0);
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 68.13);
+        h2 = hsh(bn * 2.71 + 124.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + -1.0;
+        h1 = hsh(bn * 1.37 + 73.13);
+        h2 = hsh(bn * 2.71 + 131.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 68.13);
+        h2 = hsh(bn * 2.71 + 124.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 0.0;
+        h1 = hsh(bn * 1.37 + 73.13);
+        h2 = hsh(bn * 2.71 + 131.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 68.13);
+        h2 = hsh(bn * 2.71 + 124.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+        bn = bin0 + 1.0;
+        h1 = hsh(bn * 1.37 + 73.13);
+        h2 = hsh(bn * 2.71 + 131.59);
+        an = (bn + h1) / 240.0 * 6.2831853 - 3.1415927;
+        mg = shapeMag(sh, an, h2);
+        dir = float2(cos(an), sin(an)) * mg;
+        head = org + dir * hS + float2(0.0, hG);
+        tail = org + dir * tS + float2(0.0, tG);
+        sd = segDist(P, tail, head);
+        cl = hcol(hu + (h1 - 0.5) * 0.1);
+        acc += cl * ((1.0 - smoothstep(0.0, 0.0022, sd)) * 0.55 * trailFade(P, tail, head) + (1.0 - smoothstep(0.0, 0.0042, length(P - head))) * 1.1) * saturate(life * 1.5) * pbr;
+    }
+    float tw = 1.0 + q2 * (tex2D(sampler_noise_lq, uv * 3.0 + time * 7.0).x - 0.5) * 1.6;
+    float3 prev = tex2D(sampler_main, uv).xyz;
+    ret = acc * tw + prev * 0.0;
+}""",
+        comp="""
+shader_body
+{
+    float3 c = tex2D(sampler_main, uv).xyz;
+    float3 glow = GetBlur1(uv) * 2.2 + GetBlur2(uv) * 1.6;
+    float3 sky = lerp(float3(0.012, 0.016, 0.05), float3(0.03, 0.035, 0.09), uv.y);
+    float2 sc = floor(uv * texsize.xy / 3.0);
+    float star = step(0.9985, frac(sin(dot(sc, float2(12.9898, 78.233))) * 43758.5453)) * 0.3 * (0.6 + 0.4 * sin(time * 2.0 + sc.x));
+    ret = sky + star + c + glow;
+}"""),
 }
 
 
