@@ -37,6 +37,10 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   background and the skin's colours.
 - New preset "Lactea - Spectre neon" (Lactea pack): 48 mirrored neon bars (bass in the centre)
   growing from a glowing middle line, with trails, bloom and chromatic aberration on the bass.
+- New presets "Lactea - Trou de ver film" and "Lactea - Trou de ver serie" (Lactea pack): a trip
+  through a wormhole, after the classic science-fiction sequences: a winding tunnel of blue and
+  white plasma with a dark core, and a tunnel of star streaks slowly flattening into a corridor of
+  light, with lens flares. Their reactions to the music are smoothed, so they do not flash.
 - The test of the presets on the TV keeps running behind the options: Options › Preset
   management › Test the presets on this TV shows its progress and can stop it.
 

@@ -472,6 +472,145 @@ shader_body
     col *= 1.2 - dot(d, d) * 1.1;
     ret = col;
 }"""),
+
+
+    # Wormhole, film style: travel through a winding tunnel of turbulent plasma, bright blue,
+    # cyan and white near the camera, dark navy and violet in the depth, with spiral rings round
+    # the core and a white flare far away on the bass. The tunnel centre wanders widely (the
+    # tunnel bends); the warp shader draws it over the previous image zoomed outwards (motion
+    # blur), the comp shader adds bloom.
+    "Lactea - Trou de ver film": dict(
+        extra="""
+per_frame_1=dt = min(max(time - tprev, 0), 0.1);
+per_frame_2=tprev = time;
+per_frame_3=pulse = pulse * 0.95 + 0.05 * min(max(bass_att - 1.0, 0), 1.5);
+per_frame_4=q5 = pulse;
+per_frame_5=travel = travel + dt * (0.4 + 0.5 * pulse);
+per_frame_6=q1 = travel;
+per_frame_7=q3 = 0.5 + 0.13 * sin(time * 0.41) + 0.05 * sin(time * 1.13);
+per_frame_8=q4 = 0.5 + 0.10 * cos(time * 0.33) + 0.05 * sin(time * 0.97 + 1);
+per_frame_9=mids = mids * 0.95 + 0.05 * min(max(mid_att - 0.8, 0), 1.5);
+per_frame_10=q6 = mids;
+""",
+        warp="""
+shader_body
+{
+    float2 c = float2(q3, q4);
+    float2 p = (uv - c) * aspect.xy;
+    float r = max(length(p), 0.001);
+    float a = atan2(p.y, p.x) / 6.2831853;
+    float z = 0.18 / r + q1;
+    float sw = a + 0.02 / r + time * 0.015;
+    float2 t1 = float2(sw, z * 0.22);
+    float n = tex2D(sampler_noise_lq_lite, t1).x * 0.5 + tex2D(sampler_noise_lq_lite, t1 * 2.0 + 0.31).x * 0.3 + tex2D(sampler_noise_lq_lite, t1 * 4.0 + 0.67).x * 0.2;
+    float cl = smoothstep(0.22, 0.88, n) * (0.85 + 0.3 * q6);
+    float wall = saturate(r * 2.4);
+    float core = smoothstep(0.02, 0.2, r);
+    float3 navy = float3(0.1, 0.06, 0.28);
+    float3 blue = float3(0.1, 0.32, 0.95);
+    float3 cyan = float3(0.45, 0.85, 1.0);
+    float3 white = float3(0.93, 0.97, 1.0);
+    float3 col = lerp(navy, blue, cl * core);
+    col = lerp(col, cyan, saturate(cl * cl * wall * 1.3));
+    col = lerp(col, white, saturate(pow(cl, 4.0) * wall * 0.9));
+    col *= 0.45 + 0.75 * core;
+    float flare = q5 * (exp(-r * 45.0) + 0.25 * exp(-abs(p.y) * 220.0) * exp(-abs(p.x) * 5.0));
+    col += white * flare;
+    float2 src = c + (uv - c) * (0.975 - 0.01 * q5);
+    float3 prev = tex2D(sampler_main, src).xyz;
+    ret = lerp(col, max(col, prev * 0.9), 0.4);
+}""",
+        comp="""
+shader_body
+{
+    float3 c = GetPixel(uv);
+    float3 glow = GetBlur1(uv) * 0.35 + GetBlur2(uv) * 0.3;
+    float2 d = uv - 0.5;
+    ret = (c + glow) * (1.1 - dot(d, d) * 0.9);
+}"""),
+
+    # Wormhole, series style: star streaks rushing past a dark core, the round tunnel slowly
+    # flattening into a corridor of light (a ceiling and a floor of blue and white light rushing
+    # towards the camera, a dark slit in the middle, stars streaking sideways), and back.
+    # q2 morphs between the round tunnel (1) and the flat corridor (0); the light walls are faint
+    # in the round tunnel (mostly stars), bright in the corridor.
+    "Lactea - Trou de ver serie": dict(
+        extra="""
+per_frame_1=dt = min(max(time - tprev, 0), 0.1);
+per_frame_2=tprev = time;
+per_frame_3=travel = travel + dt * (0.6 + 1.2 * max(bass_att - 0.9, 0));
+per_frame_4=q1 = travel;
+per_frame_5=q2 = min(max(0.5 + 0.8 * sin(time * 0.07), 0), 1);
+per_frame_6=pulse = pulse * 0.85 + 0.15 * min(max(bass_att - 1.1, 0), 1.5);
+per_frame_7=q5 = pulse;
+per_frame_8=q7 = min(max(treb_att - 0.9, 0), 1.5);
+""",
+        warp="""
+shader_body
+{
+    float2 p = (uv - 0.5) * aspect.xy;
+    float m = q2;
+    float d = max(length(float2(p.x * m, p.y)), 0.001);
+    float z = 0.1 / d + q1 * 1.6;
+    float an = atan2(p.y, p.x) / 6.2831853;
+    float u = lerp(p.x * (0.1 / d) * 0.6, an * 2.0, m);
+    float2 t1 = float2(u, z * 0.18);
+    float n = tex2D(sampler_noise_lq_lite, t1).x * 0.6 + tex2D(sampler_noise_lq_lite, t1 * 2.0 + 0.41).x * 0.4;
+    float stk = tex2D(sampler_noise_lq, float2(u * 3.0, z * 0.03)).x;
+    float lgt = smoothstep(0.4, 0.85, n) * (0.4 + 0.9 * stk * stk);
+    float gp = smoothstep(0.015, 0.11, d);
+    float wl = lerp(1.0, 0.18, m) * (0.8 + 0.4 * q5);
+    float3 blue = float3(0.12, 0.38, 1.0);
+    float3 cyan = float3(0.5, 0.85, 1.0);
+    float3 white = float3(0.95, 0.98, 1.0);
+    float3 col = (blue * lgt + cyan * lgt * lgt + white * pow(lgt, 4.0)) * gp * wl;
+    float r = max(length(p), 0.001);
+    float a2 = atan2(p.y, p.x) / 6.2831853 + 0.5;
+    float sid = floor(a2 * 600.0);
+    float fa = abs(frac(a2 * 600.0) - 0.5);
+    float2 cell = float2((fmod(sid, 256.0) + 0.5) / 256.0, (floor(sid / 256.0) + 0.5) / 256.0);
+    float rnd = tex2D(sampler_noise_lq, cell).x;
+    float rnd2 = tex2D(sampler_noise_lq, cell + float2(0.0, 0.1)).y;
+    float zs = frac(rnd - q1 * 0.35);
+    float rs = 0.03 / (zs + 0.03);
+    float len = rs * (0.1 + 0.08 * q5);
+    float st = step(rs - len, r) * step(r, rs) * step(fa, 0.12 + 0.2 * rs) * step(rnd2, 0.7 + 0.2 * q7);
+    col += white * st * saturate(rs * 4.0) * (1.0 + 0.4 * q7);
+    float sid2 = floor(a2 * 1500.0);
+    float fa2 = abs(frac(a2 * 1500.0) - 0.5);
+    float2 cell2 = float2((fmod(sid2, 256.0) + 0.5) / 256.0, (floor(sid2 / 256.0) + 20.5) / 256.0);
+    float zs2 = frac(tex2D(sampler_noise_lq, cell2).z - q1 * 0.25);
+    float rs2 = 0.02 / (zs2 + 0.02);
+    float st2 = step(rs2 - rs2 * 0.08, r) * step(r, rs2) * step(fa2, 0.15) * step(tex2D(sampler_noise_lq, cell2 + float2(0.0, 0.2)).x, 0.5 + 0.4 * m);
+    col += float3(0.75, 0.85, 1.0) * st2 * saturate(rs2 * 3.0) * (0.5 + 0.5 * m);
+    float2 src = 0.5 + (uv - 0.5) * (0.93 - 0.02 * q5);
+    float3 prev = tex2D(sampler_main, src).xyz;
+    ret = max(col, prev * 0.72);
+}""",
+        comp="""
+shader_body
+{
+    float3 c = GetPixel(uv);
+    float3 glow = GetBlur1(uv) * 0.45 + GetBlur2(uv) * 0.35;
+    float2 d = uv - 0.5;
+    float flare = q5 * 0.35 * exp(-abs(d.y) * 60.0) * exp(-abs(d.x) * 3.0);
+    float2 L = float2(0.5 + 0.38 * sin(time * 0.23), 0.5 + 0.24 * sin(time * 0.31 + 1.0));
+    float fvis = saturate(0.55 + 0.6 * sin(time * 0.13)) * (0.7 + 0.5 * q5);
+    float2 dl = (uv - L) * aspect.xy;
+    float sun = exp(-length(dl) * 70.0) * 1.6 + 0.4 * exp(-abs(dl.y) * 260.0) * exp(-abs(dl.x) * 7.0) + 0.25 * exp(-abs(dl.x) * 260.0) * exp(-abs(dl.y) * 12.0);
+    float3 lens = float3(0.85, 0.93, 1.0) * sun;
+    float2 g1 = 0.5 + (L - 0.5) * -0.45;
+    float d1 = length((uv - g1) * aspect.xy);
+    float3 rainbow = 0.5 + 0.5 * cos(6.2831853 * (d1 / 0.09 * 0.8 + float3(0.0, 0.33, 0.67)));
+    lens += rainbow * exp(-pow((d1 - 0.09) / 0.05, 2.0)) * 0.18;
+    float2 g2 = 0.5 + (L - 0.5) * -0.9;
+    float d2 = length((uv - g2) * aspect.xy);
+    lens += float3(0.3, 0.7, 1.0) * smoothstep(0.045, 0.035, d2) * 0.18;
+    float2 g3 = 0.5 + (L - 0.5) * -1.35;
+    float d3 = length((uv - g3) * aspect.xy);
+    lens += float3(1.0, 0.45, 0.6) * smoothstep(0.07, 0.05, d3) * 0.12;
+    ret = (c + glow + float3(0.5, 0.75, 1.0) * flare + lens * fvis) * (1.1 - dot(d, d) * 0.9);
+}"""),
 }
 
 
