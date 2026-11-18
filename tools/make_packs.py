@@ -3,7 +3,8 @@
 Usage:  python -I tools/make_packs.py [output_dir] [--previews DIR]
 
 Packs:
-- essentials: the presets listed in packs-src/essentials.txt + Lactea's own presets (packs-src/Lactea);
+- essentials: the presets listed in packs-src/essentials.txt;
+- lactea: Lactea's own presets (packs-src/Lactea, made by tools/lactea_presets.py);
 - one pack per category of third_party/presets-cream-of-the-crop;
 - textures: the MilkDrop texture pack, needed by most presets (every preset pack requires it).
 
@@ -50,7 +51,8 @@ RANDOM_TEXTURE = re.compile(r"\b(sampler|texsize)_((?:[fp][wc]_)?)(rand\d\d(?:_[
 VALID_TEXTURE_NAME = re.compile(r"[A-Za-z0-9_]+")
 
 DESCRIPTIONS = {
-    "essentials": "The best of the collection and Lactea's own presets",
+    "essentials": "The best of the collection",
+    "lactea": "Lactea's own presets: album cover, spectrum analyser",
     "textures": "Images used by the presets",
     "dancer": "Shapes dancing to the beat",
     "drawing": "Animated lines and drawings",
@@ -132,9 +134,8 @@ def build(out: Path, previews_dir: Path | None = None) -> None:
         key = line.strip()
         if key and not key.startswith("#"):
             essentials[f"{key}.milk"] = (CREAM / f"{key}.milk").read_bytes()
-    for f in sorted((SRC / "Lactea").glob("*.milk")):
-        essentials[f"Lactea/{f.name}"] = f.read_bytes()
     sources["essentials"] = ("Essentials", essentials)
+    sources["lactea"] = ("Lactea", {f"Lactea/{f.name}": f.read_bytes() for f in sorted((SRC / "Lactea").glob("*.milk"))})
 
     for cat in sorted(p for p in CREAM.iterdir() if p.is_dir() and not p.name.startswith(".")):
         if cat.name in SKIP:
@@ -187,7 +188,7 @@ def build(out: Path, previews_dir: Path | None = None) -> None:
             "sha256_content": sha,
             "description": DESCRIPTIONS.get(pid, ""),
         }
-        if pid == "essentials":
+        if pid in ("essentials", "lactea"):
             entry["recommended"] = True
         if not is_textures:
             entry["requires"] = ["textures"]

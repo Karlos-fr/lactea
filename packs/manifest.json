@@ -6,13 +6,29 @@
       "id": "essentials",
       "name": "Essentials",
       "kind": "presets",
-      "version": "2",
+      "version": "3",
       "url": "lactea-pack-essentials.zip",
-      "size": 721639,
-      "presets": 66,
-      "sha256": "1878c2a3075dd98c2829a92d2545e3dbcfc9a777503f3ffb4e31dd6c4b48a2f2",
-      "sha256_content": "623eb35d9eb32fb72bf0078cb4c921827124191e0148355d8c8ec31aa52661b2",
-      "description": "The best of the collection and Lactea's own presets",
+      "size": 674453,
+      "presets": 60,
+      "sha256": "0d410a70e522e97c6e579197ce73aabae950a5a19633c16d527a7d17b8d5f13c",
+      "sha256_content": "5da1653fa2c32a868d666ea70093399c90f41d69387e92b2527de1eadfbd8a69",
+      "description": "The best of the collection",
+      "recommended": true,
+      "requires": [
+        "textures"
+      ]
+    },
+    {
+      "id": "lactea",
+      "name": "Lactea",
+      "kind": "presets",
+      "version": "1",
+      "url": "lactea-pack-lactea.zip",
+      "size": 56976,
+      "presets": 7,
+      "sha256": "b1946afae5f47f97cf0f38180f4347baf0e6a2f7698abff57907d25b99e2cdbc",
+      "sha256_content": "83dfaf2dbc8e089e7bb5048803185bca7c1e98de6238932724ccc00688c5cf23",
+      "description": "Lactea's own presets: album cover, spectrum analyser",
       "recommended": true,
       "requires": [
         "textures"

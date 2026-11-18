@@ -211,6 +211,159 @@ shader_body
     float2 d = uv - 0.5;
     ret = GetPixel(uv) * (1.12 - dot(d, d) * 0.6);
 }"""),
+
+    # Spectrum analyser identical to Winamp's (classic skin, default settings: "normal" colouring,
+    # wide bands, moderate falloff, slow peak falloff), after webamp's VisPainter.ts, which
+    # reproduces the Winamp 2.63 / 5.666 executables:
+    # - FFT of the waveform, equalized by log10(1 + bias + (i + 1) (9 - bias) / 512) (bias 0.04,
+    #   / 1.0025 per bin); the custom wave rebuilds it from projectM's spectrum (undoing
+    #   projectM's own equalisation, 0.02 ln(512 / (512 - i)), and its different input scale and
+    #   window: x 1024 / 24 / 480) and writes the 512 bins, in pixels / 16, as the colour of a line
+    #   in a hidden row of pixels (row A; waves are aspect-corrected and upside down for the
+    #   shaders: y = 0.23 is the row 0.5 + 0.27 x aspect.w of the textures);
+    # - the warp shader computes, in row B, for each of the 19 bands: 4 of 75 columns (index
+    #   91 % logarithmic, 9 % linear, interpolated between bins), averaged and truncated, at most
+    #   15 px; the bar falls 12/16 px per frame (green); the peak, in 1/256 px (blue), falls by
+    #   round(3 x 1.1^n) after n frames (red: n), restarting when the bar reaches it;
+    #   steps are scaled to 60 frames per second from the real time between frames (q2), the TV
+    #   may draw fewer;
+    # - the comp shader draws Winamp's 76 x 16 pixel grid on the whole screen: black with grey
+    #   dots, bars of 3 columns, round(bar) - 2 px high, one colour per row from the classic
+    #   skin's VISCOLOR.TXT, grey peak at floor(peak) - 2.
+    "Lactea - Spectre": dict(
+        extra="""
+per_frame_1=q2 = min(max((time - tprev) * 60, 0.25), 4);
+per_frame_2=tprev = time;
+wavecode_0_enabled=1
+wavecode_0_samples=512
+wavecode_0_sep=0
+wavecode_0_bSpectrum=1
+wavecode_0_bUseDots=0
+wavecode_0_bDrawThick=1
+wavecode_0_bAdditive=0
+wavecode_0_scaling=1.000000
+wavecode_0_smoothing=0.000000
+wavecode_0_r=1.000000
+wavecode_0_g=1.000000
+wavecode_0_b=1.000000
+wavecode_0_a=1.000000
+wave_0_per_point1=bin = sample * 511;
+wave_0_per_point2=eqpm = 0.02 * log(512 / (512 - min(bin, 511.5)));
+wave_0_per_point3=raw = if(above(bin, 0.5), value1 / (0.15 * eqpm), 0);
+wave_0_per_point4=bias = 0.04 / pow(1.0025, bin);
+wave_0_per_point5=eqwa = log10(1 + bias + (bin + 1) * (9 - bias) / 512);
+wave_0_per_point6=v = min(raw * 0.0888889 * eqwa / 16, 1);
+wave_0_per_point7=x = (bin + 0.5) / 512;
+wave_0_per_point8=y = 0.23;
+wave_0_per_point9=r = v;
+wave_0_per_point10=g = v;
+wave_0_per_point11=b = v;
+""",
+        warp="""
+shader_body
+{
+    float rowA = 0.5 + 0.27 * aspect.w;
+    float rowB = rowA - 0.015;
+    ret = float3(0.0, 0.0, 0.0);
+    if (abs(uv.y - rowB) < 0.006)
+    {
+    float dy = texsize.w;
+    float j = floor(uv.x * 19.0);
+    float sum = 0.0;
+    float col4;
+    float si;
+    float i1;
+    float i2;
+    float b1;
+    float b2;
+    float v1;
+    float v2;
+    col4 = j * 4.0 + 0.0;
+    si = 0.09 * (col4 / 74.0 * 511.0) + 0.91 * pow(512.0, col4 / 74.0);
+    i1 = min(floor(si), 511.0);
+    i2 = min(ceil(si), 511.0);
+    b1 = (i1 + 0.5) / 512.0;
+    b2 = (i2 + 0.5) / 512.0;
+    v1 = max(tex2D(sampler_main, float2(b1, rowA - dy)).x, max(tex2D(sampler_main, float2(b1, rowA)).x, tex2D(sampler_main, float2(b1, rowA + dy)).x));
+    v2 = max(tex2D(sampler_main, float2(b2, rowA - dy)).x, max(tex2D(sampler_main, float2(b2, rowA)).x, tex2D(sampler_main, float2(b2, rowA + dy)).x));
+    sum += lerp(v1, v2, si - floor(si)) * 16.0 * step(col4, 74.5);
+    col4 = j * 4.0 + 1.0;
+    si = 0.09 * (col4 / 74.0 * 511.0) + 0.91 * pow(512.0, col4 / 74.0);
+    i1 = min(floor(si), 511.0);
+    i2 = min(ceil(si), 511.0);
+    b1 = (i1 + 0.5) / 512.0;
+    b2 = (i2 + 0.5) / 512.0;
+    v1 = max(tex2D(sampler_main, float2(b1, rowA - dy)).x, max(tex2D(sampler_main, float2(b1, rowA)).x, tex2D(sampler_main, float2(b1, rowA + dy)).x));
+    v2 = max(tex2D(sampler_main, float2(b2, rowA - dy)).x, max(tex2D(sampler_main, float2(b2, rowA)).x, tex2D(sampler_main, float2(b2, rowA + dy)).x));
+    sum += lerp(v1, v2, si - floor(si)) * 16.0 * step(col4, 74.5);
+    col4 = j * 4.0 + 2.0;
+    si = 0.09 * (col4 / 74.0 * 511.0) + 0.91 * pow(512.0, col4 / 74.0);
+    i1 = min(floor(si), 511.0);
+    i2 = min(ceil(si), 511.0);
+    b1 = (i1 + 0.5) / 512.0;
+    b2 = (i2 + 0.5) / 512.0;
+    v1 = max(tex2D(sampler_main, float2(b1, rowA - dy)).x, max(tex2D(sampler_main, float2(b1, rowA)).x, tex2D(sampler_main, float2(b1, rowA + dy)).x));
+    v2 = max(tex2D(sampler_main, float2(b2, rowA - dy)).x, max(tex2D(sampler_main, float2(b2, rowA)).x, tex2D(sampler_main, float2(b2, rowA + dy)).x));
+    sum += lerp(v1, v2, si - floor(si)) * 16.0 * step(col4, 74.5);
+    col4 = j * 4.0 + 3.0;
+    si = 0.09 * (col4 / 74.0 * 511.0) + 0.91 * pow(512.0, col4 / 74.0);
+    i1 = min(floor(si), 511.0);
+    i2 = min(ceil(si), 511.0);
+    b1 = (i1 + 0.5) / 512.0;
+    b2 = (i2 + 0.5) / 512.0;
+    v1 = max(tex2D(sampler_main, float2(b1, rowA - dy)).x, max(tex2D(sampler_main, float2(b1, rowA)).x, tex2D(sampler_main, float2(b1, rowA + dy)).x));
+    v2 = max(tex2D(sampler_main, float2(b2, rowA - dy)).x, max(tex2D(sampler_main, float2(b2, rowA)).x, tex2D(sampler_main, float2(b2, rowA + dy)).x));
+    sum += lerp(v1, v2, si - floor(si)) * 16.0 * step(col4, 74.5);
+    float data = min(floor(sum / 4.0), 15.0);
+    float k = q2;
+    float3 st = tex2D(sampler_main, float2((j + 0.5) / 19.0, rowB)).xyz;
+    float n = st.x * 255.0;
+    float fall = st.y * 16.0 - 0.75 * k;
+    fall = max(fall, data);
+    float peak = st.z * 4096.0;
+    float caught = step(peak, floor(fall * 256.0 + 0.5));
+    peak = lerp(peak, fall * 256.0, caught);
+    n = lerp(n, 0.0, caught);
+    peak = max(peak - floor(3.0 * pow(1.1, n) + 0.5) * k, 0.0);
+    n = min(n + k, 255.0);
+    ret = float3(n / 255.0, fall / 16.0, peak / 4096.0);
+    }
+}""",
+        comp="""
+shader_body
+{
+    float rowB = 0.5 + 0.27 * aspect.w - 0.015;
+    float c = floor(uv.x * 76.0);
+    float top = floor(uv.y * 16.0);
+    float r = 15.0 - top;
+    float j = floor(c / 4.0);
+    float3 st = tex2D(sampler_main, float2((j + 0.5) / 19.0, rowB)).xyz;
+    float barH = floor(st.y * 16.0 + 0.5) - 2.0;
+    float peakR = floor(st.z * 16.0) - 2.0;
+    float inBar = step(fmod(c, 4.0), 2.5) * step(c, 74.5);
+    float idx = 15.0 - r;
+    float3 col = float3(0.9373, 0.1922, 0.0627);
+    col = lerp(col, float3(0.8078, 0.1608, 0.0627), step(2.5, idx));
+    col = lerp(col, float3(0.8392, 0.3529, 0.0000), step(3.5, idx));
+    col = lerp(col, float3(0.8392, 0.4000, 0.0000), step(4.5, idx));
+    col = lerp(col, float3(0.8392, 0.4510, 0.0000), step(5.5, idx));
+    col = lerp(col, float3(0.7765, 0.4824, 0.0314), step(6.5, idx));
+    col = lerp(col, float3(0.8706, 0.6471, 0.0941), step(7.5, idx));
+    col = lerp(col, float3(0.8392, 0.7098, 0.1294), step(8.5, idx));
+    col = lerp(col, float3(0.7412, 0.8706, 0.1608), step(9.5, idx));
+    col = lerp(col, float3(0.5804, 0.8706, 0.1294), step(10.5, idx));
+    col = lerp(col, float3(0.1608, 0.8078, 0.0627), step(11.5, idx));
+    col = lerp(col, float3(0.1961, 0.7451, 0.0627), step(12.5, idx));
+    col = lerp(col, float3(0.2235, 0.7098, 0.0627), step(13.5, idx));
+    col = lerp(col, float3(0.1922, 0.6118, 0.0314), step(14.5, idx));
+    col = lerp(col, float3(0.1608, 0.5804, 0.0000), step(15.5, idx));
+    col = lerp(col, float3(0.0941, 0.5176, 0.0314), step(16.5, idx));
+    float dots = step(fmod(c, 2.0), 0.5) * step(0.5, fmod(top, 2.0));
+    float3 bg = lerp(float3(0.0000, 0.0000, 0.0000), float3(0.0941, 0.1294, 0.1608), dots);
+    float bar = inBar * step(r, barH - 0.5);
+    float pk = inBar * step(abs(r - peakR), 0.25) * step(0.0, peakR);
+    ret = lerp(lerp(bg, col, bar), float3(0.5882, 0.5882, 0.5882), pk);
+}"""),
 }
 
 
@@ -223,7 +376,10 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, p in PRESETS.items():
         text = HEADER.format(zoom=p.get("zoom", "1.000"), rot=p.get("rot", "0.000"))
-        text += shader_lines("warp", p["warp"]) + "\n" + shader_lines("comp", p["comp"]) + "\n"
+        text += p.get("extra", "").strip("\n") + "\n" if p.get("extra") else ""
+        if "warp" in p:
+            text += shader_lines("warp", p["warp"]) + "\n"
+        text += shader_lines("comp", p["comp"]) + "\n"
         (OUT / f"{name}.milk").write_text(text, encoding="ascii", newline="\r\n")
         print("wrote", name)
 

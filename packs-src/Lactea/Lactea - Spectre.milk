@@ -1,0 +1,196 @@
+MILKDROP_PRESET_VERSION=201
+PSVERSION=2
+PSVERSION_WARP=2
+PSVERSION_COMP=2
+[preset00]
+fRating=5.000000
+fGammaAdj=1.000
+fDecay=1.000
+fVideoEchoZoom=1.000
+fVideoEchoAlpha=0.000
+nVideoEchoOrientation=0
+nWaveMode=0
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=1
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=0.000
+fWaveScale=1.000
+fWaveSmoothing=0.500
+fWaveParam=0.000
+fModWaveAlphaStart=0.750
+fModWaveAlphaEnd=0.950
+fWarpAnimSpeed=1.000
+fWarpScale=1.000
+fZoomExponent=1.000
+fShader=0.000
+zoom=1.000
+rot=0.000
+cx=0.500
+cy=0.500
+dx=0.000
+dy=0.000
+warp=0.000
+sx=1.000
+sy=1.000
+wave_r=1.000
+wave_g=1.000
+wave_b=1.000
+wave_x=0.500
+wave_y=0.500
+ob_size=0.000
+ob_r=0.000
+ob_g=0.000
+ob_b=0.000
+ob_a=0.000
+ib_size=0.000
+ib_r=0.000
+ib_g=0.000
+ib_b=0.000
+ib_a=0.000
+nMotionVectorsX=0.000
+nMotionVectorsY=0.000
+mv_dx=0.000
+mv_dy=0.000
+mv_l=0.000
+mv_r=0.000
+mv_g=0.000
+mv_b=0.000
+mv_a=0.000
+per_frame_1=q2 = min(max((time - tprev) * 60, 0.25), 4);
+per_frame_2=tprev = time;
+wavecode_0_enabled=1
+wavecode_0_samples=512
+wavecode_0_sep=0
+wavecode_0_bSpectrum=1
+wavecode_0_bUseDots=0
+wavecode_0_bDrawThick=1
+wavecode_0_bAdditive=0
+wavecode_0_scaling=1.000000
+wavecode_0_smoothing=0.000000
+wavecode_0_r=1.000000
+wavecode_0_g=1.000000
+wavecode_0_b=1.000000
+wavecode_0_a=1.000000
+wave_0_per_point1=bin = sample * 511;
+wave_0_per_point2=eqpm = 0.02 * log(512 / (512 - min(bin, 511.5)));
+wave_0_per_point3=raw = if(above(bin, 0.5), value1 / (0.15 * eqpm), 0);
+wave_0_per_point4=bias = 0.04 / pow(1.0025, bin);
+wave_0_per_point5=eqwa = log10(1 + bias + (bin + 1) * (9 - bias) / 512);
+wave_0_per_point6=v = min(raw * 0.0888889 * eqwa / 16, 1);
+wave_0_per_point7=x = (bin + 0.5) / 512;
+wave_0_per_point8=y = 0.23;
+wave_0_per_point9=r = v;
+wave_0_per_point10=g = v;
+wave_0_per_point11=b = v;
+warp_1=`shader_body
+warp_2=`{
+warp_3=`    float rowA = 0.5 + 0.27 * aspect.w;
+warp_4=`    float rowB = rowA - 0.015;
+warp_5=`    ret = float3(0.0, 0.0, 0.0);
+warp_6=`    if (abs(uv.y - rowB) < 0.006)
+warp_7=`    {
+warp_8=`    float dy = texsize.w;
+warp_9=`    float j = floor(uv.x * 19.0);
+warp_10=`    float sum = 0.0;
+warp_11=`    float col4;
+warp_12=`    float si;
+warp_13=`    float i1;
+warp_14=`    float i2;
+warp_15=`    float b1;
+warp_16=`    float b2;
+warp_17=`    float v1;
+warp_18=`    float v2;
+warp_19=`    col4 = j * 4.0 + 0.0;
+warp_20=`    si = 0.09 * (col4 / 74.0 * 511.0) + 0.91 * pow(512.0, col4 / 74.0);
+warp_21=`    i1 = min(floor(si), 511.0);
+warp_22=`    i2 = min(ceil(si), 511.0);
+warp_23=`    b1 = (i1 + 0.5) / 512.0;
+warp_24=`    b2 = (i2 + 0.5) / 512.0;
+warp_25=`    v1 = max(tex2D(sampler_main, float2(b1, rowA - dy)).x, max(tex2D(sampler_main, float2(b1, rowA)).x, tex2D(sampler_main, float2(b1, rowA + dy)).x));
+warp_26=`    v2 = max(tex2D(sampler_main, float2(b2, rowA - dy)).x, max(tex2D(sampler_main, float2(b2, rowA)).x, tex2D(sampler_main, float2(b2, rowA + dy)).x));
+warp_27=`    sum += lerp(v1, v2, si - floor(si)) * 16.0 * step(col4, 74.5);
+warp_28=`    col4 = j * 4.0 + 1.0;
+warp_29=`    si = 0.09 * (col4 / 74.0 * 511.0) + 0.91 * pow(512.0, col4 / 74.0);
+warp_30=`    i1 = min(floor(si), 511.0);
+warp_31=`    i2 = min(ceil(si), 511.0);
+warp_32=`    b1 = (i1 + 0.5) / 512.0;
+warp_33=`    b2 = (i2 + 0.5) / 512.0;
+warp_34=`    v1 = max(tex2D(sampler_main, float2(b1, rowA - dy)).x, max(tex2D(sampler_main, float2(b1, rowA)).x, tex2D(sampler_main, float2(b1, rowA + dy)).x));
+warp_35=`    v2 = max(tex2D(sampler_main, float2(b2, rowA - dy)).x, max(tex2D(sampler_main, float2(b2, rowA)).x, tex2D(sampler_main, float2(b2, rowA + dy)).x));
+warp_36=`    sum += lerp(v1, v2, si - floor(si)) * 16.0 * step(col4, 74.5);
+warp_37=`    col4 = j * 4.0 + 2.0;
+warp_38=`    si = 0.09 * (col4 / 74.0 * 511.0) + 0.91 * pow(512.0, col4 / 74.0);
+warp_39=`    i1 = min(floor(si), 511.0);
+warp_40=`    i2 = min(ceil(si), 511.0);
+warp_41=`    b1 = (i1 + 0.5) / 512.0;
+warp_42=`    b2 = (i2 + 0.5) / 512.0;
+warp_43=`    v1 = max(tex2D(sampler_main, float2(b1, rowA - dy)).x, max(tex2D(sampler_main, float2(b1, rowA)).x, tex2D(sampler_main, float2(b1, rowA + dy)).x));
+warp_44=`    v2 = max(tex2D(sampler_main, float2(b2, rowA - dy)).x, max(tex2D(sampler_main, float2(b2, rowA)).x, tex2D(sampler_main, float2(b2, rowA + dy)).x));
+warp_45=`    sum += lerp(v1, v2, si - floor(si)) * 16.0 * step(col4, 74.5);
+warp_46=`    col4 = j * 4.0 + 3.0;
+warp_47=`    si = 0.09 * (col4 / 74.0 * 511.0) + 0.91 * pow(512.0, col4 / 74.0);
+warp_48=`    i1 = min(floor(si), 511.0);
+warp_49=`    i2 = min(ceil(si), 511.0);
+warp_50=`    b1 = (i1 + 0.5) / 512.0;
+warp_51=`    b2 = (i2 + 0.5) / 512.0;
+warp_52=`    v1 = max(tex2D(sampler_main, float2(b1, rowA - dy)).x, max(tex2D(sampler_main, float2(b1, rowA)).x, tex2D(sampler_main, float2(b1, rowA + dy)).x));
+warp_53=`    v2 = max(tex2D(sampler_main, float2(b2, rowA - dy)).x, max(tex2D(sampler_main, float2(b2, rowA)).x, tex2D(sampler_main, float2(b2, rowA + dy)).x));
+warp_54=`    sum += lerp(v1, v2, si - floor(si)) * 16.0 * step(col4, 74.5);
+warp_55=`    float data = min(floor(sum / 4.0), 15.0);
+warp_56=`    float k = q2;
+warp_57=`    float3 st = tex2D(sampler_main, float2((j + 0.5) / 19.0, rowB)).xyz;
+warp_58=`    float n = st.x * 255.0;
+warp_59=`    float fall = st.y * 16.0 - 0.75 * k;
+warp_60=`    fall = max(fall, data);
+warp_61=`    float peak = st.z * 4096.0;
+warp_62=`    float caught = step(peak, floor(fall * 256.0 + 0.5));
+warp_63=`    peak = lerp(peak, fall * 256.0, caught);
+warp_64=`    n = lerp(n, 0.0, caught);
+warp_65=`    peak = max(peak - floor(3.0 * pow(1.1, n) + 0.5) * k, 0.0);
+warp_66=`    n = min(n + k, 255.0);
+warp_67=`    ret = float3(n / 255.0, fall / 16.0, peak / 4096.0);
+warp_68=`    }
+warp_69=`}
+comp_1=`shader_body
+comp_2=`{
+comp_3=`    float rowB = 0.5 + 0.27 * aspect.w - 0.015;
+comp_4=`    float c = floor(uv.x * 76.0);
+comp_5=`    float top = floor(uv.y * 16.0);
+comp_6=`    float r = 15.0 - top;
+comp_7=`    float j = floor(c / 4.0);
+comp_8=`    float3 st = tex2D(sampler_main, float2((j + 0.5) / 19.0, rowB)).xyz;
+comp_9=`    float barH = floor(st.y * 16.0 + 0.5) - 2.0;
+comp_10=`    float peakR = floor(st.z * 16.0) - 2.0;
+comp_11=`    float inBar = step(fmod(c, 4.0), 2.5) * step(c, 74.5);
+comp_12=`    float idx = 15.0 - r;
+comp_13=`    float3 col = float3(0.9373, 0.1922, 0.0627);
+comp_14=`    col = lerp(col, float3(0.8078, 0.1608, 0.0627), step(2.5, idx));
+comp_15=`    col = lerp(col, float3(0.8392, 0.3529, 0.0000), step(3.5, idx));
+comp_16=`    col = lerp(col, float3(0.8392, 0.4000, 0.0000), step(4.5, idx));
+comp_17=`    col = lerp(col, float3(0.8392, 0.4510, 0.0000), step(5.5, idx));
+comp_18=`    col = lerp(col, float3(0.7765, 0.4824, 0.0314), step(6.5, idx));
+comp_19=`    col = lerp(col, float3(0.8706, 0.6471, 0.0941), step(7.5, idx));
+comp_20=`    col = lerp(col, float3(0.8392, 0.7098, 0.1294), step(8.5, idx));
+comp_21=`    col = lerp(col, float3(0.7412, 0.8706, 0.1608), step(9.5, idx));
+comp_22=`    col = lerp(col, float3(0.5804, 0.8706, 0.1294), step(10.5, idx));
+comp_23=`    col = lerp(col, float3(0.1608, 0.8078, 0.0627), step(11.5, idx));
+comp_24=`    col = lerp(col, float3(0.1961, 0.7451, 0.0627), step(12.5, idx));
+comp_25=`    col = lerp(col, float3(0.2235, 0.7098, 0.0627), step(13.5, idx));
+comp_26=`    col = lerp(col, float3(0.1922, 0.6118, 0.0314), step(14.5, idx));
+comp_27=`    col = lerp(col, float3(0.1608, 0.5804, 0.0000), step(15.5, idx));
+comp_28=`    col = lerp(col, float3(0.0941, 0.5176, 0.0314), step(16.5, idx));
+comp_29=`    float dots = step(fmod(c, 2.0), 0.5) * step(0.5, fmod(top, 2.0));
+comp_30=`    float3 bg = lerp(float3(0.0000, 0.0000, 0.0000), float3(0.0941, 0.1294, 0.1608), dots);
+comp_31=`    float bar = inBar * step(r, barH - 0.5);
+comp_32=`    float pk = inBar * step(abs(r - peakR), 0.25) * step(0.0, peakR);
+comp_33=`    ret = lerp(lerp(bg, col, bar), float3(0.5882, 0.5882, 0.5882), pk);
+comp_34=`}

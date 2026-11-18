@@ -122,7 +122,7 @@ Håll in **OK** för att öppna **Alternativ**. De är grupperade efter tema:
 ## Preset-paket
 
 APK:n innehåller inga presets: vid första starten föreslår Lactea paket att ladda ner.
-**Essentials** (66 presets: det bästa ur samlingen och Lacteas egna presets) rekommenderas; resten
+**Essentials** (60 presets: det bästa ur samlingen) och **Lactea** (Lacteas egna presets) rekommenderas; resten
 av samlingen är uppdelad i 10 tematiska paket (Dancer, Drawing, Fractal, Geometric, Hypnotic,
 Particles, Reaction, Sparkle, Supernova, Waveform). Bilderna som presetsen använder finns i ett
 paket **Textures**, som installeras automatiskt med det första paketet. Lägg till eller ta bort

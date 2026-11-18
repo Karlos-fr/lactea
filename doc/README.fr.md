@@ -122,8 +122,8 @@ Faites un appui long sur **OK** pour ouvrir les options. Elles sont regroupées 
 ## Packs de presets
 
 L'APK ne contient aucun preset : au premier lancement, Lactea propose les packs à télécharger.
-**Essentials** (66 presets : le meilleur de la collection et les presets propres à Lactea) est
-recommandé ; le reste de la collection est réparti en 10 packs thématiques (Dancer, Drawing,
+**Essentials** (60 presets : le meilleur de la collection) et **Lactea** (les presets propres à Lactea)
+sont recommandés ; le reste de la collection est réparti en 10 packs thématiques (Dancer, Drawing,
 Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Les images
 utilisées par les presets forment un pack **Textures**, installé automatiquement avec le premier
 pack. Ajoutez ou retirez des packs quand vous voulez dans

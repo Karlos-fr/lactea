@@ -128,8 +128,8 @@ Halten Sie **OK** gedrückt, um die Optionen zu öffnen. Sie sind nach Themen gr
 ## Preset-Pakete
 
 Die APK enthält keine Presets: Beim ersten Start schlägt Lactea die Pakete zum Herunterladen
-vor. Empfohlen wird **Essentials** (66 Presets: das Beste der Sammlung und Lacteas eigene
-Presets); der Rest der Sammlung ist auf 10 Themenpakete verteilt (Dancer, Drawing, Fractal,
+vor. Empfohlen werden **Essentials** (60 Presets: das Beste der Sammlung) und **Lactea** (Lacteas
+eigene Presets); der Rest der Sammlung ist auf 10 Themenpakete verteilt (Dancer, Drawing, Fractal,
 Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Die Bilder, die die
 Presets verwenden, bilden ein Paket **Textures**, das mit dem ersten Paket automatisch installiert
 wird. Pakete fügen Sie jederzeit unter **Optionen › Preset-Verwaltung › Preset-Pakete
