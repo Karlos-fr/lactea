@@ -9,8 +9,9 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
 ### Added
 
 - Welcome screen on first launch: Lactea lists the packs to download, with **Essentials**
-  (66 presets: the best of the collection and Lactea's own presets) ticked as recommended.
-- **Essentials** and **Textures** packs. Textures holds the images the presets use; it is
+  (60 presets: the best of the collection) and **Lactea** (Lactea's own presets) ticked as
+  recommended.
+- **Essentials**, **Lactea** and **Textures** packs. Textures holds the images the presets use; it is
   installed automatically with the first pack, and for users upgrading from 1.0.
 - Each pack holds an `index.json` listing its presets, those able to show the album cover and the
   frame rates measured on the reference TV.
@@ -24,7 +25,16 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   calibrated on clips judged by eye. Ambiances can leave out flashing presets ("No flash") or keep
   only the calm ones ("Chill only"), and the green key of the preset browser sets a tag by hand.
 - Previews: each pack holds a picture of every preset (4 moments in a 2 x 2 mosaic, about 9 KB),
-  shown beside the list in the preset browser.
+  shown beside the list in the preset browser. When the selection rests on a preset for a second,
+  it plays behind the browser, which turns see-through; closing the browser without choosing
+  brings back the preset that was playing.
+- Ambiances have a name, typed with the remote's keyboard (or voice) when creating one, and can be
+  renamed. Four ambiances are offered once: Chill evening, No flash, Party (Dancer, Particles,
+  Sparkle, Supernova) and Smooth (no flash, at least 50 FPS).
+- New preset "Lactea - Spectre" (Lactea pack): Winamp's spectrum analyser, identical to the original
+  (classic skin, default settings): same FFT equalisation, 19 bands over 75 columns, bars falling
+  12/16 px per frame, peaks falling faster and faster, the 76 x 16 pixel grid with its dotted
+  background and the skin's colours.
 - The test of the presets on the TV keeps running behind the options: Options › Preset
   management › Test the presets on this TV shows its progress and can stop it.
 
@@ -43,8 +53,8 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
 
 ### Upgrading from 1.0
 
-- The 66 built-in presets and the textures copied by 1.0 are removed; install Essentials to get
-  them back. Favourites, exclusions and measures of the 60 built-in presets of the collection move
+- The 66 built-in presets and the textures copied by 1.0 are removed; install Essentials and Lactea
+  to get them back. Favourites, exclusions and measures of the 60 built-in presets of the collection move
   to their key in the packs.
 - Packs installed by 1.0 have no index yet: Lactea analyses each of them once (about 30 s for the
   whole collection, in the background), until they are updated.

@@ -326,4 +326,14 @@
     <string name="tag_by_you">elegido por ti</string>
     <string name="tag_measured">medido</string>
     <string name="preview_none">Sin vista previa</string>
+
+    <!-- Ambiance names, default ambiances, live preview -->
+    <string name="ambiance_name">Nombre</string>
+    <string name="ambiance_name_title">Nombre del ambiente</string>
+    <string name="ambiance_new_name">Ambiente %1$d</string>
+    <string name="ambiance_default_chill">Noche chill</string>
+    <string name="ambiance_default_no_flash">Sin destellos</string>
+    <string name="ambiance_default_party">Fiesta</string>
+    <string name="ambiance_default_smooth">Fluido</string>
+    <string name="preview_live">▶ Reproduciéndose detrás</string>
 </resources>

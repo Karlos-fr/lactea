@@ -61,6 +61,8 @@ class Settings(context: Context) {
 
     /** Keys of the 1.0 built-in presets moved to their pack keys (see VisualizerActivity). */
     var keysOfVersion1Migrated by bool("keys_v1_migrated", false)
+    /** The default ambiances were added once (deleting one must not bring it back). */
+    var defaultAmbiancesAdded by bool("default_ambiances_added", false)
 
     // --- Audio ---
     var beatSensitivity by float("beat_sensitivity", 1f)

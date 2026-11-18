@@ -117,6 +117,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         stats = PresetStats(settings)
         tags = PresetTags(settings)
         playlist = Playlist(settings, stats, tags)
+        addDefaultAmbiances()
         packs = PackManager(this, settings)
         input = RemoteInput(bindings, ::onAction)
         nowPlaying = NowPlaying(this, this)
@@ -352,14 +353,46 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     private fun closePanel() {
         panel?.let { panelLayer.removeView(it) }
+        if (panel is BrowserPanel) endLivePreview(chosen = null)
         panel = null
     }
 
     private fun openBrowser() {
         openPanel(BrowserPanel(this, settings, stats, tags, catalog.previews, playlist,
-            onPlay = { e -> renderer.post { renderer.jumpTo(e) }; closePanel() },
+            onPlay = { e -> endLivePreview(chosen = e); closePanel() },
+            onSelect = ::scheduleLivePreview,
             onClose = ::closePanel,
             ambianceName = settings.activeAmbiance?.let(::ambianceName)), Gravity.CENTER, 0.9f)
+    }
+
+    // ------------------------------------------------------------------ Live preview
+
+    /** Preset playing behind the browser as a live preview, or null. */
+    private var liveKey: String? = null
+    private var liveCandidate: Playlist.Entry? = null
+    private val startLivePreview = Runnable {
+        val e = liveCandidate ?: return@Runnable
+        val browser = panel as? BrowserPanel ?: return@Runnable
+        liveKey = e.key
+        renderer.post { renderer.preview(e) }
+        browser.setLive(e.key)
+    }
+
+    /** The browser's selection moved to [e]: play it behind once the selection rests there. */
+    private fun scheduleLivePreview(e: Playlist.Entry) {
+        ui.removeCallbacks(startLivePreview)
+        liveCandidate = e
+        if (e.key == liveKey) (panel as? BrowserPanel)?.setLive(e.key)
+        else ui.postDelayed(startLivePreview, LIVE_PREVIEW_DELAY_MS)
+    }
+
+    /** [chosen] plays from now on; null puts back the preset playing before the live preview. */
+    private fun endLivePreview(chosen: Playlist.Entry?) {
+        ui.removeCallbacks(startLivePreview)
+        liveCandidate = null
+        if (chosen == null && liveKey == null) return
+        liveKey = null
+        renderer.post { renderer.endPreview(chosen) }
     }
 
     private fun openOptions() {
@@ -593,8 +626,10 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     // ------------------------------------------------------------------ Ambiances
 
-    /** Name built from the criteria (no text to type with a remote): "Supernova, Waveform · ≥ 30 FPS". */
-    private fun ambianceName(a: Ambiance): String {
+    /** Its name, or else one built from the criteria: "Supernova, Waveform · ≥ 30 FPS". */
+    private fun ambianceName(a: Ambiance): String = a.name.ifBlank { ambianceCriteria(a) }
+
+    private fun ambianceCriteria(a: Ambiance): String {
         val cats = a.categories.sorted()
         val catText = when {
             cats.isEmpty() -> getString(R.string.ambiance_all_categories)
@@ -608,6 +643,46 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         ).joinToString(" · ")
     }
 
+    /**
+     * The ambiances offered on first launch (and to users upgrading), added once: one deleted by
+     * the user does not come back. Their names are written in the language of the TV.
+     */
+    private fun addDefaultAmbiances() {
+        if (settings.defaultAmbiancesAdded) return
+        listOf(
+            Ambiance("default-chill", getString(R.string.ambiance_default_chill), chillOnly = true),
+            Ambiance("default-no-flash", getString(R.string.ambiance_default_no_flash), noFlash = true),
+            Ambiance("default-party", getString(R.string.ambiance_default_party),
+                categories = setOf("Dancer", "Particles", "Sparkle", "Supernova")),
+            Ambiance("default-smooth", getString(R.string.ambiance_default_smooth), minFps = 50, noFlash = true),
+        ).forEach(settings::saveAmbiance)
+        settings.defaultAmbiancesAdded = true
+    }
+
+    /** A text field with the remote's on-screen keyboard (or voice); [onDone] gets the trimmed text. */
+    private fun askText(title: String, initial: String, onDone: (String) -> Unit) {
+        val field = android.widget.EditText(this).apply {
+            setText(initial)
+            setSelectAllOnFocus(true)
+            isSingleLine = true
+            imeOptions = android.view.inputmethod.EditorInfo.IME_ACTION_DONE
+        }
+        val box = FrameLayout(this).apply { setPadding(dp(24), dp(8), dp(24), 0); addView(field) }
+        val dialog = android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle(title)
+            .setView(box)
+            .setPositiveButton(android.R.string.ok) { _, _ -> field.text.toString().trim().let { if (it.isNotEmpty()) onDone(it) } }
+            .setNegativeButton(android.R.string.cancel, null)
+            .create()
+        field.setOnEditorActionListener { _, _, _ ->
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).performClick()
+            true
+        }
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        dialog.show()
+        field.requestFocus()
+    }
+
     private fun ambianceCount(a: Ambiance): Int = playlist.all().count { a.accepts(it, stats, settings.fpsCap, tags) }
 
     private fun ambiancesScreen(): MenuScreen = MenuScreen(getString(R.string.btn_ambiances), getString(R.string.ambiances_subtitle)) {
@@ -619,9 +694,11 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 { ids.indexOf(settings.activeAmbianceId).coerceAtLeast(0) },
                 { settings.activeAmbianceId = ids[it]; renderer.post { renderer.next() } }),
             MenuItem.Button(getString(R.string.btn_ambiance_new)) {
-                val a = Ambiance(id = System.currentTimeMillis().toString(36))
-                settings.saveAmbiance(a)
-                menu?.push(ambianceScreen(a.id))
+                askText(getString(R.string.ambiance_name_title), getString(R.string.ambiance_new_name, list.size + 1)) { name ->
+                    val a = Ambiance(id = System.currentTimeMillis().toString(36), name = name)
+                    settings.saveAmbiance(a)
+                    menu?.push(ambianceScreen(a.id))
+                }
             },
             MenuItem.Header(getString(R.string.btn_ambiances)),
         ) + list.map { a ->
@@ -636,6 +713,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         val fpsChoices = listOf(0, 20, 25, 30, 40, 50)
         val categories = playlist.all().map { it.category }.distinct()
         listOf<MenuItem>(
+            MenuItem.Button(getString(R.string.ambiance_name), { ambianceName(a) }) {
+                askText(getString(R.string.ambiance_name_title), a.name) { name ->
+                    settings.saveAmbiance(a.copy(name = name))
+                    menu?.rebuild()
+                }
+            },
             MenuItem.Info(getString(R.string.ambiance_presets)) { getString(R.string.ambiance_count, ambianceCount(a)) },
             MenuItem.Button(getString(R.string.btn_ambiance_use), {
                 if (settings.activeAmbianceId == id) getString(R.string.ambiance_in_use) else ""
@@ -1178,6 +1261,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         private const val TAG = "LACTEA"
         private const val REQ_AUDIO = 1
         private const val AUTO_CLOSE_MS = 30_000L
+        /** How long the browser's selection rests on a preset before it plays behind. */
+        private const val LIVE_PREVIEW_DELAY_MS = 1_000L
         const val EXTRA_AUTO_LAUNCHED = "auto_launched"
         private val VOLUME_KEYS = setOf(KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
         /** Same keys as KeyEvent.isMediaSessionKey(), which only exists from Android 12 (API 31). */

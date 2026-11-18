@@ -326,4 +326,14 @@
     <string name="tag_by_you">choisi par vous</string>
     <string name="tag_measured">mesuré</string>
     <string name="preview_none">Pas d\'aperçu</string>
+
+    <!-- Ambiance names, default ambiances, live preview -->
+    <string name="ambiance_name">Nom</string>
+    <string name="ambiance_name_title">Nom de l\'ambiance</string>
+    <string name="ambiance_new_name">Ambiance %1$d</string>
+    <string name="ambiance_default_chill">Soirée chill</string>
+    <string name="ambiance_default_no_flash">Sans flash</string>
+    <string name="ambiance_default_party">Fête</string>
+    <string name="ambiance_default_smooth">Fluide</string>
+    <string name="preview_live">▶ Joué derrière</string>
 </resources>

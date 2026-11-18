@@ -37,6 +37,17 @@ abstract class ListPanel(context: Context, maxRows: Int) : LinearLayout(context)
         body.addView(v, LayoutParams(dp(widthDp), LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(20); topMargin = dp(4) })
     }
 
+    private val backgroundDrawable = GradientDrawable().apply {
+        setColor(OPAQUE)
+        cornerRadius = dp(18).toFloat()
+        setStroke(dp(1), 0x667C5CFF)
+    }
+
+    /** See-through background, to watch what plays behind (live preview). */
+    protected fun setSeeThrough(on: Boolean) {
+        backgroundDrawable.setColor(if (on) SEE_THROUGH else OPAQUE)
+    }
+
     var count = 0
         private set
     var selected = 0
@@ -46,11 +57,7 @@ abstract class ListPanel(context: Context, maxRows: Int) : LinearLayout(context)
     init {
         orientation = VERTICAL
         setPadding(dp(28), dp(22), dp(28), dp(18))
-        background = GradientDrawable().apply {
-            setColor(0xE60B0F2E.toInt())
-            cornerRadius = dp(18).toFloat()
-            setStroke(dp(1), 0x667C5CFF)
-        }
+        background = backgroundDrawable
         addView(titleView)
         addView(subtitleView)
         body.orientation = HORIZONTAL
@@ -137,12 +144,14 @@ abstract class ListPanel(context: Context, maxRows: Int) : LinearLayout(context)
     private inner class Row(context: Context) : LinearLayout(context) {
         val label = TextView(context).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+            setShadowLayer(4f, 0f, 1f, 0xE6000000.toInt()) // readable over a see-through background
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
         }
         val value = TextView(context).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             setTextColor(0xFF8FE3FF.toInt())
+            setShadowLayer(4f, 0f, 1f, 0xE6000000.toInt())
             isSingleLine = true
             gravity = Gravity.END
         }
@@ -153,5 +162,10 @@ abstract class ListPanel(context: Context, maxRows: Int) : LinearLayout(context)
             addView(label, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
             addView(value, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(16) })
         }
+    }
+
+    private companion object {
+        val OPAQUE = 0xE60B0F2E.toInt()
+        val SEE_THROUGH = 0x800B0F2E.toInt()
     }
 }

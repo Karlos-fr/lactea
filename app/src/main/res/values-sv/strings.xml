@@ -328,4 +328,14 @@
     <string name="tag_by_you">vald av dig</string>
     <string name="tag_measured">uppmätt</string>
     <string name="preview_none">Ingen förhandsvisning</string>
+
+    <!-- Ambiance names, default ambiances, live preview -->
+    <string name="ambiance_name">Namn</string>
+    <string name="ambiance_name_title">Stämningens namn</string>
+    <string name="ambiance_new_name">Stämning %1$d</string>
+    <string name="ambiance_default_chill">Chillkväll</string>
+    <string name="ambiance_default_no_flash">Utan blixtar</string>
+    <string name="ambiance_default_party">Fest</string>
+    <string name="ambiance_default_smooth">Mjukt</string>
+    <string name="preview_live">▶ Spelas bakom</string>
 </resources>

@@ -58,8 +58,12 @@ class LacteaRenderer(
     private var handle = 0L
     private var width = 0
     private var height = 0
-    private var current: Playlist.Entry? = null
+    @Volatile private var current: Playlist.Entry? = null
     private var locked = false
+    /** A preset of the browser plays as a live preview: no automatic change meanwhile. */
+    private var previewing = false
+    /** Preset playing before the live preview, put back if none is chosen. */
+    private var beforePreview: Playlist.Entry? = null
 
     // FPS cap
     private var lastFrameStart = 0L
@@ -116,8 +120,8 @@ class LacteaRenderer(
 
         val switch = NativeEngine.consumeSwitchRequest(handle)
         if (bench == null) when (switch) {
-            1 -> if (!locked) advance(smoothRequested = true)
-            2 -> if (!locked) advance(smoothRequested = false)
+            1 -> if (!locked && !previewing) advance(smoothRequested = true)
+            2 -> if (!locked && !previewing) advance(smoothRequested = false)
         }
         NativeEngine.consumeError(handle)?.let { msg ->
             current?.let { playlist.markFailed(it.key) }
@@ -260,6 +264,34 @@ class LacteaRenderer(
 
     fun jumpTo(entry: Playlist.Entry) = switchTo(playlist.jumpTo(entry), smoothRequested = true)
 
+    /** Live preview of a preset of the browser (cut, outside the playlist history). */
+    fun preview(entry: Playlist.Entry) {
+        if (!previewing) beforePreview = current
+        previewing = true
+        if (entry.key == current?.key) return
+        flushMeasure(SystemClock.elapsedRealtime())
+        load(entry, smooth = false)
+    }
+
+    /**
+     * Ends the live preview: [chosen] plays from now on (without reloading it when it is the
+     * preset previewed), or, when null, the preset playing before the preview comes back.
+     */
+    fun endPreview(chosen: Playlist.Entry?) {
+        val was = previewing
+        val before = beforePreview
+        previewing = false
+        beforePreview = null
+        when {
+            chosen != null && was && chosen.key == current?.key -> playlist.jumpTo(chosen)
+            chosen != null -> jumpTo(chosen)
+            was && before != null && before.key != current?.key -> {
+                flushMeasure(SystemClock.elapsedRealtime())
+                load(before, smooth = false)
+            }
+        }
+    }
+
     /** Switches to a random eligible preset able to show the cover, if any. */
     fun jumpToCoverPreset(): Boolean {
         val pool = playlist.eligible().filter { it.key in coverCompatible && it.key != current?.key }
@@ -284,6 +316,7 @@ class LacteaRenderer(
     // ---- Switching ----
 
     private fun advance(smoothRequested: Boolean) {
+        if (previewing) return
         playlist.next()?.let { switchTo(it, smoothRequested) }
     }
 

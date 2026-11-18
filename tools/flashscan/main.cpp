@@ -248,6 +248,10 @@ int main(int argc, char** argv) {
             clock += 1.0 / o.fps;
             glViewport(0, 0, o.width, o.height);
             projectm_opengl_render_frame(pm);
+            // projectM may leave its own framebuffer bound for reading (the image before the comp
+            // shader): read the window, where the final image is.
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+            glReadBuffer(GL_BACK);
             glReadPixels(0, 0, o.width, o.height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
             if (clip) fwrite(pixels.data(), 1, pixels.size(), clip);
 

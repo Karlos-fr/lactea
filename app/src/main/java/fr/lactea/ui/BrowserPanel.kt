@@ -18,7 +18,8 @@ import fr.lactea.settings.Settings
 /**
  * Preset browser: ◀▶ change list (all, the ambiance in use, each category), ▲▼ browse, OK play,
  * 🟡 favourite, 🔴 exclude, 🟢 tag (chill / OK / flash, over the measured one). The selected
- * preset's preview (4 images) shows on the right.
+ * preset's preview (4 images) shows on the right, and the preset plays behind the browser once the
+ * selection rests on it ([setLive]).
  */
 class BrowserPanel(
     context: Context,
@@ -28,6 +29,8 @@ class BrowserPanel(
     private val previews: Map<String, File>,
     private val playlist: Playlist,
     private val onPlay: (Playlist.Entry) -> Unit,
+    /** The selection moved to this preset (the activity plays it behind once it rests there). */
+    private val onSelect: (Playlist.Entry) -> Unit,
     private val onClose: () -> Unit,
     /** Name of the ambiance in use, shown as a list of its own; null when none. */
     private val ambianceName: String?,
@@ -129,6 +132,7 @@ class BrowserPanel(
     private fun showPreview(e: Playlist.Entry) {
         if (previewKey == e.key) return
         previewKey = e.key
+        onSelect(e)
         val file = previews[e.key]
         val bitmap = file?.takeIf { it.exists() }?.let { BitmapFactory.decodeFile(it.path) }
         previewImage.setImageBitmap(bitmap)
@@ -141,8 +145,17 @@ class BrowserPanel(
             null -> context.getString(R.string.tag_unknown)
         }
         val origin = context.getString(if (tags.manual(e.key) != null) R.string.tag_by_you else R.string.tag_measured)
-        previewCaption.text = (if (bitmap == null) context.getString(R.string.preview_none) + "\n" else "") +
+        captionBase = (if (bitmap == null) context.getString(R.string.preview_none) + "\n" else "") +
             if (tag == null) tagText else "$tagText · $origin"
+        previewCaption.text = captionBase
+    }
+
+    private var captionBase = ""
+
+    /** The selected preset [key] now plays behind the browser, which becomes see-through. */
+    fun setLive(key: String) {
+        setSeeThrough(true)
+        if (key == previewKey) previewCaption.text = captionBase + "\n" + context.getString(R.string.preview_live)
     }
 
     companion object {
