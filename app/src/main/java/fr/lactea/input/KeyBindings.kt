@@ -15,6 +15,7 @@ enum class Action(private val labelRes: Int) {
     TOGGLE_SHUFFLE(R.string.action_shuffle),
     TOGGLE_FAVORITE(R.string.action_favorite),
     TOGGLE_BLACKLIST(R.string.action_blacklist),
+    TOGGLE_IN_PLAYLIST(R.string.action_playlist),
     SHOW_TITLE(R.string.action_show_title),
     SHOW_PRESET_NAME(R.string.action_show_preset_name),
     SENSITIVITY_UP(R.string.action_sens_up),

@@ -259,7 +259,7 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Preset browser</string>
-    <string name="browser_footer">"◀▶ category   OK play   🟡 favourite   🔴 exclude   🟢 tag   Back close"</string>
+    <string name="browser_footer">"◀▶ category   OK play   🟡 favourite   🔴 exclude   🟢 tag   🔵 playlist   Back close"</string>
     <string name="browser_subtitle">"Category: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow   🌙 chill   ⚡ flash"</string>
     <string name="browser_subtitle_ambiance">"Ambiance: %1$s  (%2$d presets)   ★ favourite   ✕ excluded   🐢 slow   🌙 chill   ⚡ flash"</string>
     <string name="browser_all">All</string>
@@ -343,4 +343,26 @@
     <string name="ambiance_default_party">Party</string>
     <string name="ambiance_default_smooth">Smooth</string>
     <string name="preview_live">▶ Playing behind</string>
+
+    <!-- Playlists -->
+    <string name="browser_subtitle_playlist">"Playlist: %1$s  (%2$d presets)   ♪ in the playlist   ★ favourite   ✕ excluded   🐢 slow   🌙 chill   ⚡ flash"</string>
+    <string name="btn_playlist_new">Create a playlist</string>
+    <string name="playlist_new_name">Playlist %1$d</string>
+    <string name="playlist_name_title">Name of the playlist</string>
+    <string name="playlist_edit_title">Playlist</string>
+    <string name="playlist_edit_subtitle">Presets chosen by hand, played in this order or shuffled. In the preset browser, 🔵 adds or removes the selected preset.</string>
+    <string name="btn_playlist_use">Play this playlist</string>
+    <string name="opt_playlist_shuffle">Shuffle</string>
+    <string name="btn_playlist_add">Add presets…</string>
+    <string name="h_playlist_presets">Presets of the playlist</string>
+    <string name="playlist_empty">Empty: add presets from the preset browser (🔵)</string>
+    <string name="btn_playlist_delete">Delete this playlist</string>
+    <string name="btn_play_now">Play now</string>
+    <string name="btn_move_up">Move up</string>
+    <string name="btn_move_down">Move down</string>
+    <string name="btn_playlist_remove">Remove from the playlist</string>
+    <string name="action_playlist">Add to / remove from the playlist</string>
+    <string name="osd_playlist_added">%1$s added to %2$s</string>
+    <string name="osd_playlist_removed">%1$s removed from %2$s</string>
+    <string name="osd_no_playlist">Play a playlist first (%1$s)</string>
 </resources>

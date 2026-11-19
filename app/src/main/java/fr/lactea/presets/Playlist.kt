@@ -59,6 +59,8 @@ class Playlist(private val settings: Settings, private val stats: PresetStats, p
 
     @Synchronized fun eligible(): List<Entry> {
         val blacklist = settings.blacklist + failed
+        // A playlist plays exactly the presets chosen by hand, in their order.
+        playlistEntries(settings.activeAmbiance)?.filter { it.key !in blacklist }?.takeIf { it.isNotEmpty() }?.let { return it }
         val favorites = settings.favorites
         val cap = settings.fpsCap
         val base = all.filter { it.key !in blacklist }
@@ -69,11 +71,19 @@ class Playlist(private val settings: Settings, private val stats: PresetStats, p
         return list.ifEmpty { base.ifEmpty { all } }
     }
 
+    /** The presets of [a] in its order, if it is a playlist (those missing from the library are skipped). */
+    @Synchronized fun playlistEntries(a: Ambiance?): List<Entry>? {
+        if (a == null || !a.playlist) return null
+        val byKey = all.associateBy { it.key }
+        return a.presets.mapNotNull { byKey[it] }
+    }
+
     private fun pickNext(): Entry? {
         val pool = eligible()
         if (pool.isEmpty()) return null
         val cur = current()
-        if (!settings.shuffle) {
+        val shuffle = settings.activeAmbiance?.takeIf { it.playlist && it.presets.isNotEmpty() }?.shuffle ?: settings.shuffle
+        if (!shuffle) {
             val idx = cur?.let { c -> pool.indexOfFirst { it.key == c.key } } ?: -1
             return pool[(idx + 1) % pool.size]
         }

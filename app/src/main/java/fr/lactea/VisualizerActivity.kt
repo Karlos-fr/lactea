@@ -297,6 +297,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 val added = settings.toggleFavorite(it.key)
                 osd.show(getString(if (added) R.string.osd_fav_added else R.string.osd_fav_removed, it.name))
             }
+            Action.TOGGLE_IN_PLAYLIST -> playlist.current()?.let(::togglePlaylistPreset)
             Action.TOGGLE_BLACKLIST -> playlist.current()?.let {
                 val added = settings.toggleBlacklist(it.key)
                 osd.show(getString(if (added) R.string.osd_excluded else R.string.osd_restored, it.name))
@@ -362,6 +363,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             onPlay = { e -> endLivePreview(chosen = e); closePanel() },
             onSelect = ::scheduleLivePreview,
             onClose = ::closePanel,
+            onPlaylistKey = ::togglePlaylistPreset,
             ambianceName = settings.activeAmbiance?.let(::ambianceName)), Gravity.CENTER, 0.9f)
     }
 
@@ -700,12 +702,89 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                     menu?.push(ambianceScreen(a.id))
                 }
             },
+            MenuItem.Button(getString(R.string.btn_playlist_new)) {
+                askText(getString(R.string.playlist_name_title), getString(R.string.playlist_new_name, list.count { it.playlist } + 1)) { name ->
+                    val a = Ambiance(id = System.currentTimeMillis().toString(36), name = name, playlist = true)
+                    settings.saveAmbiance(a)
+                    menu?.push(playlistScreen(a.id))
+                }
+            },
             MenuItem.Header(getString(R.string.btn_ambiances)),
         ) + list.map { a ->
-            MenuItem.Button(ambianceName(a), { getString(R.string.ambiance_count, ambianceCount(a)) }) {
-                menu?.push(ambianceScreen(a.id))
+            MenuItem.Button((if (a.playlist) "♪ " else "") + ambianceName(a), { getString(R.string.ambiance_count, ambianceCount(a)) }) {
+                menu?.push(if (a.playlist) playlistScreen(a.id) else ambianceScreen(a.id))
             }
         }
+    }
+
+    // ------------------------------------------------------------------ Playlists
+
+    /** 🔵 in the browser (or its remote action): adds [e] to / removes it from the playlist in use. */
+    private fun togglePlaylistPreset(e: Playlist.Entry) {
+        val a = settings.activeAmbiance?.takeIf { it.playlist }
+        if (a == null) {
+            osd.show(getString(R.string.osd_no_playlist, getString(R.string.btn_ambiances)), 3000)
+            return
+        }
+        val b = a.toggle(e.key)
+        settings.saveAmbiance(b)
+        osd.show(getString(if (b.contains(e.key)) R.string.osd_playlist_added else R.string.osd_playlist_removed, e.name, ambianceName(b)))
+    }
+
+    /** A playlist: presets chosen by hand, played in their order or shuffled. */
+    private fun playlistScreen(id: String): MenuScreen = MenuScreen(getString(R.string.playlist_edit_title), getString(R.string.playlist_edit_subtitle)) {
+        val a = settings.ambiances.firstOrNull { it.id == id } ?: return@MenuScreen emptyList()
+        val entries = playlist.playlistEntries(a) ?: emptyList()
+        listOf<MenuItem>(
+            MenuItem.Button(getString(R.string.ambiance_name), { ambianceName(a) }) {
+                askText(getString(R.string.playlist_name_title), a.name) { name ->
+                    settings.saveAmbiance(a.copy(name = name))
+                    menu?.rebuild()
+                }
+            },
+            MenuItem.Button(getString(R.string.btn_playlist_use), {
+                if (settings.activeAmbianceId == id) getString(R.string.ambiance_in_use) else ""
+            }) {
+                settings.activeAmbianceId = id
+                renderer.post { renderer.next() }
+                osd.show(getString(R.string.osd_ambiance, ambianceName(a)))
+            },
+            MenuItem.Toggle(getString(R.string.opt_playlist_shuffle), { a.shuffle }, { settings.saveAmbiance(a.copy(shuffle = it)) }),
+            // Puts this playlist in use (without changing the preset) and opens the browser, where 🔵 adds.
+            MenuItem.Button(getString(R.string.btn_playlist_add)) {
+                settings.activeAmbianceId = id
+                openBrowser()
+            },
+            MenuItem.Header(getString(R.string.h_playlist_presets) + "  (" + getString(R.string.ambiance_count, entries.size) + ")"),
+        ) + entries.mapIndexed { i, e ->
+            MenuItem.Button("${i + 1}. ${e.key}") { menu?.push(playlistItemScreen(id, e.key)) }
+        } + listOfNotNull(
+            if (entries.isEmpty()) MenuItem.Info(getString(R.string.playlist_empty)) { "" } else null,
+            MenuItem.Button(getString(R.string.btn_playlist_delete), { confirmLabel("ambiance-$id", "") }) {
+                confirm("ambiance-$id") {
+                    settings.deleteAmbiance(id)
+                    menu?.back()
+                }
+            },
+        )
+    }
+
+    /** One preset of a playlist: play it, move it, remove it. */
+    private fun playlistItemScreen(id: String, key: String): MenuScreen = MenuScreen(key.substringAfterLast('/'), key.substringBefore('/')) {
+        val a = settings.ambiances.firstOrNull { it.id == id } ?: return@MenuScreen emptyList()
+        val pos = a.presets.indexOf(key)
+        if (pos < 0) return@MenuScreen emptyList()
+        listOf<MenuItem>(
+            MenuItem.Button(getString(R.string.btn_play_now)) {
+                playlist.all().firstOrNull { it.key == key }?.let { e -> renderer.post { renderer.jumpTo(e) } }
+            },
+            MenuItem.Button(getString(R.string.btn_move_up), { "${pos + 1} / ${a.presets.size}" }) { settings.saveAmbiance(a.move(key, -1)) },
+            MenuItem.Button(getString(R.string.btn_move_down)) { settings.saveAmbiance(a.move(key, +1)) },
+            MenuItem.Button(getString(R.string.btn_playlist_remove)) {
+                settings.saveAmbiance(a.toggle(key))
+                menu?.back()
+            },
+        )
     }
 
     private fun ambianceScreen(id: String): MenuScreen = MenuScreen(getString(R.string.ambiance_edit_title), getString(R.string.ambiance_edit_subtitle)) {

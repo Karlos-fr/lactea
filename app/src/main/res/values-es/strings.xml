@@ -252,7 +252,7 @@
 
     <!-- Navegador de presets -->
     <string name="browser_title">Navegador de presets</string>
-    <string name="browser_footer">"◀▶ categoría   OK reproducir   🟡 favorito   🔴 excluir   🟢 etiqueta   Atrás cerrar"</string>
+    <string name="browser_footer">"◀▶ categoría   OK reproducir   🟡 favorito   🔴 excluir   🟢 etiqueta   🔵 lista   Atrás cerrar"</string>
     <string name="browser_subtitle">"Categoría: %1$s  (%2$d presets)   ★ favorito   ✕ excluido   🐢 lento   🌙 chill   ⚡ destellos"</string>
     <string name="browser_subtitle_ambiance">"Ambiente: %1$s  (%2$d presets)   ★ favorito   ✕ excluido   🐢 lento   🌙 chill   ⚡ destellos"</string>
     <string name="browser_all">Todas</string>
@@ -336,4 +336,26 @@
     <string name="ambiance_default_party">Fiesta</string>
     <string name="ambiance_default_smooth">Fluido</string>
     <string name="preview_live">▶ Reproduciéndose detrás</string>
+
+    <!-- Playlists -->
+    <string name="browser_subtitle_playlist">"Lista: %1$s  (%2$d presets)   ♪ en la lista   ★ favorito   ✕ excluido   🐢 lento   🌙 chill   ⚡ destellos"</string>
+    <string name="btn_playlist_new">Crear una lista de reproducción</string>
+    <string name="playlist_new_name">Lista %1$d</string>
+    <string name="playlist_name_title">Nombre de la lista</string>
+    <string name="playlist_edit_title">Lista de reproducción</string>
+    <string name="playlist_edit_subtitle">Presets elegidos a mano, reproducidos en este orden o al azar. En el explorador de presets, 🔵 añade o quita el preset seleccionado.</string>
+    <string name="btn_playlist_use">Reproducir esta lista</string>
+    <string name="opt_playlist_shuffle">Orden aleatorio</string>
+    <string name="btn_playlist_add">Añadir presets…</string>
+    <string name="h_playlist_presets">Presets de la lista</string>
+    <string name="playlist_empty">Vacía: añade presets desde el explorador de presets (🔵)</string>
+    <string name="btn_playlist_delete">Eliminar esta lista</string>
+    <string name="btn_play_now">Reproducir ahora</string>
+    <string name="btn_move_up">Subir</string>
+    <string name="btn_move_down">Bajar</string>
+    <string name="btn_playlist_remove">Quitar de la lista</string>
+    <string name="action_playlist">Añadir a / quitar de la lista</string>
+    <string name="osd_playlist_added">%1$s añadido a %2$s</string>
+    <string name="osd_playlist_removed">%1$s quitado de %2$s</string>
+    <string name="osd_no_playlist">Reproduce primero una lista (%1$s)</string>
 </resources>

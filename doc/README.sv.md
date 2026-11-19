@@ -105,7 +105,7 @@ Håll in **OK** för att öppna **Alternativ**. De är grupperade efter tema:
 - **Bild**: renderingsupplösning (från 540p till 4K, eller Auto), högsta upplösning i
   Auto-läget, bilder per sekund (30 eller 60), detaljnivå för nätet, räknare för bilder per sekund.
 - **Presets och övergångar**: när presetet byts (bara vid varje låt, eller även var 10:e sekund
-  till var 5:e minut), stämningar (vilka presets som spelas: kategorier, minsta FPS), övertoning
+  till var 5:e minut), stämningar (vilka presets som spelas: kategorier, minsta FPS), spellistor (handplockade presets, i ordning eller blandat), övertoning
   eller klipp (Auto väljer för varje preset), klipp i takt med musiken, blandat läge, bara
   favoriter, presetets namn vid byte.
 - **Låttitel**: visas vid låtbyte, hur länge, var, hur stor.

@@ -106,7 +106,7 @@ Faites un appui long sur **OK** pour ouvrir les options. Elles sont regroupées 
 - **Visuel** : résolution de rendu (de 540p à 4K, ou Auto), résolution maximale en mode Auto, images
   par seconde (30 ou 60), finesse de la déformation, compteur d'images par seconde.
 - **Presets et transitions** : quand changer de preset (à chaque morceau seulement, ou aussi
-  toutes les 10 s à 5 min), ambiances (quels presets sont joués : catégories, FPS minimum), fondu
+  toutes les 10 s à 5 min), ambiances (quels presets sont joués : catégories, FPS minimum), playlists (presets choisis à la main, dans l’ordre ou au hasard), fondu
   ou coupe (Auto choisit pour chaque preset), coupes sur le rythme, mode aléatoire, favoris
   seulement, nom du preset au changement.
 - **Titre du morceau** : affiché au changement de morceau, durée, position, taille.

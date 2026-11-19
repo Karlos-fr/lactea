@@ -107,7 +107,7 @@ Tieni premuto **OK** per aprire le opzioni. Sono raggruppate per tema:
   massima in modalità Auto, fotogrammi al secondo (30 o 60), dettaglio della griglia, contatore di
   FPS.
 - **Preset e transizioni**: quando cambiare preset (solo a ogni brano, o anche ogni 10 s - 5 min),
-  atmosfere (quali preset vengono riprodotti: categorie, FPS minimi), dissolvenza o stacco netto
+  atmosfere (quali preset vengono riprodotti: categorie, FPS minimi), playlist (preset scelti a mano, in ordine o a caso), dissolvenza o stacco netto
   (Auto sceglie per ogni preset), stacchi a tempo di musica, modalità casuale, solo preferiti, nome
   del preset al cambio.
 - **Titolo del brano**: mostrato al cambio di brano, per quanto tempo, dove, quanto grande.

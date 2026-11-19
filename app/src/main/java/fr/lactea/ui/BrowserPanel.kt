@@ -17,7 +17,8 @@ import fr.lactea.settings.Settings
 
 /**
  * Preset browser: ◀▶ change list (all, the ambiance in use, each category), ▲▼ browse, OK play,
- * 🟡 favourite, 🔴 exclude, 🟢 tag (chill / OK / flash, over the measured one). The selected
+ * 🟡 favourite, 🔴 exclude, 🟢 tag (chill / OK / flash, over the measured one), 🔵 add to / remove
+ * from the playlist in use. The selected
  * preset's preview (4 images) shows on the right, and the preset plays behind the browser once the
  * selection rests on it ([setLive]).
  */
@@ -32,6 +33,8 @@ class BrowserPanel(
     /** The selection moved to this preset (the activity plays it behind once it rests there). */
     private val onSelect: (Playlist.Entry) -> Unit,
     private val onClose: () -> Unit,
+    /** 🔵 on a preset: add it to / remove it from the playlist in use. */
+    private val onPlaylistKey: (Playlist.Entry) -> Unit,
     /** Name of the ambiance in use, shown as a list of its own; null when none. */
     private val ambianceName: String?,
 ) : ListPanel(context, 16) {
@@ -41,7 +44,7 @@ class BrowserPanel(
         val name: String,
         val category: String?,
         val subtitleRes: Int = R.string.browser_subtitle,
-        val accepts: (Playlist.Entry) -> Boolean,
+        val entries: () -> List<Playlist.Entry>,
     )
 
     private var sources: List<Source> = emptyList()
@@ -72,9 +75,15 @@ class BrowserPanel(
     fun reload(focus: Playlist.Entry? = null) {
         val all = playlist.all()
         val ambiance: Ambiance? = settings.activeAmbiance
-        sources = listOf(Source(ALL, null) { true }) +
-            listOfNotNull(ambiance?.let { a -> Source(ambianceName ?: "", null, R.string.browser_subtitle_ambiance) { a.accepts(it, stats, settings.fpsCap, tags) } }) +
-            all.map { it.category }.distinct().map { c -> Source(c, c) { it.category == c } }
+        sources = listOf(Source(ALL, null) { playlist.all() }) +
+            listOfNotNull(ambiance?.let { a ->
+                // A playlist lists its presets in its order, as they are now (🔵 changes them).
+                if (a.playlist) Source(ambianceName ?: "", null, R.string.browser_subtitle_playlist) {
+                    playlist.playlistEntries(settings.activeAmbiance) ?: emptyList()
+                }
+                else Source(ambianceName ?: "", null, R.string.browser_subtitle_ambiance) { all.filter { a.accepts(it, stats, settings.fpsCap, tags) } }
+            }) +
+            all.map { it.category }.distinct().map { c -> Source(c, c) { all.filter { it.category == c } } }
         focus?.let { f -> categoryIndex = 0; filter(); selected = entries.indexOfFirst { it.key == f.key }.coerceAtLeast(0) }
             ?: filter()
         setCount(entries.size)
@@ -82,14 +91,22 @@ class BrowserPanel(
 
     private fun filter() {
         val source = sources.getOrElse(categoryIndex) { sources.first() }
-        val all = playlist.all()
-        entries = if (categoryIndex == 0) all else all.filter(source.accepts)
+        entries = source.entries()
         subtitleView.text = context.getString(source.subtitleRes, source.name, entries.size)
+    }
+
+    /** The playlist in use, read once per refresh. */
+    private var inPlaylist: Ambiance? = null
+
+    override fun refresh() {
+        inPlaylist = settings.activeAmbiance?.takeIf { it.playlist }
+        super.refresh()
     }
 
     override fun bindRow(index: Int, label: TextView, value: TextView, isSelected: Boolean) {
         val e = entries[index]
         val marks = buildString {
+            if (inPlaylist?.contains(e.key) == true) append("♪ ")
             if (e.key in settings.favorites) append("★ ")
             if (e.key in settings.blacklist) append("✕ ")
             if (stats.isSlow(e.key, settings.fpsCap)) append("🐢 ")
@@ -124,6 +141,15 @@ class BrowserPanel(
             KeyEvent.KEYCODE_PROG_YELLOW -> entry?.let { settings.toggleFavorite(it.key); refresh() }
             KeyEvent.KEYCODE_PROG_RED -> entry?.let { settings.toggleBlacklist(it.key); refresh() }
             KeyEvent.KEYCODE_PROG_GREEN -> entry?.let { tags.cycle(it.key); previewKey = null; refresh() }
+            KeyEvent.KEYCODE_PROG_BLUE -> entry?.let {
+                onPlaylistKey(it)
+                // In the playlist's own list, a removed preset leaves it.
+                if (sources.getOrNull(categoryIndex)?.subtitleRes == R.string.browser_subtitle_playlist) {
+                    filter()
+                    setCount(entries.size)
+                }
+                refresh()
+            }
         }
         return true
     }

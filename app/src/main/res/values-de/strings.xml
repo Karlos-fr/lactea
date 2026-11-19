@@ -254,7 +254,7 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Preset-Browser</string>
-    <string name="browser_footer">"◀▶ Kategorie   OK abspielen   🟡 Favorit   🔴 ausschließen   🟢 Markierung   Zurück schließen"</string>
+    <string name="browser_footer">"◀▶ Kategorie   OK abspielen   🟡 Favorit   🔴 ausschließen   🟢 Markierung   🔵 Playlist   Zurück schließen"</string>
     <string name="browser_subtitle">"Kategorie: %1$s  (%2$d Presets)   ★ Favorit   ✕ ausgeschlossen   🐢 langsam   🌙 Chill   ⚡ Blitze"</string>
     <string name="browser_subtitle_ambiance">"Stimmung: %1$s  (%2$d Presets)   ★ Favorit   ✕ ausgeschlossen   🐢 langsam   🌙 Chill   ⚡ Blitze"</string>
     <string name="browser_all">Alle</string>
@@ -338,4 +338,26 @@
     <string name="ambiance_default_party">Party</string>
     <string name="ambiance_default_smooth">Flüssig</string>
     <string name="preview_live">▶ Läuft im Hintergrund</string>
+
+    <!-- Playlists -->
+    <string name="browser_subtitle_playlist">"Playlist: %1$s  (%2$d Presets)   ♪ in der Playlist   ★ Favorit   ✕ ausgeschlossen   🐢 langsam   🌙 Chill   ⚡ Blitze"</string>
+    <string name="btn_playlist_new">Playlist erstellen</string>
+    <string name="playlist_new_name">Playlist %1$d</string>
+    <string name="playlist_name_title">Name der Playlist</string>
+    <string name="playlist_edit_title">Playlist</string>
+    <string name="playlist_edit_subtitle">Von Hand gewählte Presets, in dieser Reihenfolge oder zufällig gespielt. Im Preset-Browser fügt 🔵 das gewählte Preset hinzu oder entfernt es.</string>
+    <string name="btn_playlist_use">Diese Playlist abspielen</string>
+    <string name="opt_playlist_shuffle">Zufällige Reihenfolge</string>
+    <string name="btn_playlist_add">Presets hinzufügen…</string>
+    <string name="h_playlist_presets">Presets der Playlist</string>
+    <string name="playlist_empty">Leer: Presets im Preset-Browser hinzufügen (🔵)</string>
+    <string name="btn_playlist_delete">Diese Playlist löschen</string>
+    <string name="btn_play_now">Jetzt abspielen</string>
+    <string name="btn_move_up">Nach oben</string>
+    <string name="btn_move_down">Nach unten</string>
+    <string name="btn_playlist_remove">Aus der Playlist entfernen</string>
+    <string name="action_playlist">Zur Playlist hinzufügen / entfernen</string>
+    <string name="osd_playlist_added">%1$s zu %2$s hinzugefügt</string>
+    <string name="osd_playlist_removed">%1$s aus %2$s entfernt</string>
+    <string name="osd_no_playlist">Zuerst eine Playlist abspielen (%1$s)</string>
 </resources>

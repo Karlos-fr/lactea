@@ -86,7 +86,7 @@ abstract class ListPanel(context: Context, maxRows: Int) : LinearLayout(context)
         refresh()
     }
 
-    fun refresh() {
+    open fun refresh() {
         if (selected < top) top = selected
         if (selected >= top + visibleRows) top = selected - visibleRows + 1
         top = top.coerceIn(0, (count - visibleRows).coerceAtLeast(0))

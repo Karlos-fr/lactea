@@ -254,7 +254,7 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Browser dei preset</string>
-    <string name="browser_footer">"◀▶ categoria   OK riproduci   🟡 preferito   🔴 escludi   🟢 etichetta   Indietro chiudi"</string>
+    <string name="browser_footer">"◀▶ categoria   OK riproduci   🟡 preferito   🔴 escludi   🟢 etichetta   🔵 playlist   Indietro chiudi"</string>
     <string name="browser_subtitle">"Categoria: %1$s  (%2$d preset)   ★ preferito   ✕ escluso   🐢 lento   🌙 chill   ⚡ flash"</string>
     <string name="browser_subtitle_ambiance">"Atmosfera: %1$s  (%2$d preset)   ★ preferito   ✕ escluso   🐢 lento   🌙 chill   ⚡ flash"</string>
     <string name="browser_all">Tutti</string>
@@ -338,4 +338,26 @@
     <string name="ambiance_default_party">Festa</string>
     <string name="ambiance_default_smooth">Fluido</string>
     <string name="preview_live">▶ In riproduzione dietro</string>
+
+    <!-- Playlists -->
+    <string name="browser_subtitle_playlist">"Playlist: %1$s  (%2$d preset)   ♪ nella playlist   ★ preferito   ✕ escluso   🐢 lento   🌙 chill   ⚡ flash"</string>
+    <string name="btn_playlist_new">Crea una playlist</string>
+    <string name="playlist_new_name">Playlist %1$d</string>
+    <string name="playlist_name_title">Nome della playlist</string>
+    <string name="playlist_edit_title">Playlist</string>
+    <string name="playlist_edit_subtitle">Preset scelti a mano, riprodotti in quest\'ordine o a caso. Nel browser dei preset, 🔵 aggiunge o toglie il preset selezionato.</string>
+    <string name="btn_playlist_use">Riproduci questa playlist</string>
+    <string name="opt_playlist_shuffle">Ordine casuale</string>
+    <string name="btn_playlist_add">Aggiungi preset…</string>
+    <string name="h_playlist_presets">Preset della playlist</string>
+    <string name="playlist_empty">Vuota: aggiungi preset dal browser dei preset (🔵)</string>
+    <string name="btn_playlist_delete">Elimina questa playlist</string>
+    <string name="btn_play_now">Riproduci ora</string>
+    <string name="btn_move_up">Sposta su</string>
+    <string name="btn_move_down">Sposta giù</string>
+    <string name="btn_playlist_remove">Togli dalla playlist</string>
+    <string name="action_playlist">Aggiungi alla / togli dalla playlist</string>
+    <string name="osd_playlist_added">%1$s aggiunto a %2$s</string>
+    <string name="osd_playlist_removed">%1$s tolto da %2$s</string>
+    <string name="osd_no_playlist">Riproduci prima una playlist (%1$s)</string>
 </resources>

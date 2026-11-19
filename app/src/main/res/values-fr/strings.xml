@@ -252,7 +252,7 @@
 
     <!-- Navigateur de presets -->
     <string name="browser_title">Navigateur de presets</string>
-    <string name="browser_footer">"◀▶ catégorie   OK lire   🟡 favori   🔴 exclure   🟢 étiquette   Retour fermer"</string>
+    <string name="browser_footer">"◀▶ catégorie   OK lire   🟡 favori   🔴 exclure   🟢 étiquette   🔵 playlist   Retour fermer"</string>
     <string name="browser_subtitle">"Catégorie : %1$s  (%2$d presets)   ★ favori   ✕ exclu   🐢 lent   🌙 chill   ⚡ flash"</string>
     <string name="browser_subtitle_ambiance">"Ambiance : %1$s  (%2$d presets)   ★ favori   ✕ exclu   🐢 lent   🌙 chill   ⚡ flash"</string>
     <string name="browser_all">Toutes</string>
@@ -336,4 +336,26 @@
     <string name="ambiance_default_party">Fête</string>
     <string name="ambiance_default_smooth">Fluide</string>
     <string name="preview_live">▶ Joué derrière</string>
+
+    <!-- Playlists -->
+    <string name="browser_subtitle_playlist">"Playlist : %1$s  (%2$d presets)   ♪ dans la playlist   ★ favori   ✕ exclu   🐢 lent   🌙 chill   ⚡ flash"</string>
+    <string name="btn_playlist_new">Créer une playlist</string>
+    <string name="playlist_new_name">Playlist %1$d</string>
+    <string name="playlist_name_title">Nom de la playlist</string>
+    <string name="playlist_edit_title">Playlist</string>
+    <string name="playlist_edit_subtitle">Presets choisis à la main, joués dans cet ordre ou au hasard. Dans le navigateur de presets, 🔵 ajoute ou retire le preset sélectionné.</string>
+    <string name="btn_playlist_use">Jouer cette playlist</string>
+    <string name="opt_playlist_shuffle">Lecture aléatoire</string>
+    <string name="btn_playlist_add">Ajouter des presets…</string>
+    <string name="h_playlist_presets">Presets de la playlist</string>
+    <string name="playlist_empty">Vide : ajoutez des presets depuis le navigateur de presets (🔵)</string>
+    <string name="btn_playlist_delete">Supprimer cette playlist</string>
+    <string name="btn_play_now">Jouer maintenant</string>
+    <string name="btn_move_up">Monter</string>
+    <string name="btn_move_down">Descendre</string>
+    <string name="btn_playlist_remove">Retirer de la playlist</string>
+    <string name="action_playlist">Ajouter à / retirer de la playlist</string>
+    <string name="osd_playlist_added">%1$s ajouté à %2$s</string>
+    <string name="osd_playlist_removed">%1$s retiré de %2$s</string>
+    <string name="osd_no_playlist">Jouez d\'abord une playlist (%1$s)</string>
 </resources>

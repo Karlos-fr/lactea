@@ -254,7 +254,7 @@
 
     <!-- Preset browser -->
     <string name="browser_title">Preset-bläddrare</string>
-    <string name="browser_footer">"◀▶ kategori   OK spela   🟡 favorit   🔴 undanta   🟢 märkning   Tillbaka stäng"</string>
+    <string name="browser_footer">"◀▶ kategori   OK spela   🟡 favorit   🔴 undanta   🟢 märkning   🔵 spellista   Tillbaka stäng"</string>
     <string name="browser_subtitle">"Kategori: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam   🌙 chill   ⚡ blixtar"</string>
     <string name="browser_subtitle_ambiance">"Stämning: %1$s  (%2$d presets)   ★ favorit   ✕ undantagen   🐢 långsam   🌙 chill   ⚡ blixtar"</string>
     <string name="browser_all">Alla</string>
@@ -338,4 +338,26 @@
     <string name="ambiance_default_party">Fest</string>
     <string name="ambiance_default_smooth">Mjukt</string>
     <string name="preview_live">▶ Spelas bakom</string>
+
+    <!-- Playlists -->
+    <string name="browser_subtitle_playlist">"Spellista: %1$s  (%2$d presets)   ♪ i spellistan   ★ favorit   ✕ undantagen   🐢 långsam   🌙 chill   ⚡ blixtar"</string>
+    <string name="btn_playlist_new">Skapa en spellista</string>
+    <string name="playlist_new_name">Spellista %1$d</string>
+    <string name="playlist_name_title">Spellistans namn</string>
+    <string name="playlist_edit_title">Spellista</string>
+    <string name="playlist_edit_subtitle">Handplockade presets, spelade i denna ordning eller blandat. I presetbläddraren lägger 🔵 till eller tar bort det valda presetet.</string>
+    <string name="btn_playlist_use">Spela denna spellista</string>
+    <string name="opt_playlist_shuffle">Blanda</string>
+    <string name="btn_playlist_add">Lägg till presets…</string>
+    <string name="h_playlist_presets">Spellistans presets</string>
+    <string name="playlist_empty">Tom: lägg till presets i presetbläddraren (🔵)</string>
+    <string name="btn_playlist_delete">Ta bort denna spellista</string>
+    <string name="btn_play_now">Spela nu</string>
+    <string name="btn_move_up">Flytta upp</string>
+    <string name="btn_move_down">Flytta ned</string>
+    <string name="btn_playlist_remove">Ta bort från spellistan</string>
+    <string name="action_playlist">Lägg till i / ta bort från spellistan</string>
+    <string name="osd_playlist_added">%1$s tillagd i %2$s</string>
+    <string name="osd_playlist_removed">%1$s borttagen från %2$s</string>
+    <string name="osd_no_playlist">Spela först en spellista (%1$s)</string>
 </resources>

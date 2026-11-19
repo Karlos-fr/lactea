@@ -31,6 +31,11 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
 - Ambiances have a name, typed with the remote's keyboard (or voice) when creating one, and can be
   renamed. Four ambiances are offered once: Chill evening, No flash, Party (Dancer, Particles,
   Sparkle, Supernova) and Smooth (no flash, at least 50 FPS).
+- Playlists (Options › Presets and transitions › Ambiances › Create a playlist): presets chosen by
+  hand, played in their order or shuffled. In the preset browser, 🔵 adds or removes the selected
+  preset of the playlist in use, which also has a list of its own there; each preset of a playlist
+  can be played, moved up or down, or removed. A remote action (no key by default) adds or removes
+  the preset playing.
 - New preset "Lactea - Spectre" (Lactea pack): Winamp's spectrum analyser, identical to the original
   (classic skin, default settings): same FFT equalisation, 19 bands over 75 columns, bars falling
   12/16 px per frame, peaks falling faster and faster, the 76 x 16 pixel grid with its dotted
