@@ -61,13 +61,27 @@ class WebRemote(private val host: Host) : TvRemote.App {
 
     private var remote: TvRemote? = null
     val url: String? get() = remote?.url()
+    /** http://lactea.local:8771/, or null. */
+    val localName: String? get() = remote?.localName()
+    /** Why the server could not start, or null. */
+    val error: String? get() = TvRemote.lastError()
+
+    /** Runs on the main thread when the address or the .local name changed. */
+    var onAddressChanged: (() -> Unit)? = null
     val running: Boolean get() = remote?.running() == true
 
     fun start(): Boolean {
         if (running) return true
         // 8771: Proscenium, on the same TVs, takes 8770.
-        remote = TvRemote.start(host.context, this, TvRemote.Options().port(PORT))
-        remote?.let { android.util.Log.i("Lactea", "Web remote: ${it.url()}") }
+        val s = host.settings
+        remote = TvRemote.start(host.context, this, TvRemote.Options()
+            .port(PORT)
+            .access(if (s.webFixedAddress) TvRemote.ACCESS_OPEN else TvRemote.ACCESS_TOKEN)
+            .hostname(TvRemote.cleanHostname(s.webName, "lactea"))
+            .password(s.webPassword)
+            .realm("Lactea")
+            .onAddressChanged { onAddressChanged?.invoke() })
+        remote?.let { android.util.Log.i("Lactea", "Web remote: ${it.url()} ${it.localName() ?: ""}") }
         if (remote != null) pushState()
         return remote != null
     }
@@ -76,6 +90,14 @@ class WebRemote(private val host: Host) : TvRemote.App {
         remote?.stop()
         remote = null
     }
+
+    /** New address settings (fixed or not, name): the server starts again. */
+    fun restart() {
+        stop()
+        start()
+    }
+
+    fun setPassword(p: String) = remote?.setPassword(p)
 
     fun qr(px: Int) = remote?.qrBitmap(px)
 
@@ -104,6 +126,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
     override fun info(): AppInfo = AppInfo("Lactea", host.version, LIVE)
         .lang(host.language)
         .accent(0xFF7C5CFF.toInt())
+        .theme("background", "#0B0F2E")
         .tab(LIVE, str(R.string.web_live), null)
         .tab(PRESETS, str(R.string.web_presets), null)
         .tab("ambiances", str(R.string.btn_ambiances), null)

@@ -380,4 +380,9 @@
     <string name="web_no_network">nessuna rete locale</string>
     <string name="web_qr_footer">Scansionalo con un telefono sulla stessa rete.   OK / Indietro chiudi</string>
     <string name="web_playlists">Playlist</string>
+    <!-- Web remote: address -->
+    <string name="opt_web_fixed">Indirizzo fisso (nome.local)</string>
+    <string name="opt_web_name">Nome sulla rete</string>
+    <string name="opt_web_password">Password del telecomando web</string>
+    <string name="web_password_none">nessuna</string>
 </resources>

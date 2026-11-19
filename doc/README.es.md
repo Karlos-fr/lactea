@@ -117,8 +117,10 @@ paneles de Lactea y sigue la TV en directo:
 - **Ambientes**: ambientes y listas de reproducción (reordena los presets de una lista).
 - **Opciones**: todas las opciones de la TV, packs incluidos.
 
-En un ordenador, Escape vuelve atrás y ← / → cambian de preset. La dirección cambia cada vez que
-Lactea arranca (puerto 8771); el mando web se desactiva en el mismo menú.
+En un ordenador, Escape vuelve atrás y ← / → cambian de preset. La dirección se queda en **http://lactea.local:8771/** (o la dirección IP de la TV, que
+da el código QR, para los móviles que no conocen los nombres .local). El mismo menú ajusta el nombre
+en la red, una contraseña (la pide el navegador; viaja sin cifrar por la red local), una dirección
+aleatoria en cada arranque en su lugar, y desactiva el mando web.
 
 ## Opciones
 

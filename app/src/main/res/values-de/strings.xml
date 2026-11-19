@@ -380,4 +380,9 @@
     <string name="web_no_network">kein lokales Netz</string>
     <string name="web_qr_footer">Mit einem Handy im selben Netz scannen.   OK / Zurück schließen</string>
     <string name="web_playlists">Playlists</string>
+    <!-- Web remote: address -->
+    <string name="opt_web_fixed">Feste Adresse (name.local)</string>
+    <string name="opt_web_name">Name im Netzwerk</string>
+    <string name="opt_web_password">Passwort der Web-Fernbedienung</string>
+    <string name="web_password_none">keins</string>
 </resources>

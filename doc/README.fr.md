@@ -116,8 +116,10 @@ et suit la TV en direct :
 - **Ambiances** : les ambiances et les playlists (réordonner les presets d'une playlist).
 - **Options** : toutes les options de la TV, packs compris.
 
-Sur un ordinateur, Échap revient en arrière et ← / → changent de preset. L'adresse change à chaque
-lancement de Lactea (port 8771) ; la télécommande web se désactive dans le même menu.
+Sur un ordinateur, Échap revient en arrière et ← / → changent de preset. L'adresse reste **http://lactea.local:8771/** (ou l'adresse IP de la TV,
+donnée par le QR code, pour les téléphones qui ne connaissent pas les noms .local). Le même menu
+règle le nom sur le réseau, un mot de passe (demandé par le navigateur ; il passe en clair sur le
+réseau local), une adresse aléatoire à chaque lancement à la place, et désactive la télécommande web.
 
 ## Options
 

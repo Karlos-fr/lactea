@@ -237,6 +237,11 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     override fun onStart() {
         super.onStart()
+        // A new address (DHCP) or a .local name taken ("-2"): the QR code and the options follow.
+        webRemote.onAddressChanged = {
+            if (panel is QrPanel) showWebQr()
+            menu?.rebuild()
+        }
         if (settings.webRemote) webRemote.start()
     }
 
@@ -590,10 +595,30 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Button(getString(R.string.btn_web_qr), {
                 when {
                     !settings.webRemote -> getString(R.string.web_off)
-                    webRemote.running -> webRemote.url?.removePrefix("http://")?.substringBefore('/') ?: ""
-                    else -> getString(R.string.web_no_network)
+                    webRemote.running -> (webRemote.localName ?: webRemote.url)?.removePrefix("http://")?.substringBefore('/') ?: ""
+                    else -> webRemote.error ?: getString(R.string.web_no_network)
                 }
             }) { showWebQr() }.tvOnly(),
+            // Changing them from the phone would cut it off: on the TV only.
+            MenuItem.Toggle(getString(R.string.opt_web_fixed), { settings.webFixedAddress }) {
+                settings.webFixedAddress = it
+                if (settings.webRemote) webRemote.restart()
+            }.tvOnly(),
+            MenuItem.Text(getString(R.string.opt_web_name), getString(R.string.opt_web_name), { settings.webName + ".local" }) {
+                settings.webName = fr.tvremote.core.TvRemote.cleanHostname(it.removeSuffix(".local"), "lactea")
+                if (settings.webRemote) webRemote.restart()
+            }.tvOnly(),
+            MenuItem.Text(getString(R.string.opt_web_password), getString(R.string.opt_web_password), {
+                if (settings.webPassword.isEmpty()) getString(R.string.web_password_none) else "••••••"
+            }) {
+                // "none" (in the TV's language) removes it; the dots leave it as it is.
+                settings.webPassword = when {
+                    it.equals(getString(R.string.web_password_none), ignoreCase = true) -> ""
+                    it == "••••••" -> settings.webPassword
+                    else -> it
+                }
+                webRemote.setPassword(settings.webPassword)
+            }.tvOnly(),
             MenuItem.Button(getString(R.string.btn_keys), opens = ::remoteScreen).tvOnly(),
             MenuItem.Button(getString(R.string.btn_key_help)) { onAction(Action.SHOW_HELP) }.tvOnly(),
 
@@ -675,7 +700,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             return
         }
         val qr = webRemote.qr(dp(260)) ?: return
-        openPanel(QrPanel(this, qr, webRemote.url ?: "") { openOptions() }, Gravity.CENTER, 0.6f)
+        val address = listOfNotNull(webRemote.url, webRemote.localName).joinToString("\n")
+        openPanel(QrPanel(this, qr, address) { openOptions() }, Gravity.CENTER, 0.6f)
     }
 
     /** The options screen [id] (see MenuScreen.id), as the web remote asks for it. */

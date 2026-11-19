@@ -115,8 +115,10 @@ direkt:
 - **Stämningar**: stämningar och spellistor (ändra ordningen på en spellistas presets).
 - **Alternativ**: alla tv:ns alternativ, paketen inräknade.
 
-På en dator går Escape tillbaka och ← / → byter preset. Adressen ändras varje gång Lactea startar
-(port 8771); webbfjärrkontrollen kan stängas av i samma meny.
+På en dator går Escape tillbaka och ← / → byter preset. Adressen förblir **http://lactea.local:8771/** (eller tv:ns IP-adress i QR-koden, för
+telefoner som inte känner till .local-namn). I samma meny ställer du in namnet i nätverket, ett
+lösenord (som webbläsaren frågar efter; det skickas okrypterat i det lokala nätverket), en slumpmässig
+adress vid varje start i stället, och stänger av webbfjärrkontrollen.
 
 ## Alternativ
 

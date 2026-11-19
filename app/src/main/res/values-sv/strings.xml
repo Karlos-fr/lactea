@@ -380,4 +380,9 @@
     <string name="web_no_network">inget lokalt nätverk</string>
     <string name="web_qr_footer">Skanna den med en telefon i samma nätverk.   OK / Tillbaka stäng</string>
     <string name="web_playlists">Spellistor</string>
+    <!-- Web remote: address -->
+    <string name="opt_web_fixed">Fast adress (namn.local)</string>
+    <string name="opt_web_name">Namn i nätverket</string>
+    <string name="opt_web_password">Webbfjärrkontrollens lösenord</string>
+    <string name="web_password_none">inget</string>
 </resources>

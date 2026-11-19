@@ -66,6 +66,12 @@ class Settings(context: Context) {
 
     /** The web remote: a page on the local network, opened from a phone with a QR code. */
     var webRemote by bool("web_remote", true)
+    /** Fixed address http://<name>.local:8771/ (else a new random one at each start). */
+    var webFixedAddress by bool("web_fixed_address", true)
+    /** Name on the local network, without ".local". */
+    var webName by string("web_name", "lactea")
+    /** Password of the web remote; empty: none. */
+    var webPassword by string("web_password", "")
 
     // --- Audio ---
     var beatSensitivity by float("beat_sensitivity", 1f)

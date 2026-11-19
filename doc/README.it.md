@@ -117,8 +117,10 @@ in diretta:
 - **Atmosfere**: atmosfere e playlist (riordina i preset di una playlist).
 - **Opzioni**: tutte le opzioni della TV, pacchetti compresi.
 
-Su un computer, Esc torna indietro e ← / → cambiano preset. L'indirizzo cambia a ogni avvio di
-Lactea (porta 8771); il telecomando web si disattiva nello stesso menu.
+Su un computer, Esc torna indietro e ← / → cambiano preset. L'indirizzo resta **http://lactea.local:8771/** (o l'indirizzo IP della TV, dato dal codice
+QR, per i telefoni che non conoscono i nomi .local). Lo stesso menu imposta il nome sulla rete, una
+password (chiesta dal browser; passa in chiaro sulla rete locale), un indirizzo casuale a ogni avvio
+al suo posto, e disattiva il telecomando web.
 
 ## Opzioni
 

@@ -113,8 +113,10 @@ browser (same network). The page has the look of Lactea's panels and follows the
 - **Ambiances**: ambiances and playlists (reorder a playlist's presets).
 - **Options**: all the options of the TV, packs included.
 
-On a computer, Escape goes back and ← / → change the preset. The address changes each time Lactea
-starts (port 8771); the web remote can be turned off in the same menu.
+On a computer, Escape goes back and ← / → change the preset. The address stays **http://lactea.local:8771/** (or the TV's IP address, given in the QR
+code, for phones that do not know .local names). The same menu sets the name on the network, a
+password (asked by the browser; it travels in clear on the local network), a new random address at
+each start instead, and turns the web remote off.
 
 ## Options
 

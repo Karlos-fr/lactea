@@ -385,4 +385,9 @@
     <string name="web_no_network">no local network</string>
     <string name="web_qr_footer">Scan it with a phone on the same network.   OK / Back close</string>
     <string name="web_playlists">Playlists</string>
+    <!-- Web remote: address -->
+    <string name="opt_web_fixed">Fixed address (name.local)</string>
+    <string name="opt_web_name">Name on the network</string>
+    <string name="opt_web_password">Password of the web remote</string>
+    <string name="web_password_none">none</string>
 </resources>

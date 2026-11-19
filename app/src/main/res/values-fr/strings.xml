@@ -378,4 +378,9 @@
     <string name="web_no_network">pas de réseau local</string>
     <string name="web_qr_footer">Scannez-le avec un téléphone sur le même réseau.   OK / Retour fermer</string>
     <string name="web_playlists">Playlists</string>
+    <!-- Web remote: address -->
+    <string name="opt_web_fixed">Adresse fixe (nom.local)</string>
+    <string name="opt_web_name">Nom sur le réseau</string>
+    <string name="opt_web_password">Mot de passe de la télécommande web</string>
+    <string name="web_password_none">aucun</string>
 </resources>

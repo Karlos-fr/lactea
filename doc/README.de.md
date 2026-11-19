@@ -121,8 +121,10 @@ die Menüs von Lactea und folgt dem Fernseher live:
 - **Stimmungen**: Stimmungen und Playlists (Reihenfolge der Presets einer Playlist ändern).
 - **Optionen**: alle Optionen des Fernsehers, auch die Pakete.
 
-Am Computer geht Escape zurück und ← / → wechseln das Preset. Die Adresse ändert sich bei jedem
-Start von Lactea (Port 8771); die Web-Fernbedienung lässt sich im selben Menü ausschalten.
+Am Computer geht Escape zurück und ← / → wechseln das Preset. Die Adresse bleibt **http://lactea.local:8771/** (oder die IP-Adresse des Fernsehers aus
+dem QR-Code, für Handys, die keine .local-Namen kennen). Im selben Menü lassen sich der Name im
+Netzwerk, ein Passwort (vom Browser abgefragt; es geht im lokalen Netz unverschlüsselt), stattdessen
+eine zufällige Adresse bei jedem Start und das Ausschalten der Web-Fernbedienung einstellen.
 
 ## Optionen
 
