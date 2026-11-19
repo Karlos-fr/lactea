@@ -35,7 +35,7 @@ Version actuelle : **1.0.0** — [télécharger l'APK](https://github.com/Karlos
 
 - **Réagit à toute la musique jouée sur la TV**, quelle que soit l'appli, y compris quand le son
   part vers une barre de son en HDMI (ARC / eARC).
-- **9 797 presets** en 11 packs à choisir et télécharger depuis l'appli ; aucun n'est intégré.
+- **9 803 presets** en 11 packs à choisir et télécharger depuis l'appli ; aucun n'est intégré.
   Tous les presets de la collection se chargent, grâce aux corrections apportées à projectM (voir
   plus bas).
 - **Titre et pochette d'album** à l'écran à chaque changement de morceau ; la pochette peut aussi
@@ -48,12 +48,16 @@ Version actuelle : **1.0.0** — [télécharger l'APK](https://github.com/Karlos
 - **Favoris et exclusions**, navigateur de presets, mode aléatoire et verrouillage du preset en cours.
 - **Six langues** : français, anglais, allemand, italien, espagnol et suédois, selon la langue de la
   TV (anglais pour toute autre langue), ou choisie dans **Options › Langue**.
+- **Doux pour les yeux** : chaque preset est étiqueté ⚡ flash, 🌙 chill ou OK, et a un aperçu ;
+  ne jouez que les calmes, ou aucun qui flashe.
+- **Télécommande web** : scannez un QR code avec votre téléphone, ou ouvrez la page sur un
+  ordinateur, pour parcourir les presets, faire des playlists et changer toutes les options.
 
 ## Configuration requise
 
 - Une TV ou un boîtier sous **Android TV ou Google TV**, Android 8.0 ou plus, avec OpenGL ES 3.0.
 - Testé sur une **Sony BRAVIA** (Google TV, puce graphique Mali-G57).
-- Environ 8 Mo pour l'appli, et environ 30 Mo à télécharger pour tous les packs de presets.
+- Environ 8 Mo pour l'appli, et environ 120 Mo à télécharger pour tous les packs de presets.
 
 ## Installation
 
@@ -99,6 +103,22 @@ sur la TV) :
 
 Chaque touche se change dans **Options › Télécommande**, avec un appui court ou long.
 
+## Télécommande web
+
+Tant que Lactea est à l'écran, il sert une page sur votre réseau local. Dans **Options ›
+Télécommande › Afficher le QR code**, scannez le code avec un téléphone, ou tapez l'adresse affichée
+dessous dans le navigateur d'un ordinateur (même réseau). La page a l'allure des panneaux de Lactea
+et suit la TV en direct :
+
+- **En cours** : l'aperçu du preset, la chanson, précédent / suivant, favori, verrou, ambiance.
+- **Presets** : tous les presets installés avec leur aperçu et une recherche ; ouvrez-en un pour le
+  jouer, le marquer, l'étiqueter ou l'ajouter à des playlists.
+- **Ambiances** : les ambiances et les playlists (réordonner les presets d'une playlist).
+- **Options** : toutes les options de la TV, packs compris.
+
+Sur un ordinateur, Échap revient en arrière et ← / → changent de preset. L'adresse change à chaque
+lancement de Lactea (port 8771) ; la télécommande web se désactive dans le même menu.
+
 ## Options
 
 Faites un appui long sur **OK** pour ouvrir les options. Elles sont regroupées par thème :
@@ -128,6 +148,16 @@ Fractal, Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform)
 utilisées par les presets forment un pack **Textures**, installé automatiquement avec le premier
 pack. Ajoutez ou retirez des packs quand vous voulez dans
 **Options › Gestion des presets › Packs de presets à télécharger**.
+
+Le pack **Lactea** contient les presets faits pour Lactea : deux analyseurs de spectre (celui de
+Winamp, et un néon), deux voyages dans un trou de ver, un lagon ensoleillé sous l'eau et le verre
+(Eau), un feu d'artifice (Feux d'artifice), et six presets construits autour de la pochette.
+
+Chaque preset des packs a été rendu et analysé sur un PC : il est étiqueté ⚡ flash, 🌙 chill ou OK,
+et le navigateur de presets montre son aperçu (4 moments). Les ambiances peuvent écarter les presets
+qui flashent (**Sans flash**) ou ne garder que les calmes (**Chill seulement**). Dans le navigateur,
+🟢 change l'étiquette d'un preset, 🔵 l'ajoute à la playlist en cours, et le preset sélectionné joue
+derrière le navigateur au bout d'une seconde.
 
 ## Presets lents
 

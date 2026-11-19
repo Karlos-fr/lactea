@@ -35,7 +35,7 @@ Aktuelle Version: **1.0.0** — [APK herunterladen](https://github.com/Karlos-fr
 
 - **Reagiert auf alle Musik, die auf dem Fernseher läuft**, egal aus welcher App, auch wenn der Ton
   über HDMI (ARC / eARC) an eine Soundbar geht.
-- **9.797 Presets** in 11 Paketen, die Sie in der App auswählen und herunterladen; keines ist
+- **9.803 Presets** in 11 Paketen, die Sie in der App auswählen und herunterladen; keines ist
   fest eingebaut. Jedes Preset der Sammlung lädt, dank Korrekturen an projectM (siehe weiter
   unten).
 - **Songtitel und Albumcover** auf dem Bildschirm, wenn der Song wechselt; das Cover kann auch in
@@ -50,13 +50,17 @@ Aktuelle Version: **1.0.0** — [APK herunterladen](https://github.com/Karlos-fr
   aktuelle Preset.
 - **Sechs Sprachen**: Englisch, Französisch, Deutsch, Italienisch, Spanisch und Schwedisch, je nach
   Sprache des Fernsehers (Englisch für jede andere Sprache), oder wählbar unter **Optionen › Sprache**.
+- **Schonend für die Augen**: Jedes Preset ist als ⚡ Blitze, 🌙 Chill oder OK markiert und hat eine
+  Vorschau; spielen Sie nur die ruhigen oder keine mit Blitzen.
+- **Web-Fernbedienung**: Scannen Sie einen QR-Code mit dem Handy oder öffnen Sie die Seite am
+  Computer, um Presets zu durchsuchen, Playlists anzulegen und alle Optionen zu ändern.
 
 ## Voraussetzungen
 
 - Ein Fernseher oder eine Box mit **Android TV oder Google TV**, Android 8.0 oder neuer, mit
   OpenGL ES 3.0.
 - Getestet auf einem **Sony BRAVIA** (Google TV, Grafikchip Mali-G57).
-- Etwa 8 MB für die App und etwa 30 MB Download für alle Preset-Pakete.
+- Etwa 8 MB für die App und etwa 120 MB Download für alle Preset-Pakete.
 
 ## Installation
 
@@ -104,6 +108,22 @@ auf dem Fernseher aktiviert):
 Jede Taste lässt sich unter **Optionen › Fernbedienung** ändern, mit kurzem oder
 langem Druck.
 
+## Web-Fernbedienung
+
+Solange Lactea auf dem Bildschirm ist, stellt es eine Seite im lokalen Netz bereit. Unter
+**Optionen › Fernbedienung › QR-Code anzeigen** scannen Sie den Code mit einem Handy oder geben die
+darunter angezeigte Adresse im Browser eines Computers ein (gleiches Netz). Die Seite sieht aus wie
+die Menüs von Lactea und folgt dem Fernseher live:
+
+- **Läuft gerade**: Vorschau des Presets, Song, vorheriges / nächstes, Favorit, Sperre, Stimmung.
+- **Presets**: alle installierten Presets mit Vorschau und Suche; öffnen Sie eines, um es
+  abzuspielen, zu markieren oder Playlists hinzuzufügen.
+- **Stimmungen**: Stimmungen und Playlists (Reihenfolge der Presets einer Playlist ändern).
+- **Optionen**: alle Optionen des Fernsehers, auch die Pakete.
+
+Am Computer geht Escape zurück und ← / → wechseln das Preset. Die Adresse ändert sich bei jedem
+Start von Lactea (Port 8771); die Web-Fernbedienung lässt sich im selben Menü ausschalten.
+
 ## Optionen
 
 Halten Sie **OK** gedrückt, um die Optionen zu öffnen. Sie sind nach Themen gruppiert:
@@ -134,6 +154,16 @@ Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Die Bil
 Presets verwenden, bilden ein Paket **Textures**, das mit dem ersten Paket automatisch installiert
 wird. Pakete fügen Sie jederzeit unter **Optionen › Preset-Verwaltung › Preset-Pakete
 herunterladen** hinzu oder entfernen sie dort.
+
+Das Paket **Lactea** enthält die für Lactea gemachten Presets: zwei Spektrumanalysatoren (der von
+Winamp und ein Neon-Analysator), zwei Reisen durch ein Wurmloch, eine sonnige Lagune unter Wasser und
+Glas (Eau), ein Feuerwerk (Feux d'artifice) und sechs Presets rund um das Album-Cover.
+
+Jedes Preset der Pakete wurde auf einem PC gerendert und analysiert: Es ist als ⚡ Blitze, 🌙 Chill
+oder OK markiert, und der Preset-Browser zeigt seine Vorschau (4 Momente). Stimmungen können Presets
+mit Blitzen weglassen (**Ohne Blitze**) oder nur die ruhigen behalten (**Nur Chill**). Im Browser
+ändert 🟢 die Markierung eines Presets, 🔵 fügt es der aktiven Playlist hinzu, und das gewählte
+Preset läuft nach einer Sekunde hinter dem Browser.
 
 ## Langsame Presets
 

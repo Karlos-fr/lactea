@@ -34,7 +34,7 @@ Current version: **1.0.0** — [download the APK](https://github.com/Karlos-fr/l
 
 - **Reacts to all the music played on the TV**, whatever the app, including when the sound goes to
   a soundbar over HDMI (ARC / eARC).
-- **9,797 presets** in 11 packs you choose and download from the app; nothing is built in.
+- **9,803 presets** in 11 packs you choose and download from the app; nothing is built in.
   Every preset of the collection loads, thanks to [fixes made to projectM](#how-lactea-was-made).
 - **Track title and album cover** on screen when the song changes; the cover can also appear
   inside some visualizations.
@@ -46,12 +46,16 @@ Current version: **1.0.0** — [download the APK](https://github.com/Karlos-fr/l
 - **Favourites and exclusions**, a preset browser, a shuffle mode and a lock on the current preset.
 - **Six languages**: English, French, German, Italian, Spanish and Swedish, following the TV's
   language (English for any other language), or chosen in **Options › Language**.
+- **Easy on the eyes**: every preset is tagged ⚡ flash, 🌙 chill or OK, and has a preview; play
+  only the calm ones, or none that flash.
+- **Web remote**: scan a QR code with your phone, or open the page on a computer, to browse the
+  presets, build playlists and change every option.
 
 ## Requirements
 
 - A TV or box running **Android TV or Google TV**, Android 8.0 or later, with OpenGL ES 3.0.
 - Tested on a **Sony BRAVIA** (Google TV, Mali-G57 graphics chip).
-- About 8 MB for the app, and about 30 MB to download for all the preset packs.
+- About 8 MB for the app, and about 120 MB to download for all the preset packs.
 
 ## Install
 
@@ -97,6 +101,21 @@ TV):
 
 Every key can be changed in **Options › Remote control**, with a short or a long press.
 
+## Web remote
+
+While Lactea is on screen, it serves a page on your local network. In **Options › Remote control ›
+Show the QR code**, scan the code with a phone, or type the address shown under it in a computer's
+browser (same network). The page has the look of Lactea's panels and follows the TV live:
+
+- **Now playing**: the preset's preview, the song, previous / next, favourite, lock, ambiance.
+- **Presets**: every installed preset with its preview and a search; open one to play it, mark it,
+  tag it or add it to playlists.
+- **Ambiances**: ambiances and playlists (reorder a playlist's presets).
+- **Options**: all the options of the TV, packs included.
+
+On a computer, Escape goes back and ← / → change the preset. The address changes each time Lactea
+starts (port 8771); the web remote can be turned off in the same menu.
+
 ## Options
 
 Hold **OK** to open the options. They are grouped by theme:
@@ -124,6 +143,16 @@ collection is split into 10 themed packs (Dancer, Drawing, Fractal, Geometric, H
 Reaction, Sparkle, Supernova, Waveform). The images the presets use come in a **Textures** pack,
 installed automatically with the first pack. Add or remove packs at any time in
 **Options › Preset management › Preset packs to download**.
+
+The **Lactea** pack holds the presets made for Lactea: two spectrum analysers (Winamp's, and a neon
+one), two trips through a wormhole, a sunny lagoon under water and glass (Eau), fireworks (Feux
+d'artifice), and six presets built around the album cover.
+
+Every preset of the packs was rendered and analysed on a PC: it is tagged ⚡ flash, 🌙 chill or OK,
+and the preset browser shows its preview (4 moments). Ambiances can leave out the flashing presets
+(**No flash**) or keep only the calm ones (**Chill only**). In the browser, 🟢 changes a preset's
+tag, 🔵 adds it to the playlist in use, and the selected preset plays behind the browser after a
+second.
 
 ## Slow presets
 

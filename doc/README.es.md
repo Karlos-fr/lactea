@@ -35,7 +35,7 @@ Versión actual: **1.0.0** — [descargar el APK](https://github.com/Karlos-fr/l
 
 - **Reacciona a toda la música que suena en la TV**, sea cual sea la app, también cuando el sonido
   va a una barra de sonido por HDMI (ARC / eARC).
-- **9797 presets** en 11 packs que eliges y descargas desde la app; ninguno viene
+- **9803 presets** en 11 packs que eliges y descargas desde la app; ninguno viene
   incluido. Todos los presets de la colección se cargan, gracias a las correcciones hechas en
   projectM (ver más abajo).
 - **Título y portada del álbum** en pantalla cuando cambia la canción; la portada también puede
@@ -49,12 +49,16 @@ Versión actual: **1.0.0** — [descargar el APK](https://github.com/Karlos-fr/l
   actual.
 - **Seis idiomas**: inglés, francés, alemán, italiano, español y sueco, según el idioma de la TV
   (inglés para cualquier otro idioma), o elegido en **Opciones › Idioma**.
+- **Suave para la vista**: cada preset está etiquetado ⚡ destellos, 🌙 chill u OK, y tiene una vista
+  previa; reproduce solo los tranquilos, o ninguno con destellos.
+- **Mando web**: escanea un código QR con el móvil, o abre la página en un ordenador, para explorar
+  los presets, crear listas de reproducción y cambiar todas las opciones.
 
 ## Requisitos
 
 - Una TV o un dispositivo con **Android TV o Google TV**, Android 8.0 o posterior, con OpenGL ES 3.0.
 - Probado en una **Sony BRAVIA** (Google TV, chip gráfico Mali-G57).
-- Unos 8 MB para la app, y unos 30 MB de descarga para todos los packs de presets.
+- Unos 8 MB para la app, y unos 120 MB de descarga para todos los packs de presets.
 
 ## Instalación
 
@@ -100,6 +104,22 @@ en la TV):
 
 Cada tecla se puede cambiar en **Opciones › Mando a distancia**, con una pulsación corta o larga.
 
+## Mando web
+
+Mientras Lactea está en pantalla, ofrece una página en tu red local. En **Opciones › Mando a
+distancia › Mostrar el código QR**, escanea el código con un móvil, o escribe la dirección que
+aparece debajo en el navegador de un ordenador (misma red). La página tiene el aspecto de los
+paneles de Lactea y sigue la TV en directo:
+
+- **En curso**: vista previa del preset, canción, anterior / siguiente, favorito, bloqueo, ambiente.
+- **Presets**: todos los presets instalados con su vista previa y una búsqueda; abre uno para
+  reproducirlo, marcarlo, etiquetarlo o añadirlo a listas.
+- **Ambientes**: ambientes y listas de reproducción (reordena los presets de una lista).
+- **Opciones**: todas las opciones de la TV, packs incluidos.
+
+En un ordenador, Escape vuelve atrás y ← / → cambian de preset. La dirección cambia cada vez que
+Lactea arranca (puerto 8771); el mando web se desactiva en el mismo menú.
+
 ## Opciones
 
 Mantén pulsado **OK** para abrir las opciones. Están agrupadas por tema:
@@ -128,6 +148,17 @@ propios de Lactea); el resto de la colección está repartido en 10 packs temát
 Geometric, Hypnotic, Particles, Reaction, Sparkle, Supernova, Waveform). Las imágenes que usan los
 presets forman un pack **Textures**, que se instala automáticamente con el primer pack. Añade o
 quita packs cuando quieras en **Opciones › Gestión de presets › Packs de presets para descargar**.
+
+El pack **Lactea** contiene los presets hechos para Lactea: dos analizadores de espectro (el de
+Winamp y uno de neón), dos viajes por un agujero de gusano, una laguna soleada bajo el agua y el
+cristal (Eau), fuegos artificiales (Feux d'artifice) y seis presets construidos en torno a la
+portada.
+
+Cada preset de los packs se ha renderizado y analizado en un PC: está etiquetado ⚡ destellos, 🌙
+chill u OK, y el explorador de presets muestra su vista previa (4 momentos). Los ambientes pueden
+dejar fuera los presets con destellos (**Sin destellos**) o quedarse solo con los tranquilos
+(**Solo chill**). En el explorador, 🟢 cambia la etiqueta de un preset, 🔵 lo añade a la lista en
+uso, y el preset seleccionado se reproduce detrás del explorador al cabo de un segundo.
 
 ## Presets lentos
 

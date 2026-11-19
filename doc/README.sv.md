@@ -35,7 +35,7 @@ Aktuell version: **1.0.0** — [ladda ner APK:n](https://github.com/Karlos-fr/la
 
 - **Reagerar på all musik som spelas på tv:n**, oavsett app. Även när ljudet går till en soundbar
   via HDMI (ARC / eARC).
-- **9 797 presets** i 11 paket som du väljer och laddar ner i appen; inget är inbyggt.
+- **9 803 presets** i 11 paket som du väljer och laddar ner i appen; inget är inbyggt.
   Alla presets i samlingen laddas, tack vare rättningar i projectM (se längre ned).
 - **Låttitel och skivomslag** på skärmen när låten byts. Omslaget kan också synas inuti vissa
   visualiseringar.
@@ -47,12 +47,16 @@ Aktuell version: **1.0.0** — [ladda ner APK:n](https://github.com/Karlos-fr/la
 - **Favoriter och undantag**, en preset-bläddrare, ett blandat läge och låsning av aktuell preset.
 - **Sex språk**: engelska, franska, tyska, italienska, spanska och svenska, enligt tv:ns språk
   (engelska för alla andra språk), eller valt under **Alternativ › Språk**.
+- **Skonsamt för ögonen**: varje preset är märkt ⚡ blixtar, 🌙 chill eller OK och har en
+  förhandsvisning; spela bara de lugna, eller inga som blixtrar.
+- **Webbfjärrkontroll**: skanna en QR-kod med telefonen, eller öppna sidan på en dator, för att
+  bläddra bland presets, skapa spellistor och ändra alla alternativ.
 
 ## Systemkrav
 
 - En tv eller box med **Android TV eller Google TV**, Android 8.0 eller senare, med OpenGL ES 3.0.
 - Testad på en **Sony BRAVIA** (Google TV, grafikkrets Mali-G57).
-- Cirka 8 MB för appen, och cirka 30 MB att ladda ner för alla preset-paket.
+- Cirka 8 MB för appen, och cirka 120 MB att ladda ner för alla preset-paket.
 
 ## Installation
 
@@ -98,6 +102,22 @@ tv:n):
 
 Varje knapp kan ändras i **Alternativ › Fjärrkontroll**, med ett kort eller långt tryck.
 
+## Webbfjärrkontroll
+
+Så länge Lactea visas erbjuder den en sida i ditt lokala nätverk. Under **Alternativ ›
+Fjärrkontroll › Visa QR-koden** skannar du koden med en telefon, eller skriver adressen som visas
+under den i en dators webbläsare (samma nätverk). Sidan ser ut som Lacteas paneler och följer tv:n
+direkt:
+
+- **Spelas nu**: presetets förhandsvisning, låten, föregående / nästa, favorit, lås, stämning.
+- **Presets**: alla installerade presets med förhandsvisning och sökning; öppna ett för att spela
+  det, markera det, märka det eller lägga till det i spellistor.
+- **Stämningar**: stämningar och spellistor (ändra ordningen på en spellistas presets).
+- **Alternativ**: alla tv:ns alternativ, paketen inräknade.
+
+På en dator går Escape tillbaka och ← / → byter preset. Adressen ändras varje gång Lactea startar
+(port 8771); webbfjärrkontrollen kan stängas av i samma meny.
+
 ## Alternativ
 
 Håll in **OK** för att öppna **Alternativ**. De är grupperade efter tema:
@@ -127,6 +147,16 @@ av samlingen är uppdelad i 10 tematiska paket (Dancer, Drawing, Fractal, Geomet
 Particles, Reaction, Sparkle, Supernova, Waveform). Bilderna som presetsen använder finns i ett
 paket **Textures**, som installeras automatiskt med det första paketet. Lägg till eller ta bort
 paket när du vill under **Alternativ › Hantera presets › Preset-paket att ladda ner**.
+
+Paketet **Lactea** innehåller de presets som gjorts för Lactea: två spektrumanalysatorer (Winamps
+och en neonanalysator), två resor genom ett maskhål, en solig lagun under vatten och glas (Eau),
+fyrverkerier (Feux d'artifice) och sex presets byggda kring skivomslaget.
+
+Varje preset i paketen har renderats och analyserats på en PC: det är märkt ⚡ blixtar, 🌙 chill
+eller OK, och presetbläddraren visar dess förhandsvisning (4 ögonblick). Stämningar kan utesluta
+presets som blixtrar (**Utan blixtar**) eller bara behålla de lugna (**Bara chill**). I bläddraren
+ändrar 🟢 ett presets märkning, 🔵 lägger till det i spellistan som används, och det valda presetet
+spelas bakom bläddraren efter en sekund.
 
 ## Långsamma presets
 
