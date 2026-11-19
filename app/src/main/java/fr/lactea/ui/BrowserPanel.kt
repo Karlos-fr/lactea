@@ -35,6 +35,8 @@ class BrowserPanel(
     private val onClose: () -> Unit,
     /** 🔵 on a preset: add it to / remove it from the playlist in use. */
     private val onPlaylistKey: (Playlist.Entry) -> Unit,
+    /** A favourite, an exclusion or a tag changed (the web remote refreshes). */
+    private val onChanged: () -> Unit,
     /** Name of the ambiance in use, shown as a list of its own; null when none. */
     private val ambianceName: String?,
 ) : ListPanel(context, 16) {
@@ -138,9 +140,9 @@ class BrowserPanel(
                 setCount(entries.size, keepSelection = false)
             }
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> entry?.let(onPlay)
-            KeyEvent.KEYCODE_PROG_YELLOW -> entry?.let { settings.toggleFavorite(it.key); refresh() }
-            KeyEvent.KEYCODE_PROG_RED -> entry?.let { settings.toggleBlacklist(it.key); refresh() }
-            KeyEvent.KEYCODE_PROG_GREEN -> entry?.let { tags.cycle(it.key); previewKey = null; refresh() }
+            KeyEvent.KEYCODE_PROG_YELLOW -> entry?.let { settings.toggleFavorite(it.key); refresh(); onChanged() }
+            KeyEvent.KEYCODE_PROG_RED -> entry?.let { settings.toggleBlacklist(it.key); refresh(); onChanged() }
+            KeyEvent.KEYCODE_PROG_GREEN -> entry?.let { tags.cycle(it.key); previewKey = null; refresh(); onChanged() }
             KeyEvent.KEYCODE_PROG_BLUE -> entry?.let {
                 onPlaylistKey(it)
                 // In the playlist's own list, a removed preset leaves it.

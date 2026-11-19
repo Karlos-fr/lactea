@@ -295,6 +295,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private fun onAction(a: Action) {
         Log.i(TAG, "ACTION $a")
         ui.post { webRemote.pushState() }
+        webRemote.changedSoon()                                  // favourites, exclusions, ambiance… on the page too
         // During the preset test, only what does not change the preset is allowed: the test keeps
         // running under the options, where its progress shows and where it can be stopped.
         if (benchRunning && a !in ACTIONS_DURING_BENCH) {
@@ -385,6 +386,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             onSelect = ::scheduleLivePreview,
             onClose = ::closePanel,
             onPlaylistKey = ::togglePlaylistPreset,
+            onChanged = webRemote::changedSoon,
             ambianceName = settings.activeAmbiance?.let(::ambianceName)), Gravity.CENTER, 0.9f)
     }
 
@@ -704,20 +706,6 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         openPanel(QrPanel(this, qr, address) { openOptions() }, Gravity.CENTER, 0.6f)
     }
 
-    /** The options screen [id] (see MenuScreen.id), as the web remote asks for it. */
-    private fun menuScreen(id: String): MenuScreen? = when {
-        id == "options" -> rootScreen()
-        id == "ambiances" -> ambiancesScreen()
-        id == "bench" -> benchScreen()
-        id == "packs" -> packsScreen()
-        id == "remote" -> remoteScreen()
-        id.startsWith("playlist:") -> id.removePrefix("playlist:").takeIf { i -> settings.ambiances.any { it.id == i } }?.let(::playlistScreen)
-        id.startsWith("ambiance:") -> id.removePrefix("ambiance:").takeIf { i -> settings.ambiances.any { it.id == i } }?.let(::ambianceScreen)
-        id.startsWith("plitem:") -> id.removePrefix("plitem:").let { r -> playlistItemScreen(r.substringBefore(':'), r.substringAfter(':')) }
-        id.startsWith("action:") -> Action.entries.firstOrNull { it.name == id.removePrefix("action:") }?.let(::actionScreen)
-        else -> null
-    }
-
     /** The presets of playlist [a], as a list to reorder on the phone (hidden on the TV). */
     private fun playlistWebList(a: Ambiance, entries: List<Playlist.Entry>): List<MenuItem> =
         listOf(webRemote.playlistList(a, entries))
@@ -734,7 +722,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         override val locked get() = this@VisualizerActivity.locked
         override val track get() = nowPlaying.track
 
-        override fun menuScreen(id: String) = this@VisualizerActivity.menuScreen(id)
+        override fun rootScreens() = listOf(rootScreen(), ambiancesScreen())
 
         override fun webCall(block: () -> Unit): MenuScreen? {
             inWebCall = true
@@ -861,6 +849,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
         val b = a.toggle(e.key)
         settings.saveAmbiance(b)
+        webRemote.changedSoon()
         osd.show(getString(if (b.contains(e.key)) R.string.osd_playlist_added else R.string.osd_playlist_removed, e.name, ambianceName(b)))
     }
 

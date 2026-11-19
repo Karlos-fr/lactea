@@ -59,12 +59,12 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   a search, each preset (play, favourite, exclude, tag, playlists), the ambiances and playlists
   (reorder a playlist's presets), the packs (install, update, remove) and all the options, with
   the look of the TV's panels. The page follows the TV live (preset, song, settings changed with
-  the remote) and has two layouts: one for phones, one for computers (tabs on the left, the preview
+  the remote, favourites, exclusions, tags and playlists changed in the preset browser) and has two layouts: one for phones, one for computers (tabs on the left, the preview
   beside its settings, presets as cards; Escape goes back, ← / → change the preset). It listens on
   port 8771 while Lactea is on screen, at a fixed address: **http://lactea.local:8771/** (the TV
   announces the name on the network), or the TV's IP address given by the QR code. Options › Remote
   control sets the name, a password (asked by the browser) or a new random address at each start
-  instead. The page can be added to a phone's home screen. Built on the TV Remote core 0.2.0
+  instead. The page can be added to a phone's home screen. Built on the TV Remote core 0.2.1
   shared with Proscenium (`fr.tvremote.core`, page `assets/tvremote`).
 - The test of the presets on the TV keeps running behind the options: Options › Preset
   management › Test the presets on this TV shows its progress and can stop it.

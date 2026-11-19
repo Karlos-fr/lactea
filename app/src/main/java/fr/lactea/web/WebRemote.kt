@@ -46,8 +46,8 @@ class WebRemote(private val host: Host) : TvRemote.App {
         val locked: Boolean
         val track: NowPlaying.Track?
 
-        /** A screen of the options by its id, or null. */
-        fun menuScreen(id: String): MenuScreen?
+        /** The menus the page shows as tabs (Options, Ambiances): every other menu screen is reached from them. */
+        fun rootScreens(): List<MenuScreen>
 
         /** Runs [block] for the web remote (confirmations already asked on the phone); returns the screen it opened. */
         fun webCall(block: () -> Unit): MenuScreen?
@@ -104,6 +104,18 @@ class WebRemote(private val host: Host) : TvRemote.App {
     /** A setting changed on the TV: phones refresh the screen they show. */
     fun changed() = remote?.changed(null)
 
+    private val main = android.os.Handler(android.os.Looper.getMainLooper())
+    private val flush = Runnable { changed(); pushState() }
+
+    /**
+     * Something changed on the TV outside the menus (preset browser keys, remote actions):
+     * phones refresh, once for the changes of the next 800 ms.
+     */
+    fun changedSoon() {
+        main.removeCallbacks(flush)
+        main.postDelayed(flush, 800)
+    }
+
     /** The preset, the lock, the favourites or the song changed: the "now playing" bar and screen. */
     fun pushState() {
         val r = remote ?: return
@@ -136,7 +148,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
         id == LIVE -> liveScreen()
         id == PRESETS -> presetsScreen(q)
         id.startsWith(PRESET) -> presetScreen(id.removePrefix(PRESET))
-        else -> host.menuScreen(id)?.let(::menu)
+        else -> menuScreen(id)?.let(::menu)
     }
 
     override fun set(screen: String, id: String, value: Any?): Result = when {
@@ -173,7 +185,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
     }
 
     override fun opened(screen: String) {
-        host.menuScreen(screen)?.onOpen?.invoke()
+        menuScreen(screen)?.onOpen?.invoke()
     }
 
     /** Previews, at img/pv-<hash of the preset key>. Server thread. */
@@ -202,7 +214,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
                 }
                 is MenuItem.Text -> Item.text(id, it.label, it.get())
                 is MenuItem.Button -> Item.button(id, it.label).value(it.value()).also { b ->
-                    it.opens?.let { o -> b.opens(o().id) }
+                    it.opens?.let { o -> b.opens(o().also { t -> known[t.id] = o }.id) }
                     if (it.confirm) b.confirm(it.label + " ?")
                 }
                 is MenuItem.Web -> it.item()
@@ -217,7 +229,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
      * if any, opens on the phone.
      */
     private fun menuCall(screen: String, id: String, block: (MenuItem) -> Result?): Result {
-        val ms = host.menuScreen(screen) ?: return changedError()
+        val ms = menuScreen(screen) ?: return changedError()
         var result: Result? = changedError()
         val opened = host.webCall {
             val items = ms.build()
@@ -232,6 +244,34 @@ class WebRemote(private val host: Host) : TvRemote.App {
     }
 
     private fun changedError() = Result.error(str(R.string.web_changed))
+
+    /** Menu screens already reached, by id: how to build them again. */
+    private val known = ConcurrentHashMap<String, () -> MenuScreen>()
+
+    /**
+     * The menu screen [id]. A screen is never listed by hand: it is found by following the buttons
+     * that open screens, from the tabs (a page reloaded after Lactea restarted asks for a screen
+     * not reached yet). Screens shown on the TV only are not followed.
+     */
+    private fun menuScreen(id: String): MenuScreen? {
+        known[id]?.let { return it() }
+        val seen = HashSet<String>()
+        var level = host.rootScreens()
+        repeat(MAX_MENU_DEPTH) {
+            val next = ArrayList<MenuScreen>()
+            for (s in level) {
+                if (!seen.add(s.id)) continue
+                if (s.id == id) return s
+                for (item in s.build()) {
+                    if (item !is MenuItem.Button || item.tvOnly) continue
+                    val o = item.opens ?: continue
+                    next += o().also { known[it.id] = o }
+                }
+            }
+            level = next
+        }
+        return null
+    }
 
     // ------------------------------------------------------------------ now playing
 
@@ -427,5 +467,6 @@ class WebRemote(private val host: Host) : TvRemote.App {
         const val LIVE = "live"
         const val PRESETS = "presets"
         const val PRESET = "preset:"
+        private const val MAX_MENU_DEPTH = 5
     }
 }
