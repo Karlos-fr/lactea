@@ -76,7 +76,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
         val s = host.settings
         remote = TvRemote.start(host.context, this, TvRemote.Options()
             .port(PORT)
-            .access(if (s.webFixedAddress) TvRemote.ACCESS_OPEN else TvRemote.ACCESS_TOKEN)
+            .access(if (s.webFixedAddress) TvRemote.Access.OPEN else TvRemote.Access.TOKEN)
             .hostname(TvRemote.cleanHostname(s.webName, "lactea"))
             .password(s.webPassword)
             .realm("Lactea")
@@ -190,10 +190,6 @@ class WebRemote(private val host: Host) : TvRemote.App {
 
     private fun menu(ms: MenuScreen): Screen {
         val s = Screen.of(ms.id, ms.title).subtitle(ms.subtitle)
-        when (ms.id) {
-            "ambiances" -> s.tab(null, 2)
-            "options" -> s.tab(null, 3)
-        }
         ms.build().forEachIndexed { i, it ->
             if (it.tvOnly) return@forEachIndexed
             val id = itemId(i, it)
@@ -240,11 +236,11 @@ class WebRemote(private val host: Host) : TvRemote.App {
     // ------------------------------------------------------------------ now playing
 
     private fun liveScreen(): Screen {
-        val s = Screen.of(LIVE, str(R.string.web_live)).tab(null, 0)
+        val s = Screen.of(LIVE, str(R.string.web_live))
         val e = host.playlist.current()
         val settings = host.settings
         if (e != null) {
-            s.add(Item.grid("now", "", Item.CHECK_NONE).tile(Item.tile("0", e.name).img(img(e.key))))
+            s.add(Item.grid("now", "", Item.Check.NONE).tile(Item.tile("0", e.name).img(img(e.key))))
             s.add(Item.info("cat", str(R.string.web_category), e.category))
         }
         s.add(Item.info("track", str(R.string.info_now_playing), host.track?.let { "${it.title} — ${it.artist}" } ?: "—"))
@@ -299,11 +295,10 @@ class WebRemote(private val host: Host) : TvRemote.App {
         val words = q.q.lowercase().split(' ').filter { it.isNotBlank() }
         val found = all.withIndex().filter { (_, e) -> words.all { e.key.lowercase().contains(it) } }
         val page = found.drop(q.offset).take(q.limit)
-        val list = Item.list("p", "", Item.CHECK_NONE).opens(PRESET)
+        val list = Item.list("p", "", Item.Check.NONE).opens(PRESET)
         page.forEach { (i, e) -> list.row(Item.row("$i", e.name).sub(e.category + marks(e.key)).img(img(e.key))) }
         return Screen.of(PRESETS, str(R.string.web_presets))
             .subtitle(str(R.string.n_presets, found.size))
-            .tab(null, 1)
             .paged(found.size, q.offset, q.limit, true)
             .add(list)
     }
@@ -333,7 +328,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
             .add(Item.info("none", str(R.string.web_not_found), ""))
         val settings = host.settings
         val s = Screen.of(PRESET + key, e.name).subtitle(e.category)
-        s.add(Item.grid("pv", "", Item.CHECK_NONE).tile(Item.tile("0", e.name).img(img(key))))
+        s.add(Item.grid("pv", "", Item.Check.NONE).tile(Item.tile("0", e.name).img(img(key))))
         s.add(Item.button("play", str(R.string.btn_play_now)))
         s.add(Item.toggle("fav", str(R.string.web_favorite), key in settings.favorites))
         s.add(Item.toggle("excl", str(R.string.web_excluded), key in settings.blacklist))
@@ -390,7 +385,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
     fun playlistList(a: Ambiance, entries: List<Playlist.Entry>): MenuItem.Web = MenuItem.Web(
         "pl",
         item = {
-            Item.list("pl", "", Item.CHECK_NONE).order(true).opens(PRESET).also { l ->
+            Item.list("pl", "", Item.Check.NONE).order(true).opens(PRESET).also { l ->
                 entries.forEachIndexed { i, e -> l.row(Item.row("$i", e.name).sub(e.category).img(img(e.key))) }
             }
         },
