@@ -65,7 +65,9 @@ class WebRemote(private val host: Host) : TvRemote.App {
 
     fun start(): Boolean {
         if (running) return true
-        remote = TvRemote.start(host.context, this, TvRemote.Options())
+        // 8771: Proscenium, on the same TVs, takes 8770.
+        remote = TvRemote.start(host.context, this, TvRemote.Options().port(PORT))
+        remote?.let { android.util.Log.i("Lactea", "Web remote: ${it.url()}") }
         if (remote != null) pushState()
         return remote != null
     }
@@ -403,6 +405,7 @@ class WebRemote(private val host: Host) : TvRemote.App {
     private val imageKeys = ConcurrentHashMap<String, String>()
 
     companion object {
+        const val PORT = 8771
         const val LIVE = "live"
         const val PRESETS = "presets"
         const val PRESET = "preset:"
