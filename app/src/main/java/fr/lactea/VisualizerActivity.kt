@@ -34,6 +34,9 @@ import fr.lactea.nowplaying.NowPlaying
 import fr.lactea.packs.PackManager
 import fr.lactea.presets.Playlist
 import fr.lactea.presets.Ambiance
+import fr.lactea.ui.QrPanel
+import fr.lactea.ui.tvOnly
+import fr.lactea.web.WebRemote
 import fr.lactea.presets.PresetCatalog
 import fr.lactea.presets.PresetStats
 import fr.lactea.presets.PresetTags
@@ -86,6 +89,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private val version by lazy { packageManager.getPackageInfo(packageName, 0).versionName ?: "?" }
 
     private var panel: ListPanel? = null
+
+    // Web remote (TV Remote core): the options, the presets and what plays, from a phone.
+    private val webRemote by lazy { WebRemote(webHost) }
+    /** True while the web remote acts: confirmations were asked on the phone, opened screens go there. */
+    private var inWebCall = false
+    private var webOpened: MenuScreen? = null
     private var swallowUpKey = -1
     private var currentEvent: KeyEvent? = null
     private var locked = false
@@ -226,8 +235,14 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (settings.webRemote) webRemote.start()
+    }
+
     override fun onStop() {
         super.onStop()
+        webRemote.stop()
         // Left while music plays (Home, another app…): don't reopen automatically for this session.
         if (musicPlayingAtPause && !isChangingConfigurations) AutoLaunch.dismissedWhilePlaying = true
     }
@@ -274,6 +289,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     private fun onAction(a: Action) {
         Log.i(TAG, "ACTION $a")
+        ui.post { webRemote.pushState() }
         // During the preset test, only what does not change the preset is allowed: the test keeps
         // running under the options, where its progress shows and where it can be stopped.
         if (benchRunning && a !in ACTIONS_DURING_BENCH) {
@@ -398,12 +414,16 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     private fun openOptions() {
-        openPanel(MenuPanel(this, rootScreen(), ::closePanel), Gravity.END or Gravity.CENTER_VERTICAL, 0.5f)
+        openPanel(MenuPanel(this, rootScreen(), ::closePanel, ::askText, ::onMenuChanged), Gravity.END or Gravity.CENTER_VERTICAL, 0.5f)
     }
 
     private val menu: MenuPanel? get() = panel as? MenuPanel
 
     private fun confirm(key: String, action: () -> Unit) {
+        if (inWebCall) {
+            action()
+            return
+        }
         val now = SystemClock.uptimeMillis()
         if (confirmKey == key && now < confirmUntil) {
             confirmKey = null
@@ -417,7 +437,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private fun confirmLabel(key: String, normal: String) =
         if (confirmKey == key && SystemClock.uptimeMillis() < confirmUntil) getString(R.string.confirm_again) else normal
 
-    private fun rootScreen(): MenuScreen = MenuScreen(getString(R.string.menu_options), getString(R.string.menu_version, version)) {
+    private fun rootScreen(): MenuScreen = MenuScreen("options", getString(R.string.menu_options), getString(R.string.menu_version, version)) {
         val resLabels = listOf(getString(R.string.res_auto)) + Settings.RESOLUTIONS.map { if (it == 2160) getString(R.string.res_4k) else "${it}p" }
         val autoMaxChoices = listOf(720, 1080, 1440, 2160)
         val durations = Settings.PRESET_DURATIONS
@@ -464,9 +484,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                     ui.removeCallbacks(restartPreset)
                     ui.postDelayed(restartPreset, 1500)
                 }),
-            MenuItem.Button(getString(R.string.btn_ambiances), { settings.activeAmbiance?.let(::ambianceName) ?: getString(R.string.ambiance_all) }) {
-                menu?.push(ambiancesScreen())
-            },
+            MenuItem.Button(getString(R.string.btn_ambiances), { settings.activeAmbiance?.let(::ambianceName) ?: getString(R.string.ambiance_all) },
+                opens = ::ambiancesScreen),
             MenuItem.Choice(getString(R.string.opt_transition), listOf(getString(R.string.tr_auto), getString(R.string.tr_fade), getString(R.string.tr_cut)),
                 { modes.indexOf(settings.transitionMode).coerceAtLeast(0) },
                 { settings.transitionMode = modes[it] }),
@@ -500,7 +519,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Button(getString(R.string.btn_title_howto),
                 { if (nowPlaying.permissionGranted) getString(R.string.allowed) else "" }) {
                 osd.show(getString(R.string.osd_title_howto, NowPlaying.ADB_GRANT), 12000)
-            },
+            }.tvOnly(),
 
             MenuItem.Header(getString(R.string.h_cover)),
             MenuItem.Toggle(getString(R.string.opt_cover_title), { settings.coverWithTitle },
@@ -531,10 +550,10 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Button(getString(R.string.btn_setup_howto)) {
                 osd.show(getString(R.string.osd_setup_howto,
                     "adb shell appops set $packageName SYSTEM_ALERT_WINDOW allow"), 15000)
-            },
+            }.tvOnly(),
 
             MenuItem.Header(getString(R.string.h_manage)),
-            MenuItem.Button(getString(R.string.btn_browser), { getString(R.string.n_presets, playlist.all().size) }) { openBrowser() },
+            MenuItem.Button(getString(R.string.btn_browser), { getString(R.string.n_presets, playlist.all().size) }) { openBrowser() }.tvOnly(),
             MenuItem.Toggle(getString(R.string.opt_exclude_slow), { settings.excludeSlow }, { settings.excludeSlow = it }),
             MenuItem.Choice(getString(R.string.opt_slow_threshold), thresholds.map { "< $it" },
                 { thresholds.indexOf(settings.slowThreshold).coerceAtLeast(0) },
@@ -542,22 +561,18 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Info(getString(R.string.info_summary)) {
                 getString(R.string.summary_value, settings.favorites.size, settings.blacklist.size, stats.slowCount(settings.fpsCap), stats.count())
             },
-            MenuItem.Button(getString(R.string.btn_test)) {
-                menu?.push(benchScreen())
-            },
+            MenuItem.Button(getString(R.string.btn_test), opens = ::benchScreen),
             MenuItem.Info(getString(R.string.info_reference)) {
                 if (stats.referenceCount() == 0) "—" else getString(R.string.reference_value, stats.referenceCount(), stats.referenceDevice)
             },
-            MenuItem.Button(getString(R.string.btn_reset_stats), { confirmLabel("stats", "") }) {
+            MenuItem.Button(getString(R.string.btn_reset_stats), { confirmLabel("stats", "") }, confirm = true) {
                 confirm("stats") { stats.reset(); osd.show(getString(R.string.osd_stats_reset)) }
             },
-            MenuItem.Button(getString(R.string.btn_clear_blacklist), { confirmLabel("blacklist", "${settings.blacklist.size}") }) {
+            MenuItem.Button(getString(R.string.btn_clear_blacklist), { confirmLabel("blacklist", "${settings.blacklist.size}") }, confirm = true) {
                 confirm("blacklist") { settings.blacklist = emptySet(); osd.show(getString(R.string.osd_blacklist_cleared)) }
             },
-            MenuItem.Button(getString(R.string.btn_packs), { getString(R.string.n_installed, packs.installedIds().size) }) {
-                menu?.push(packsScreen())
-                refreshCatalog()
-            },
+            MenuItem.Button(getString(R.string.btn_packs), { getString(R.string.n_installed, packs.installedIds().size) },
+                opens = ::packsScreen),
 
             MenuItem.Header(getString(R.string.h_audio)),
             MenuItem.Choice(getString(R.string.opt_audio_sens), sens.map { "%.1f".format(it) },
@@ -568,8 +583,19 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Info(getString(R.string.info_capture)) { audio.status },
 
             MenuItem.Header(getString(R.string.h_remote)),
-            MenuItem.Button(getString(R.string.btn_keys)) { menu?.push(remoteScreen()) },
-            MenuItem.Button(getString(R.string.btn_key_help)) { onAction(Action.SHOW_HELP) },
+            MenuItem.Toggle(getString(R.string.opt_web_remote), { settings.webRemote }) {
+                settings.webRemote = it
+                if (it) webRemote.start() else webRemote.stop()
+            }.tvOnly(),
+            MenuItem.Button(getString(R.string.btn_web_qr), {
+                when {
+                    !settings.webRemote -> getString(R.string.web_off)
+                    webRemote.running -> webRemote.url?.removePrefix("http://")?.substringBefore('/') ?: ""
+                    else -> getString(R.string.web_no_network)
+                }
+            }) { showWebQr() }.tvOnly(),
+            MenuItem.Button(getString(R.string.btn_keys), opens = ::remoteScreen).tvOnly(),
+            MenuItem.Button(getString(R.string.btn_key_help)) { onAction(Action.SHOW_HELP) }.tvOnly(),
 
             MenuItem.Header(getString(R.string.h_about)),
             MenuItem.Info("Lactea") { version },
@@ -581,7 +607,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private val benchFile get() = java.io.File(filesDir, "bench/bench.tsv")
 
     /** Test of the presets on this TV: everything, or one category at a time. */
-    private fun benchScreen(): MenuScreen = MenuScreen(getString(R.string.bench_title), getString(R.string.bench_subtitle)) {
+    private fun benchScreen(): MenuScreen = MenuScreen("bench", getString(R.string.bench_title), getString(R.string.bench_subtitle)) {
         if (benchRunning) {
             return@MenuScreen listOf(
                 MenuItem.Info(getString(R.string.bench_progress)) {
@@ -603,7 +629,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 { if (left == 0) getString(R.string.bench_nothing) else getString(R.string.bench_left, left, durationText(left)) }) {
                 if (left > 0) startBench("all")
             },
-            MenuItem.Button(getString(R.string.bench_restart), { confirmLabel("bench-reset", getString(R.string.bench_restart_hint)) }) {
+            MenuItem.Button(getString(R.string.bench_restart), { confirmLabel("bench-reset", getString(R.string.bench_restart_hint)) }, confirm = true) {
                 confirm("bench-reset") { benchFile.delete(); osd.show(getString(R.string.osd_bench_cleared)); menu?.rebuild() }
             },
             MenuItem.Header(getString(R.string.h_by_category)),
@@ -624,6 +650,90 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         seconds < 60 -> getString(R.string.dur_s, seconds)
         seconds % 60 == 0 -> getString(R.string.dur_min, seconds / 60)
         else -> getString(R.string.dur_min_s, seconds / 60, seconds % 60)
+    }
+
+    // ------------------------------------------------------------------ Web remote
+
+    /** Opens [s]: on the TV, or on the phone when the web remote asked. */
+    private fun openScreen(s: MenuScreen) {
+        if (inWebCall) webOpened = s else menu?.push(s)
+    }
+
+    /** A value changed from the TV's remote: phones refresh. */
+    private fun onMenuChanged() {
+        webRemote.changed()
+        webRemote.pushState()
+    }
+
+    /** The QR code of the web remote's address; Back returns to the options. */
+    private fun showWebQr() {
+        if (!settings.webRemote) {
+            settings.webRemote = true
+        }
+        if (!webRemote.start()) {
+            osd.show(getString(R.string.web_no_network), 3000)
+            return
+        }
+        val qr = webRemote.qr(dp(260)) ?: return
+        openPanel(QrPanel(this, qr, webRemote.url ?: "") { openOptions() }, Gravity.CENTER, 0.6f)
+    }
+
+    /** The options screen [id] (see MenuScreen.id), as the web remote asks for it. */
+    private fun menuScreen(id: String): MenuScreen? = when {
+        id == "options" -> rootScreen()
+        id == "ambiances" -> ambiancesScreen()
+        id == "bench" -> benchScreen()
+        id == "packs" -> packsScreen()
+        id == "remote" -> remoteScreen()
+        id.startsWith("playlist:") -> id.removePrefix("playlist:").takeIf { i -> settings.ambiances.any { it.id == i } }?.let(::playlistScreen)
+        id.startsWith("ambiance:") -> id.removePrefix("ambiance:").takeIf { i -> settings.ambiances.any { it.id == i } }?.let(::ambianceScreen)
+        id.startsWith("plitem:") -> id.removePrefix("plitem:").let { r -> playlistItemScreen(r.substringBefore(':'), r.substringAfter(':')) }
+        id.startsWith("action:") -> Action.entries.firstOrNull { it.name == id.removePrefix("action:") }?.let(::actionScreen)
+        else -> null
+    }
+
+    /** The presets of playlist [a], as a list to reorder on the phone (hidden on the TV). */
+    private fun playlistWebList(a: Ambiance, entries: List<Playlist.Entry>): List<MenuItem> =
+        listOf(webRemote.playlistList(a, entries))
+
+    private val webHost = object : WebRemote.Host {
+        override val context: android.content.Context get() = this@VisualizerActivity
+        override val version: String get() = this@VisualizerActivity.version
+        override val language: String get() = resources.configuration.locales[0].language
+        override val settings get() = this@VisualizerActivity.settings
+        override val playlist get() = this@VisualizerActivity.playlist
+        override val stats get() = this@VisualizerActivity.stats
+        override val tags get() = this@VisualizerActivity.tags
+        override val previews get() = catalog.previews
+        override val locked get() = this@VisualizerActivity.locked
+        override val track get() = nowPlaying.track
+
+        override fun menuScreen(id: String) = this@VisualizerActivity.menuScreen(id)
+
+        override fun webCall(block: () -> Unit): MenuScreen? {
+            inWebCall = true
+            webOpened = null
+            try {
+                block()
+            } finally {
+                inWebCall = false
+            }
+            // What the TV shows follows.
+            menu?.rebuild()
+            (panel as? BrowserPanel)?.refresh()
+            return webOpened.also { webOpened = null }
+        }
+
+        override fun ambianceName(a: Ambiance) = this@VisualizerActivity.ambianceName(a)
+        override fun action(a: Action) = onAction(a)
+        override fun play(e: Playlist.Entry) = renderer.post { renderer.jumpTo(e) }
+        override fun useAmbiance(id: String) {
+            if (id == settings.activeAmbianceId) return
+            settings.activeAmbianceId = id
+            osd.show(getString(R.string.osd_ambiance, settings.activeAmbiance?.let(::ambianceName) ?: getString(R.string.ambiance_all)))
+            renderer.post { renderer.next() }
+        }
+        override fun togglePlaylistPreset(e: Playlist.Entry) = this@VisualizerActivity.togglePlaylistPreset(e)
     }
 
     // ------------------------------------------------------------------ Ambiances
@@ -687,7 +797,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
 
     private fun ambianceCount(a: Ambiance): Int = playlist.all().count { a.accepts(it, stats, settings.fpsCap, tags) }
 
-    private fun ambiancesScreen(): MenuScreen = MenuScreen(getString(R.string.btn_ambiances), getString(R.string.ambiances_subtitle)) {
+    private fun ambiancesScreen(): MenuScreen = MenuScreen("ambiances", getString(R.string.btn_ambiances), getString(R.string.ambiances_subtitle)) {
         val list = settings.ambiances
         val ids = listOf("") + list.map { it.id }
         listOf<MenuItem>(
@@ -695,25 +805,22 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                 listOf(getString(R.string.ambiance_all)) + list.map(::ambianceName),
                 { ids.indexOf(settings.activeAmbianceId).coerceAtLeast(0) },
                 { settings.activeAmbianceId = ids[it]; renderer.post { renderer.next() } }),
+            // Created with a default name (the name is the first line of its screen).
             MenuItem.Button(getString(R.string.btn_ambiance_new)) {
-                askText(getString(R.string.ambiance_name_title), getString(R.string.ambiance_new_name, list.size + 1)) { name ->
-                    val a = Ambiance(id = System.currentTimeMillis().toString(36), name = name)
-                    settings.saveAmbiance(a)
-                    menu?.push(ambianceScreen(a.id))
-                }
+                val a = Ambiance(id = System.currentTimeMillis().toString(36), name = getString(R.string.ambiance_new_name, list.size + 1))
+                settings.saveAmbiance(a)
+                openScreen(ambianceScreen(a.id))
             },
             MenuItem.Button(getString(R.string.btn_playlist_new)) {
-                askText(getString(R.string.playlist_name_title), getString(R.string.playlist_new_name, list.count { it.playlist } + 1)) { name ->
-                    val a = Ambiance(id = System.currentTimeMillis().toString(36), name = name, playlist = true)
-                    settings.saveAmbiance(a)
-                    menu?.push(playlistScreen(a.id))
-                }
+                val a = Ambiance(id = System.currentTimeMillis().toString(36),
+                    name = getString(R.string.playlist_new_name, list.count { it.playlist } + 1), playlist = true)
+                settings.saveAmbiance(a)
+                openScreen(playlistScreen(a.id))
             },
             MenuItem.Header(getString(R.string.btn_ambiances)),
         ) + list.map { a ->
-            MenuItem.Button((if (a.playlist) "♪ " else "") + ambianceName(a), { getString(R.string.ambiance_count, ambianceCount(a)) }) {
-                menu?.push(if (a.playlist) playlistScreen(a.id) else ambianceScreen(a.id))
-            }
+            MenuItem.Button((if (a.playlist) "♪ " else "") + ambianceName(a), { getString(R.string.ambiance_count, ambianceCount(a)) },
+                opens = { if (a.playlist) playlistScreen(a.id) else ambianceScreen(a.id) })
         }
     }
 
@@ -732,15 +839,12 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     /** A playlist: presets chosen by hand, played in their order or shuffled. */
-    private fun playlistScreen(id: String): MenuScreen = MenuScreen(getString(R.string.playlist_edit_title), getString(R.string.playlist_edit_subtitle)) {
+    private fun playlistScreen(id: String): MenuScreen = MenuScreen("playlist:$id", getString(R.string.playlist_edit_title), getString(R.string.playlist_edit_subtitle)) {
         val a = settings.ambiances.firstOrNull { it.id == id } ?: return@MenuScreen emptyList()
         val entries = playlist.playlistEntries(a) ?: emptyList()
         listOf<MenuItem>(
-            MenuItem.Button(getString(R.string.ambiance_name), { ambianceName(a) }) {
-                askText(getString(R.string.playlist_name_title), a.name) { name ->
-                    settings.saveAmbiance(a.copy(name = name))
-                    menu?.rebuild()
-                }
+            MenuItem.Text(getString(R.string.ambiance_name), getString(R.string.playlist_name_title), { ambianceName(a) }) { name ->
+                if (name.isNotBlank()) settings.saveAmbiance(a.copy(name = name.trim()))
             },
             MenuItem.Button(getString(R.string.btn_playlist_use), {
                 if (settings.activeAmbianceId == id) getString(R.string.ambiance_in_use) else ""
@@ -754,13 +858,14 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Button(getString(R.string.btn_playlist_add)) {
                 settings.activeAmbianceId = id
                 openBrowser()
-            },
+            }.tvOnly(),
+            MenuItem.Web("add", { fr.tvremote.core.Item.button("add", getString(R.string.btn_playlist_add)).opens("presets") }),
             MenuItem.Header(getString(R.string.h_playlist_presets) + "  (" + getString(R.string.ambiance_count, entries.size) + ")"),
-        ) + entries.mapIndexed { i, e ->
-            MenuItem.Button("${i + 1}. ${e.key}") { menu?.push(playlistItemScreen(id, e.key)) }
+        ) + playlistWebList(a, entries) + entries.mapIndexed { i, e ->
+            MenuItem.Button("${i + 1}. ${e.key}", opens = { playlistItemScreen(id, e.key) }).tvOnly()
         } + listOfNotNull(
             if (entries.isEmpty()) MenuItem.Info(getString(R.string.playlist_empty)) { "" } else null,
-            MenuItem.Button(getString(R.string.btn_playlist_delete), { confirmLabel("ambiance-$id", "") }) {
+            MenuItem.Button(getString(R.string.btn_playlist_delete), { confirmLabel("ambiance-$id", "") }, confirm = true) {
                 confirm("ambiance-$id") {
                     settings.deleteAmbiance(id)
                     menu?.back()
@@ -770,7 +875,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     }
 
     /** One preset of a playlist: play it, move it, remove it. */
-    private fun playlistItemScreen(id: String, key: String): MenuScreen = MenuScreen(key.substringAfterLast('/'), key.substringBefore('/')) {
+    private fun playlistItemScreen(id: String, key: String): MenuScreen = MenuScreen("plitem:$id:$key", key.substringAfterLast('/'), key.substringBefore('/')) {
         val a = settings.ambiances.firstOrNull { it.id == id } ?: return@MenuScreen emptyList()
         val pos = a.presets.indexOf(key)
         if (pos < 0) return@MenuScreen emptyList()
@@ -787,16 +892,13 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         )
     }
 
-    private fun ambianceScreen(id: String): MenuScreen = MenuScreen(getString(R.string.ambiance_edit_title), getString(R.string.ambiance_edit_subtitle)) {
+    private fun ambianceScreen(id: String): MenuScreen = MenuScreen("ambiance:$id", getString(R.string.ambiance_edit_title), getString(R.string.ambiance_edit_subtitle)) {
         val a = settings.ambiances.firstOrNull { it.id == id } ?: return@MenuScreen emptyList()
         val fpsChoices = listOf(0, 20, 25, 30, 40, 50)
         val categories = playlist.all().map { it.category }.distinct()
         listOf<MenuItem>(
-            MenuItem.Button(getString(R.string.ambiance_name), { ambianceName(a) }) {
-                askText(getString(R.string.ambiance_name_title), a.name) { name ->
-                    settings.saveAmbiance(a.copy(name = name))
-                    menu?.rebuild()
-                }
+            MenuItem.Text(getString(R.string.ambiance_name), getString(R.string.ambiance_name_title), { ambianceName(a) }) { name ->
+                if (name.isNotBlank()) settings.saveAmbiance(a.copy(name = name.trim()))
             },
             MenuItem.Info(getString(R.string.ambiance_presets)) { getString(R.string.ambiance_count, ambianceCount(a)) },
             MenuItem.Button(getString(R.string.btn_ambiance_use), {
@@ -817,7 +919,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             MenuItem.Toggle(c, { c in a.categories }, { on ->
                 settings.saveAmbiance(a.copy(categories = if (on) a.categories + c else a.categories - c))
             })
-        } + MenuItem.Button(getString(R.string.btn_ambiance_delete), { confirmLabel("ambiance-$id", "") }) {
+        } + MenuItem.Button(getString(R.string.btn_ambiance_delete), { confirmLabel("ambiance-$id", "") }, confirm = true) {
             confirm("ambiance-$id") {
                 settings.deleteAmbiance(id)
                 menu?.back()
@@ -825,20 +927,19 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
     }
 
-    private fun remoteScreen(): MenuScreen = MenuScreen(getString(R.string.h_remote), getString(R.string.remote_subtitle)) {
+    private fun remoteScreen(): MenuScreen = MenuScreen("remote", getString(R.string.h_remote), getString(R.string.remote_subtitle)) {
         listOf<MenuItem>(
-            MenuItem.Button(getString(R.string.btn_reset_keys), { confirmLabel("keys", "") }) {
+            MenuItem.Button(getString(R.string.btn_reset_keys), { confirmLabel("keys", "") }, confirm = true) {
                 confirm("keys") { bindings.resetToDefaults(); osd.show(getString(R.string.osd_keys_reset)) }
             },
             MenuItem.Header(getString(R.string.h_actions)),
         ) + Action.entries.map { a ->
-            MenuItem.Button(a.label, { bindings.triggersFor(a).joinToString(", ") { it.label }.ifEmpty { "—" } }) {
-                menu?.push(actionScreen(a))
-            }
+            MenuItem.Button(a.label, { bindings.triggersFor(a).joinToString(", ") { it.label }.ifEmpty { "—" } },
+                opens = { actionScreen(a) })
         }
     }
 
-    private fun actionScreen(a: Action): MenuScreen = MenuScreen(a.label, getString(R.string.action_subtitle)) {
+    private fun actionScreen(a: Action): MenuScreen = MenuScreen("action:${a.name}", a.label, getString(R.string.action_subtitle)) {
         listOf<MenuItem>(
             MenuItem.Button(getString(R.string.btn_add_key)) { startCapture(a) },
             MenuItem.Header(getString(R.string.h_current_keys)),
@@ -848,7 +949,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
         }
     }
 
-    private fun packsScreen(): MenuScreen = MenuScreen(getString(R.string.packs_title), settings.manifestUrl) {
+    private fun packsScreen(): MenuScreen = MenuScreen("packs", getString(R.string.packs_title), settings.manifestUrl, onOpen = { refreshCatalog() }) {
         val items = mutableListOf<MenuItem>(
             MenuItem.Info(getString(R.string.info_catalog)) { packs.catalogStatus },
             MenuItem.Info(getString(R.string.info_state)) { packStateText() },
@@ -866,13 +967,13 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
                     installed != p.version -> getString(R.string.pack_update, installed, p.version)
                     else -> confirmLabel("pack-${p.id}", getString(R.string.pack_installed))
                 }
-            }) {
+            }, confirm = packs.isUpToDate(p)) {
                 if (!packs.isUpToDate(p)) installPacks(listOf(p))
                 else confirm("pack-${p.id}") { removePack(p.id) }
             }
         }
         packs.installedIds().filter { it !in catalogIds }.forEach { id ->
-            items += MenuItem.Button(id, { confirmLabel("pack-$id", getString(R.string.pack_installed)) }) {
+            items += MenuItem.Button(id, { confirmLabel("pack-$id", getString(R.string.pack_installed)) }, confirm = true) {
                 confirm("pack-$id") { removePack(id) }
             }
         }
@@ -899,6 +1000,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
             // A pack needs packs it does not hold itself (the textures): install them too.
             packs.missingRequirements().takeIf { it.isNotEmpty() }?.let(::installPacks)
             menu?.rebuild()
+            webRemote.changed()
             val updates = packs.updatesAvailable()
             if (notify && updates.isNotEmpty() && panel == null) {
                 osd.show(getString(R.string.osd_pack_updates, updates.size), 6000)
@@ -923,6 +1025,8 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private fun loadCatalog(message: String) = loadCatalog { c ->
         osd.show(getString(R.string.osd_library, message, c.entries.size))
         menu?.rebuild()
+        // Installs and removals answer the phone at once; it learns the end here.
+        webRemote.changed()
     }
 
     /**
@@ -959,13 +1063,13 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     private var welcomeSelection: MutableSet<String>? = null
 
     private fun openWelcome() {
-        openPanel(MenuPanel(this, welcomeScreen()) {
+        openPanel(MenuPanel(this, welcomeScreen(), {
             closePanel()
             if (playlist.all().isEmpty()) osd.show(getString(R.string.osd_no_presets), 8000)
-        }, Gravity.CENTER, 0.56f)
+        }, ::askText, ::onMenuChanged), Gravity.CENTER, 0.56f)
     }
 
-    private fun welcomeScreen(): MenuScreen = MenuScreen(getString(R.string.welcome_title), getString(R.string.welcome_subtitle)) {
+    private fun welcomeScreen(): MenuScreen = MenuScreen("welcome", getString(R.string.welcome_title), getString(R.string.welcome_subtitle)) {
         val choices = packs.catalog.filter { !it.isTextures }
         val selected = welcomeSelection ?: HashSet()
         if (choices.isEmpty()) {
@@ -1175,6 +1279,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     // ------------------------------------------------------------------ Renderer callbacks (GL thread)
 
     override fun onPresetChanged(entry: Playlist.Entry, hardCut: Boolean) {
+        ui.post { webRemote.pushState() }
         if (settings.showPresetNameOnChange) ui.post {
             if (panel == null && !benchRunning && titleOverlay.visibility != View.VISIBLE) showPresetLabel(entry)
         }
@@ -1195,6 +1300,7 @@ class VisualizerActivity : Activity(), LacteaRenderer.Listener, NowPlaying.Liste
     // ------------------------------------------------------------------ Now playing (main thread)
 
     override fun onTrackChanged(track: NowPlaying.Track) {
+        ui.post { webRemote.pushState() }
         // With "cover preset on each track", the switch happens once the cover is ready.
         if (!settings.coverPresetOnTrack) renderer.post { renderer.next() }
         if (settings.showTitleOnTrackChange && panel == null && !benchRunning) showTitle(track)

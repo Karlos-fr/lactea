@@ -365,4 +365,24 @@
     <string name="osd_playlist_added">%1$s added to %2$s</string>
     <string name="osd_playlist_removed">%1$s removed from %2$s</string>
     <string name="osd_no_playlist">Play a playlist first (%1$s)</string>
+
+    <!-- Web remote -->
+    <string name="web_live">Now playing</string>
+    <string name="web_presets">Presets</string>
+    <string name="web_category">Category</string>
+    <string name="web_favorite">Favourite</string>
+    <string name="web_excluded">Excluded</string>
+    <string name="web_tag">Tag</string>
+    <string name="web_tag_measured">Measured (%1$s)</string>
+    <string name="web_details">Preset details</string>
+    <string name="web_frame_rates">Frame rates</string>
+    <string name="web_not_found">This preset is no longer installed.</string>
+    <string name="web_changed">The screen changed on the TV: try again.</string>
+    <string name="h_web_remote">Web remote</string>
+    <string name="opt_web_remote">Web remote (phone)</string>
+    <string name="btn_web_qr">Show the QR code</string>
+    <string name="web_off">off</string>
+    <string name="web_no_network">no local network</string>
+    <string name="web_qr_footer">Scan it with a phone on the same network.   OK / Back close</string>
+    <string name="web_playlists">Playlists</string>
 </resources>

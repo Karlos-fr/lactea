@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f2e">
+<title>Lactea</title>
+<link rel="stylesheet" href="static/skin.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<main class="panel"><div id="app"></div></main>
+<aside id="now" class="now" hidden>
+  <img id="now-img" alt="">
+  <div class="now-text">
+    <span id="now-name" class="now-name"></span>
+    <span id="now-sub" class="now-sub"></span>
+  </div>
+  <div class="now-buttons">
+    <button type="button" data-act="prev" aria-label="previous">◀</button>
+    <button type="button" data-act="fav" id="now-fav" aria-label="favourite">☆</button>
+    <button type="button" data-act="next" aria-label="next">▶</button>
+  </div>
+</aside>
+<script src="static/core.js"></script>
+<script src="static/lactea.js"></script>
+</body>
+</html>

@@ -53,6 +53,12 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
 - New preset "Lactea - Feux d'artifice" (Lactea pack): fireworks with the physics and shapes of
   the Platformer project's fireworks studio (sphere, ring, star, heart); each attack of the bass
   sets one off, and the treble makes the sparks twinkle.
+- Web remote (Options › Remote control › Web remote, on by default): Lactea serves a page on the
+  local network, opened by scanning a QR code with a phone, or in a computer's browser. It shows
+  what plays (with previous / next, favourite, lock, ambiance), the presets with their previews and
+  a search, each preset (play, favourite, exclude, tag, playlists), the ambiances and playlists
+  (reorder a playlist's presets) and all the options, with the look of the TV's panels. Built on
+  the TV Remote core shared with Proscenium (`fr.tvremote.core`, page `assets/tvremote`).
 - The test of the presets on the TV keeps running behind the options: Options › Preset
   management › Test the presets on this TV shows its progress and can stop it.
 

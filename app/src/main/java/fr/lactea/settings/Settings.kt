@@ -64,6 +64,9 @@ class Settings(context: Context) {
     /** The default ambiances were added once (deleting one must not bring it back). */
     var defaultAmbiancesAdded by bool("default_ambiances_added", false)
 
+    /** The web remote: a page on the local network, opened from a phone with a QR code. */
+    var webRemote by bool("web_remote", true)
+
     // --- Audio ---
     var beatSensitivity by float("beat_sensitivity", 1f)
     /** 0 = normalised (constant level), 1 = as played (follows the volume). */

@@ -358,4 +358,24 @@
     <string name="osd_playlist_added">%1$s ajouté à %2$s</string>
     <string name="osd_playlist_removed">%1$s retiré de %2$s</string>
     <string name="osd_no_playlist">Jouez d\'abord une playlist (%1$s)</string>
+
+    <!-- Web remote -->
+    <string name="web_live">En cours</string>
+    <string name="web_presets">Presets</string>
+    <string name="web_category">Catégorie</string>
+    <string name="web_favorite">Favori</string>
+    <string name="web_excluded">Exclu</string>
+    <string name="web_tag">Étiquette</string>
+    <string name="web_tag_measured">Mesurée (%1$s)</string>
+    <string name="web_details">Détails du preset</string>
+    <string name="web_frame_rates">Images par seconde</string>
+    <string name="web_not_found">Ce preset n\'est plus installé.</string>
+    <string name="web_changed">L\'écran a changé sur la TV : réessayez.</string>
+    <string name="h_web_remote">Télécommande web</string>
+    <string name="opt_web_remote">Télécommande web (téléphone)</string>
+    <string name="btn_web_qr">Afficher le QR code</string>
+    <string name="web_off">désactivée</string>
+    <string name="web_no_network">pas de réseau local</string>
+    <string name="web_qr_footer">Scannez-le avec un téléphone sur le même réseau.   OK / Retour fermer</string>
+    <string name="web_playlists">Playlists</string>
 </resources>

@@ -360,4 +360,24 @@
     <string name="osd_playlist_added">%1$s tillagd i %2$s</string>
     <string name="osd_playlist_removed">%1$s borttagen från %2$s</string>
     <string name="osd_no_playlist">Spela först en spellista (%1$s)</string>
+
+    <!-- Web remote -->
+    <string name="web_live">Spelas nu</string>
+    <string name="web_presets">Presets</string>
+    <string name="web_category">Kategori</string>
+    <string name="web_favorite">Favorit</string>
+    <string name="web_excluded">Undantagen</string>
+    <string name="web_tag">Märkning</string>
+    <string name="web_tag_measured">Uppmätt (%1$s)</string>
+    <string name="web_details">Om presetet</string>
+    <string name="web_frame_rates">Bilder per sekund</string>
+    <string name="web_not_found">Detta preset är inte längre installerat.</string>
+    <string name="web_changed">Skärmen ändrades på TV:n: försök igen.</string>
+    <string name="h_web_remote">Webbfjärrkontroll</string>
+    <string name="opt_web_remote">Webbfjärrkontroll (telefon)</string>
+    <string name="btn_web_qr">Visa QR-koden</string>
+    <string name="web_off">av</string>
+    <string name="web_no_network">inget lokalt nätverk</string>
+    <string name="web_qr_footer">Skanna den med en telefon i samma nätverk.   OK / Tillbaka stäng</string>
+    <string name="web_playlists">Spellistor</string>
 </resources>

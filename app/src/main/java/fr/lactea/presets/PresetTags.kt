@@ -46,6 +46,12 @@ class PresetTags(private val settings: Settings) {
         return next
     }
 
+    /** Sets the user's tag of [key]; null goes back to the measured one. */
+    @Synchronized fun set(key: String, tag: Tag?) {
+        if (tag == null) manual.remove(key) else manual[key] = tag
+        save()
+    }
+
     /** Moves the manual tags of presets whose key changed. */
     @Synchronized fun renameKeys(renames: Map<String, String>) {
         renames.forEach { (old, new) -> manual.remove(old)?.let { manual.putIfAbsent(new, it) } }
