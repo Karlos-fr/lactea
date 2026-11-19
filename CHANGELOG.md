@@ -57,8 +57,12 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   local network, opened by scanning a QR code with a phone, or in a computer's browser. It shows
   what plays (with previous / next, favourite, lock, ambiance), the presets with their previews and
   a search, each preset (play, favourite, exclude, tag, playlists), the ambiances and playlists
-  (reorder a playlist's presets) and all the options, with the look of the TV's panels. Built on
-  the TV Remote core shared with Proscenium (`fr.tvremote.core`, page `assets/tvremote`).
+  (reorder a playlist's presets), the packs (install, update, remove) and all the options, with
+  the look of the TV's panels. The page follows the TV live (preset, song, settings changed with
+  the remote) and has two layouts: one for phones, one for computers (tabs on the left, the preview
+  beside its settings, presets as cards; Escape goes back, ← / → change the preset). It listens on
+  port 8771 while Lactea is on screen; the address changes at each start. Built on the TV Remote
+  core shared with Proscenium (`fr.tvremote.core`, page `assets/tvremote`).
 - The test of the presets on the TV keeps running behind the options: Options › Preset
   management › Test the presets on this TV shows its progress and can stop it.
 
@@ -74,6 +78,12 @@ Faster start-up and an APK without presets: every preset now comes from a pack t
   always brings a new preset, plus every 10 s to 5 min, or never. A change applies at once. Cuts
   on the beat stay a setting of their own.
 - The preset browser is wider (90 % of the screen), so long names show in full.
+- Flash tags and previews of the whole collection were computed again after a fix of the analysis
+  tool, which measured the image before its last pass: 38 % of the presets are tagged ⚡ flash
+  (26 % before), 23 % 🌙 chill. The packs are offered as updates (Essentials and the themed packs
+  v4).
+- Options menus: creating an ambiance or a playlist opens it at once with a default name; the name
+  is its first line, to change with the remote's keyboard (or from the web remote).
 
 ### Upgrading from 1.0
 
